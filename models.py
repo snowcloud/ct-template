@@ -5,6 +5,7 @@ from django.db import models
 from ct_groups.models import CTGroup, email_notify, add_notify_event
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+from django.template.loader import render_to_string
 from dh_django_utils import utils
 from django.conf import settings
 from django.utils.datastructures import SortedDict
@@ -12,6 +13,18 @@ from tagging.fields import TagField
 from xml.etree import ElementTree as ET
 import datetime
 
+def _encode_comment_date(d):
+	return d.strftime("%Y%m%dT%H%M")
+
+def _format_comment_date(d_str):
+	"""formats from string in format returned by _encode_comment_date: %Y%m%dT%H%M"""
+	year = int(d_str[:4])
+	month = int(d_str[4:6])
+	day = int(d_str[6:8])
+	hours = int(d_str[9:11])
+	minutes = int(d_str[11:])
+	d = datetime.datetime(year, month, day, hours, minutes)
+	return d.strftime("%d/%m/%Y, %H.%M")
 
 class ClinTemplate(models.Model):
 	#name = models.CharField(max_length=64, core=True)
@@ -52,15 +65,18 @@ class ClinTemplate(models.Model):
 		except KeyError:
 			raise AttributeError, name
 
-	def get_item(self, item_id, root):
-		items = root.getiterator("%sitem" % self.xmlns)
+	def get_item(self, item_id, name='item'):
+		items = self.xmlroot.getiterator("%s%s" % (name, self.xmlns))
 		item = None
 		for i in items:
 			if i.get("id") == item_id:
 				item = i
 				break
 		return item
-	
+
+	def get_comment(self, item_id):
+		return self.get_item(item_id, 'review_comment')
+
 	def _name(self):  # just convenience, cos templates etc use name not label
 		return self.label
 	name = property(_name)
@@ -122,6 +138,46 @@ class ClinTemplate(models.Model):
 	#		  )
 	#		  email.send()
 
+	def get_notify_content(self, comment=None):
+		"""docstring for get_notify_content"""
+		
+		if comment:
+			comment = self.get_comment(comment)
+			author= comment.get("author")
+			content = comment.text
+			url = '%s%s#comment' % ( settings.APP_BASE[:-1], self.get_absolute_url())
+			review_date = _format_comment_date(comment.get('review_date'))			
+		else:
+			raise Exception('not enabled')
+			# line_1 = _('A discussion post has been added to: %s.') % self.group.name
+			# author= self.author.get_full_name()
+			# content = '%s\n%s' % (self.title, self.summary)
+			# url = '%s%s' % ( settings.APP_BASE[:-1], self.get_absolute_url())
+
+		# print author, content
+		# print url
+
+		# t=string.Template(settings.EMAIL_REVIEW_CONTENT_TEMPLATE)
+		# item_ref = '%s_%s' % (self.id, item_id)
+		# content = t.safe_substitute(
+		#	  line_1= "The %s template has been updated.\n%s\n" % (self.name, self._used_in()),
+		#	  line_2= "Data item '%s' has a new review comment." % item.attrib["label"],
+		#	  author= author, 
+		#	  review_date= datetime.datetime.now().strftime("%d/%m/%Y, %H.%M"), comment= comment_text,
+		#	  url= '%stemplates/%i/%s/#%s' % ( settings.APP_BASE, self.id, item_ref, item_ref),
+		#	  )
+
+					
+		content = render_to_string('email_template_comment_content.txt', {
+			'line_1': "The %s template has a new review comment.\n%s\n" % (self.name, self._used_in()),
+			'line_2': '',
+			'author': author, 
+			'review_date':  review_date, #self.publish.strftime("%d/%m/%Y, %H.%M"),
+			'content': content,
+			'url': url
+		})	  
+		return (True, content)
+
 	def get_comments(self, item):
 		comments = item.find("%sreview_comments" % self.xmlns)
 		if comments is None:
@@ -129,17 +185,19 @@ class ClinTemplate(models.Model):
 			item.append(comments)
 		return comments
 		
-	def add_comment(self, item_id, comment_text):
+	def add_comment(self, item_id, comment_text, user):
 		import datetime
 		import string
 		
+		comment_id = None
+		
 		if not self.accept_comments:
-			return
+			return comment_id
 		root = self.xmlroot
-		item = self.get_item(item_id, root)
+		item = self.get_item(item_id)
 		if item != None:
 			comment = ET.Element("review_comment")
-			user = utils.get_current_user()
+			# user = utils.get_current_user()
 			if user.is_anonymous():
 				author = 'guest'
 				comment.attrib["author_type"] = 'anonymous'
@@ -149,15 +207,18 @@ class ClinTemplate(models.Model):
 					comment.attrib["author_type"] = 'member'
 				else:
 					comment.attrib["author_type"] = 'user'
+			item_comments = self.get_comments(item)
 			comment.attrib["author"] = author
-			comment.attrib["review_date"] = datetime.datetime.now().strftime("%Y%m%dT%H%M")
+			comment.attrib["review_date"] = _encode_comment_date(datetime.datetime.now())
+			comment_id = "%s:c%s" % (item_id, len(item_comments))
+			comment.attrib["id"] = comment_id
 			comment.text = comment_text
 			self.get_comments(item).append(comment)
 			self.xmlmodel = ET.tostring(root).replace('ns0:', '')
 			#<review_comment author="derek" review_date="20060410T2130"> bollocks. </review_comment>
 			
-			t=string.Template(settings.EMAIL_REVIEW_CONTENT_TEMPLATE)
-			item_ref = '%s_%s' % (self.id, item_id)
+			# t=string.Template(settings.EMAIL_REVIEW_CONTENT_TEMPLATE)
+			# item_ref = '%s_%s' % (self.id, item_id)
 			# content = t.safe_substitute(
 			#	  line_1= "The %s template has been updated.\n%s\n" % (self.name, self._used_in()),
 			#	  line_2= "Data item '%s' has a new review comment." % item.attrib["label"],
@@ -168,10 +229,12 @@ class ClinTemplate(models.Model):
 			# self._email_notify(content)
 			self.save()
 
-			enabled, content = self.get_notify_content(comment=instance)
-			email_notify(obj.group, content, 'blog')
-			add_notify_event(obj, 'notify_comment', 'blog', instance.id)
-
+			enabled, content = self.get_notify_content(comment=comment_id)
+			print content
+			# email_notify(self.group, content, 'resource')
+			# add_notify_event(obj, 'notify_comment', 'resource', item_id)
+			
+			return comment_id
 
 
 	def delete_comment(self, item_id):

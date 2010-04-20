@@ -54,7 +54,7 @@ def addcomment(request, object_id, comment_id):
             elif not object.accept_comments:
                 error_message = "This template does not accept comments. Please click 'Cancel'"
             else:
-                object.add_comment(comment_id, comment_text)
+                object.add_comment(comment_id, comment_text, request.user)
                 return HttpResponseRedirect(redirect_str)
     else:
         comment_text = ''
