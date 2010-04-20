@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load sitevars %}
+
+{% block title %}Add your review{% endblock %}
+
+
+{% block content %}
+
+<h2>{{ clin_template.name }} template</h2>
+
+<h3>Add your review below:</h3>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+</form>
+
+	<form action="" method="post">{% csrf_token %}
+
+		<fieldset>
+			<legend>Add your review:</legend><br/>
+			{{ form.rating.errors }}
+			<label for="rating">rating: (1-5)</label> {# form.rating #}<br/>
+
+			<input type="radio" id="id_rating" name="rating" value="1">1 = serious concern<br/>
+			<input type="radio" id="id_rating" name="rating" value="2">2 = some concern<br/>
+			<input type="radio" id="id_rating" name="rating" value="3">3 = acceptable<br/>
+			<input type="radio" id="id_rating" name="rating" value="4">4 = useful<br/>
+			<input type="radio" id="id_rating" name="rating" value="5">5 = recommended<br/><br/>
+			
+			{{ form.review.errors }}
+			<label for="review">review: </label> {{ form.review }}<br/><br/>
+
+
+		</fieldset>
+		<input type="hidden" name="asData" value="{{ asData }}" />
+		<input type="submit" name="result" value="Add this comment" />
+		<input type="submit" name="result" value="Cancel" />
+
+	</form>
+
+
+
+{% endblock %}

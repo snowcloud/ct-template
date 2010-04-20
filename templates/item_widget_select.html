@@ -1,0 +1,11 @@
+{% load eltree %}
+
+<div class="ct_widget">
+    <select name="select">
+    {% for v in elem|values:template %}
+        <option value="{{forloop.counter}}">{{ v.text }} {% if v|elattrib:"score" %}[{{ v|elattrib:"score" }}]{% endif %}</option>
+    {% empty %}
+        <option value="">------------------</option>
+    {% endfor %}
+    </select>
+</div>

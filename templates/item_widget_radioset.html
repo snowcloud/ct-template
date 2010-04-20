@@ -1,0 +1,9 @@
+{% load eltree %}
+
+<div class="ct_widget">
+    {% for v in elem|values:template %}
+        <input type="radio" name="radio_{{ elem|elattrib:"label" }}" value="{{ v.text }}"
+            {% comment %}{% if forloop.first %}checked{% endif %}{% endcomment %}/> {{ v.text }}
+            {% if v|elattrib:"score" %}<span class="small">[{{ v|elattrib:"score" }}]</span>{% endif %}<br/>
+    {% endfor %}
+</div>

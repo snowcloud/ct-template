@@ -1,0 +1,71 @@
+{% load eltree sitevars utils markup ct_groups_tags %}
+
+    <div class="ct_level{{ this_level }} ct_item">
+        {# {% item_editor elem %} #}
+        {% if elem|fixedtext %}
+            <div class="ct_col_fixedtext" id="{{ template.id }}_{{ elem|elattrib:"id" }}">{{ elem|elattrib:"label" }}</div>
+        {% else %}
+            <div class="ct_col1" id="{{ template.id }}_{{ elem|elattrib:"id" }}">{{ elem|elattrib:"label"|capfirst }}
+                 {% ifnotequal asData '1' %}
+                    {% if elem|elattrib:"cardinality" %}<span class="small">(repeat:&nbsp;{{ elem|elattrib:"cardinality" }})</span>{% endif %}
+                    {% if elem|included_template_name %}<span class="small">(included template: {{ elem|included_template_name }})</span>{% endif %}
+                 {% endifnotequal %}</div>
+        {% endif %}
+        <div class="ct_col2">
+            <div class="ct_info">
+                <span class="left">
+                    {% ifequal asData '1' %}
+                        {{ elem|elattrib:"valueType" }} {{ elem|included_template_name }} {{ elem|elattrib:"select" }} {{ elem|elattrib:"cardinality" }}
+                    {% endifequal %}
+                &nbsp;</span>
+                <span class="right">
+                {% if template.accept_comments %}
+
+                {% if elem|review_comments:template.xmlns %}
+                  <a href="javascript:togglecomments('{{ template.id }}_{{ elem|elattrib:"id" }}')" class="toggle_comment" id="l_{{ template.id }}_{{ elem|elattrib:"id" }}">show</a>
+                  {{ elem|review_comments:template.xmlns|length }} comment{{ elem|review_comments:template.xmlns|length|pluralize }} <img src="{% site_base %}media/icons/comments.png"/>
+                {% else %}
+                    {% if user.is_authenticated %}
+                        {% if template.workgroup|can_comment:user %}
+                            <a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?asData={{ asData }}&amp;top={{ top_template_id }}">add comment</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">log in</a> to add comment
+                    {% endif %}
+                    
+                {% endif %}
+                {% endif %}
+                </span>
+            </div>
+            {% ifequal asData '1' %}
+                {% for v in elem|values:template %}
+                    <div class="{% cycle ct_value_even,ct_value_odd as rowcolors %}">{{ v.text }}
+                        {% if v|elattrib:"score" %}<span class="small">[score= {{ v|elattrib:"score" }}]</span>{% endif %}</div>
+                {% endfor %}
+            {% else %}
+                {% item_display_widget elem template %}
+            {% endifequal %}
+            <div class="ct_comments_hide_show" id="h_{{ template.id }}_{{ elem|elattrib:"id" }}" style="display: none;">
+                {% for v in elem|review_comments:template.xmlns %}
+                    <div class="ct_comment_info">
+                        {{ v|elattrib:"author" }} - {{ v|elattrib:"review_date"|date:"j F Y, H:i" }}
+                    </div>
+                    <div class="ct_comment">
+                        {{ v.text|escape|textile }}
+                        {% if forloop.last %}
+                            <span class="right" style="background-color: #eeeeff;">&nbsp;&nbsp;<a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?asData={{ asData }}&amp;top={{ top_template_id }}">add comment </a>&nbsp;<img src="{% site_base %}media/icons/comments.png"/>&nbsp;</span><br/>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% if elem|includes_template %}
+            {% for elem_incl in elem|included_template_items %}
+                {% item_display elem_incl top_template_id elem child_level asData user %}
+            {% endfor%}
+        {% endif %}
+        {% for child in elem|items:template.xmlns %}
+            {% item_display child top_template_id template child_level asData user %}
+        {% endfor%}
+    
+    </div>

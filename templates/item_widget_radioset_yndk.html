@@ -1,0 +1,7 @@
+{% load eltree %}
+
+<div class="ct_widget">
+    <input type="radio" name="radio_{{ elem|elattrib:"label" }}" value="yes"/>yes &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="radio_{{ elem|elattrib:"label" }}" value="no" />no &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="radio_{{ elem|elattrib:"label" }}" value="dk" />don't know<br/>
+</div>

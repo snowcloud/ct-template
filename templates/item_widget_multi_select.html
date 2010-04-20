@@ -1,0 +1,8 @@
+{% load eltree %}
+
+<div class="ct_widget">
+    {% for v in elem|values:template %}
+        <input type="checkbox" name="cb_{{ elem|elattrib:"label" }}" value="{{ v.text }}"/> {{ v.text }}
+        {% if v|elattrib:"score" %}<span class="small">[{{ v|elattrib:"score" }}]</span>{% endif %}<br/>
+    {% endfor %}
+</div>

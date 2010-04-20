@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load sitevars %}
+
+{% block title %}Add comment{% endblock %}
+
+
+{% block content %}
+
+<h2>{{ clin_template.name }} template</h2>
+
+<h3>Add your comment below:</h3>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% site_base %}templates/{{ clin_template.id }}/{{ comment_id }}/comment/" method="post">{% csrf_token %}
+
+<p>comment:<br/> <textarea name="comment_text" rows="8" cols="50">{{comment_text}}</textarea></p>
+
+<input type="hidden" name="asData" value="{{ asData }}" />
+<input type="hidden" name="top" value="{{ top_template_id }}" />
+<input type="submit" name="result" value="Add this comment" />
+<input type="submit" name="result" value="Cancel" />
+</form>
+
+{% endblock %}

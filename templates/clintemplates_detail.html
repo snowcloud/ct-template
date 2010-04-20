@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% load markup ct_tags ct_groups_tags eltree sitevars utils %}
+
+{% block title %}{{ clin_template.name }}{% endblock %}
+{% block head_extra %}
+
+<script type='text/javascript' src='{% site_base %}media/js/dojo/dojo/dojo.js'></script>
+  <script type="text/javascript">
+    dojo.require("dojo.fx");
+    dojo.require("dojo.NodeList-fx");
+    function togglecomments(el) {
+        // var divname = 'h_' + el;
+        var div = dojo.byId('h_' + el);
+        var a = document.getElementById('l_' + el);
+        if (div.style['display'] == 'none') {
+            dojo.fx.wipeIn({node: div, duration: 300}).play();
+            dojo.byId(a).innerHTML = 'hide';
+        } else {
+            dojo.fx.wipeOut({ node: div, duration: 300}).play();
+            dojo.byId(a).innerHTML = 'show';
+        }
+    }
+    function toggleallcomments() {
+        var div = dojo.byId("toggleallcomments");
+        var show = div.innerHTML.indexOf("show") > -1;
+        if (show) { div.innerHTML= "hide all comments" }
+        else { div.innerHTML= "show all comments" }
+        
+        if (show) {
+            dojo.query(".ct_comments_hide_show")
+                .wipeIn().play();
+            t = 'hide'   
+        } else {
+            dojo.query(".ct_comments_hide_show")
+                .wipeOut().play();
+            t = 'show'
+        }
+        dojo.query(".ct_comments_hide_show").innerHTML= t
+        // comment_toggles=dojo.html.getElementsByClass("toggle_comment");
+        // if (show) { t = "hide" }
+        // else  {  t = "show"  }
+        // for (var i=0; i<comment_toggles.length; i++) {
+        //     dojo.dom.textContent(comment_toggles[i], t);
+        // }
+
+    }
+    dojo.addOnLoad(function(){
+        {% if comment_id  %}
+            togglecomments('{{comment_id}}');
+        {% endif %}})
+  </script>
+{% endblock %}
+
+{% block breadcrumbs %}
+  <a href="{% site_base %}">home</a>  &gt;
+  <a href="{% site_base %}groups">groups</a>  &gt;
+  <a href="{% site_base %}groups/{{ clin_template.workgroup.id }}/">{{ clin_template.workgroup.name|lower }}</a>
+{% endblock %}
+
+{% block content %}
+
+{% if clin_template.workgroup %}
+<p>in <a href="{{ clin_template.workgroup.get_absolute_url }}">{{ clin_template.workgroup.name }}</a></p>
+{% endif %}
+
+<h1>{{ clin_template.name }}</h1>
+
+  {# {{ clin_template.note|default_if_none:""|textile }} #}
+
+{% comment %}
+{% if user.is_staff %}
+  <p><a href="{% site_base %}admin/ct_template/clintemplate/{{ clin_template.id }}/">edit</a></p>
+{% endif %}
+{% endcomment %}  
+
+<div class="siteresources">
+    <table width="90%">
+        {% for item in clin_template.metadata.items %}
+            <tr><th width="20%">{{ item.0 }}:</th><td width="60%">{{ item.1|default_if_none:""|textile }}</td></tr>
+        {% endfor %}
+        {% if clin_template.included_templates.all %}
+            <tr><th width="20%">Includes:</th>
+                <td width="60%">
+                {% for t in clin_template.included_templates.all %}
+                    <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            </td></tr>
+        {% endif %}
+        {% if clin_template.in_templates.all %}
+            <tr><th width="20%">used in:</th>
+                <td width="60%">
+                {% for t in clin_template.in_templates.all %}
+                    <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            </td></tr>
+        {% endif %}
+        {% if clin_template.tags.all %}
+            <tr><th width="20%">tags:</th>
+                <td width="60%">
+                {% for tag in clin_template.tags.all %}
+                    <a href="{% site_base %}tags/{{ tag.id }}/">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            </td></tr>
+        {% endif %}
+    </table>
+</div>
+
+<br/>
+
+{% if clin_template.accept_reviews %}
+	
+	<h2>Reviews</h2>
+
+	<p>You can use a review to give an overall view of a template, rather than contribute comments intended to help develop a it.</p> 
+
+	<p>Comments are not available on templates based on standardised tools, so leave a review if you want to recommend a template, or advise others on weaknesses in the evidence or problems in using it.</p>
+
+	{% if clin_template.clintemplatereview_set.all %}
+	<p class="small">ratings: 1 = serious concern, 2 = some concern, 3 = acceptable for use, 4 = useful, 5 = recommended</p>
+
+	<div class="siteresources">
+	    <table width="100%">
+	        {% for review in clin_template.clintemplatereview_set.all %}
+				<tr><th width="20%">{{ review.reviewer.get_full_name }}:<br/>
+				<span class="small">{{ review.review_date|date:"j F Y, H:i" }}</span><br/>
+				<span class="small">{{ review.rating|rating_display }}</span>
+				</th>
+				<td width="60%">{{ review.review|linebreaksbr }}</td></tr>
+			{% endfor %}
+	    </table>
+	</div>
+	{% endif %}
+
+	{% comment %}
+	    if not authorised
+	        log in to add a review
+	    else
+	        check perm can comment
+        
+	        if user.is_authenticated %}
+	            {% if clin_template.workgroup|can_comment:user
+                
+	{% endcomment %}
+
+	<p>
+	{% if user.is_authenticated %}
+	    {% if clin_template.workgroup|can_comment:user %}
+	       <a href="/templates/{{ clin_template.id }}/addreview/">Add a review of this template.</a>
+	    {% else %}
+	        Sorry, you don't have access to add a review.
+	    {% endif %}
+	{% else %}
+	    <a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">log in</a> to add a review.
+	{% endif %}
+	</p>
+	<hr>
+{% endif %}
+
+<p>The template is a list of data items that could make a form- below you see the data items, and alongside each, there is a note of the kind of data that could be recorded against them.</p>
+
+{% if clin_template.accept_comments %}
+	<p>You can see any comments by clicking on the '<strong>show x comments</strong>' beside each item, or click '<strong>add comment</strong>' to have your say.</p>
+{% else %}
+	<p>This template does not accept comments, but you can <a href="/templates/{{ clin_template.id }}/addreview/">add a review.</a>.</p>
+{% endif %}
+
+
+  <ul class="subnav">
+  	{% if clin_template.accept_comments %}
+    <li><a href="javascript:toggleallcomments()" id="toggleallcomments">show all comments</a></li>
+    {% endif %}
+        {% ifequal asData '1' %}
+            <li><a href="/templates/{{ clin_template.id }}/?asData=0">see template form</a></li>
+        {% else %}
+            <li><a href="/templates/{{ clin_template.id }}/?asData=1">see template data</a></li>
+        {% endifequal %}
+    </ul>
+
+{% ifequal asData '1' %}<form action="">{% endifequal %}
+
+{% for elem in clin_template.xmlroot|items:clin_template.xmlns %}
+    {% item_display elem clin_template.id clin_template 0 asData user %}
+{% endfor%}
+
+{% ifequal asData '1' %}</form>{% endifequal %}
+
+{% endblock %}
