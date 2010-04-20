@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ct_tools.ct_template.models import *
+from ct_template.models import *
 
 
 class ClinTemplateReviewInline(admin.TabularInline):

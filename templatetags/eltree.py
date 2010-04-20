@@ -2,7 +2,7 @@ from django import template
 from xml.etree import ElementTree as Elem
 import time
 import datetime
-from ct_tools.ct_template.models import ClinTemplate
+from ct_template.models import ClinTemplate
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 

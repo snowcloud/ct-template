@@ -1,11 +1,11 @@
-""" views for ct_tools.ct_template app
+""" views for ct_template app
 
 """
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponseRedirect, HttpResponse
-from ct_tools.ct_template.models import ClinTemplate, ClinTemplateReview
+from ct_template.models import ClinTemplate, ClinTemplateReview
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.forms import *
