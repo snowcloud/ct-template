@@ -53,7 +53,7 @@ class CTTemplateTest(TestCase):
 		group2 = self._make_group('Test group two')
 		group3 = self._make_group('Test group three')
 		user = self._make_user('shuggie')
-		member = self._make_membership(user, group1, False)
+		member = self._make_membership(user, group1, True, False, 'digest')
 		user = self._make_user('francie')
 		member = self._make_membership(user, group2, False)
 		user = self._make_user('ella')
@@ -75,11 +75,16 @@ class CTTemplateTest(TestCase):
 		group1 = CTGroup.objects.get(name='Test group one')
 		group2 = CTGroup.objects.get(name='Test group two')
 		user = self._make_user('chic')
+
+		template1 = ClinTemplate(xmlmodel=incl_xml, workgroup=group1)
+		template1.save()
 		
-		template = ClinTemplate(xmlmodel=ct_xml, workgroup=group2)
-		template.save()
-		template.add_comment("i001", "a big fat comment", user)
-		template.add_comment("i001", "another big fat comment ", user)
+		template2 = ClinTemplate(xmlmodel=ct_xml, workgroup=group2)
+		template2.save()
+		template2.included_templates.add(template1)
+		template2.save()
+		template1.add_comment("i001", "a big fat comment", user)
+		template1.add_comment("i001", "another big fat comment ", user)
 		# print template.get_comment(c)
 		
 		self.assertEquals(len(mail.outbox), 2)
@@ -87,9 +92,9 @@ class CTTemplateTest(TestCase):
 		self.assertEquals(len(mail.outbox[0].bcc), 1)
 
 		mail.outbox = []
-		self.failUnlessEqual(CTEvent.objects.count(), 2)
+		self.failUnlessEqual(CTEvent.objects.count(), 4)
 		process_digests()
-		self.assertEquals(len(mail.outbox), 1)
+		self.assertEquals(len(mail.outbox), 2)
 		# print
 		# print mail.outbox[0].bcc
 		# print mail.outbox[0].subject
@@ -104,53 +109,77 @@ class CTTemplateTest(TestCase):
 		
 		
 
-ct_xml = """		<!DOCTYPE clinicaltemplate SYSTEM "dcm.dtd">
-		<clinicaltemplate>
-		    <metadata>
-		        <note>Observation: Level of consciousness by using the the Glasgow Coma Scale.</note>
-		        <template_id>glasgow-coma-scale</template_id>
-		        <label>Glasgow Coma Scale</label>
-		        <version>061</version>
-		        <status>draft</status>
-		        <source>results4care.nl</source>
-		    </metadata>
-		    <item id="i001" label="Total Glasgow Coma Scale Score" valueType="integer">
-		          <review_comments>
-		            <review_comment id="i001:c0" author="guest" author_type="anonymous" review_date="20061115T1259">Test comment 0
-		            </review_comment>
-		            <review_comment id="i001:c1" author="guest" author_type="anonymous" review_date="20061115T1402">Test comment 1
-		            </review_comment>
-		        </review_comments></item>
-		    <item id="i010" label="Eye opening" valueType="ordinal_list">
-		        <valueset>
-		            <value score="4">Spontaneous</value>
-		            <value score="3">To speech</value>
-		            <value score="2">To pain</value>
-		            <value score="1">No response</value>
-		            <value score="C">Not possible to determine</value>
-		        </valueset>
-		    </item>
-		    <item id="i020" label="Best verbal response" valueType="ordinal_list" widget="radioset">
-		        <valueset>
-		            <value score="6">To verbal command: obeys</value>
-		            <value score="5">To painful stimulus: localizes pain</value>
-		            <value score="4">Flexion-withdrawal</value>
-		            <value score="3">Flexion-abnormal</value>
-		            <value score="2">Extension</value>
-		            <value score="1">No response</value>
-		            <value score="P">Paralysis</value>
-		        </valueset>
-		    </item>
-		    <item id="i030" label="Best motor response" valueType="ordinal_list">
-		        <valueset>
-		            <value score="5">Oriented and converses</value>
-		            <value score="4">Disoriented and converses</value>
-		            <value score="3">Inappropriate words</value>
-		            <value score="2">Incomprehensible sounds</value>
-		            <value score="1">No response</value>
-		            <value score="T">Tube/Tracheotomy</value>
-		        </valueset>
-		    </item>
-		</clinicaltemplate>
+ct_xml = """
+	<clinicaltemplate>
+	    <metadata>
+	        <note>Observation: Level of consciousness by using the the Glasgow Coma Scale.</note>
+	        <template_id>glasgow-coma-scale</template_id>
+	        <label>Glasgow Coma Scale</label>
+	        <version>061</version>
+	        <status>draft</status>
+	        <source>results4care.nl</source>
+	    </metadata>
+	    <item id="i001" label="Total Glasgow Coma Scale Score" valueType="integer">
+	          <review_comments>
+	            <review_comment id="i001:c0" author="guest" author_type="anonymous" review_date="20061115T1259">Test comment 0
+	            </review_comment>
+	            <review_comment id="i001:c1" author="guest" author_type="anonymous" review_date="20061115T1402">Test comment 1
+	            </review_comment>
+	        </review_comments></item>
+	    <item id="i010" label="Eye opening" valueType="ordinal_list">
+	        <valueset>
+	            <value score="4">Spontaneous</value>
+	            <value score="3">To speech</value>
+	            <value score="2">To pain</value>
+	            <value score="1">No response</value>
+	            <value score="C">Not possible to determine</value>
+	        </valueset>
+	    </item>
+	    <item id="i020" label="Best verbal response" valueType="ordinal_list" widget="radioset">
+	        <valueset>
+	            <value score="6">To verbal command: obeys</value>
+	            <value score="5">To painful stimulus: localizes pain</value>
+	            <value score="4">Flexion-withdrawal</value>
+	            <value score="3">Flexion-abnormal</value>
+	            <value score="2">Extension</value>
+	            <value score="1">No response</value>
+	            <value score="P">Paralysis</value>
+	        </valueset>
+	    </item>
+	    <item id="i030" label="Best motor response" valueType="ordinal_list">
+	        <valueset>
+	            <value score="5">Oriented and converses</value>
+	            <value score="4">Disoriented and converses</value>
+	            <value score="3">Inappropriate words</value>
+	            <value score="2">Incomprehensible sounds</value>
+	            <value score="1">No response</value>
+	            <value score="T">Tube/Tracheotomy</value>
+	        </valueset>
+	    </item>
+		<item id="i040" label="Skin problems" valueType="include_template" include="infant-skin-problems"></item>
+	</clinicaltemplate>
 """
-		
+incl_xml="""
+	<clinicaltemplate>
+		<metadata>
+		    <note>This is a simple summary which will normally be used as part of a larger template.</note>
+		    <template_id>infant-skin-problems</template_id>
+		    <label>Infant skin problems</label>
+		    <version>0.1</version>
+		    <status>draft</status>
+		    <source>NHS Tayside community systems</source>
+		</metadata>
+	    <item id="i001" label="Infant skin problems" select="multi_select" valueType="nominal_list">
+	        <valueset>
+	            <value>Dryness</value>
+	            <value>Rash</value>
+	            <value>Scabies</value>
+	            <value>Ringworm</value>
+	            <value>Thrush</value>
+	            <value>Impetigo</value>
+	        </valueset>
+	    <review_comments><review_comment author="guest" author_type="anonymous" review_date="20071016T1445">From a data standards viewpoint items such as this would cause problems as there are 2 concepts within the values, ie skin symptoms and skin diseases.
+	Rgds
+	Alison Wallis</review_comment></review_comments></item>
+	</clinicaltemplate>
+"""		
