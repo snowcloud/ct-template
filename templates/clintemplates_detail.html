@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load markup ct_tags ct_groups_tags eltree sitevars utils %}
+{% load i18n markup ct_tags ct_groups_tags eltree sitevars utils %}
 
 {% block title %}{{ clin_template.name }}{% endblock %}
 {% block head_extra %}
@@ -11,26 +11,26 @@ function togglecomments(el) {
 
 	var div = $("#h_" + el)
 	var a = $("#l_" + el)
-	if (div.css('display')=='none') {
-		a.text('hide')
+	if (div.css('display')=='{% trans 'none' %}') {
+		a.text('{% trans 'Hide' %}')
 	} else {
-		a.text('show')
+		a.text('{% trans 'Show' %}')
 	}
 	div.toggle(300);
 }
 
 function toggleallcomments() {
     var div = $("#toggleallcomments");
-    var show = div.text().indexOf("show") > -1;
-    if (show) { div.text("hide all comments") }
-    else { div.text("show all comments") }
+    var show = div.text().indexOf("{% trans "Show" %}") > -1;
+    if (show) { div.text("{% trans 'Hide all comments' %}") }
+    else { div.text("{% trans 'Show all comments' %}") }
     
     if (show) {
         $(".ct_comments_hide_show").show(300)
-        t = 'hide'   
+        t = '{% trans 'Hide' %}'   
     } else {
         $(".ct_comments_hide_show").hide(300)
-        t = 'show'
+        t = '{% trans 'Show' %}'
     }
     $(".toggle_comment").text(t)
 }
@@ -44,15 +44,15 @@ $(function(){
 {% endblock %}
 
 {% block breadcrumbs %}
-  <a href="{% site_base %}">home</a>  &gt;
-  <a href="{% site_base %}groups">groups</a>  &gt;
+  <a href="{% site_base %}">{% trans 'Home' %}</a>  &gt;
+  <a href="{% site_base %}groups">{% trans 'Groups' %}</a>  &gt;
   <a href="{% site_base %}groups/{{ clin_template.workgroup.id }}/">{{ clin_template.workgroup.name|lower }}</a>
 {% endblock %}
 
 {% block content %}
 
 {% if clin_template.workgroup %}
-<p>in <a href="{{ clin_template.workgroup.get_absolute_url }}">{{ clin_template.workgroup.name }}</a></p>
+<p>{% trans 'in' %} <a href="{{ clin_template.workgroup.get_absolute_url }}">{{ clin_template.workgroup.name }}</a></p>
 {% endif %}
 
 <h1>{{ clin_template.name }}</h1>
@@ -68,10 +68,10 @@ $(function(){
 <div class="siteresources">
     <table width="90%">
         {% for item in clin_template.metadata.items %}
-            <tr><th width="20%">{{ item.0 }}:</th><td width="60%">{{ item.1|default_if_none:""|textile }}</td></tr>
+            <tr><th width="20%">{% trans item.0 %}:</th><td width="60%">{{ item.1|default_if_none:""|textile }}</td></tr>
         {% endfor %}
         {% if clin_template.included_templates.all %}
-            <tr><th width="20%">Includes:</th>
+            <tr><th width="20%">{% trans 'Includes' %}:</th>
                 <td width="60%">
                 {% for t in clin_template.included_templates.all %}
                     <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %}
@@ -79,7 +79,7 @@ $(function(){
             </td></tr>
         {% endif %}
         {% if clin_template.in_templates.all %}
-            <tr><th width="20%">used in:</th>
+            <tr><th width="20%">{% trans 'Used in' %}:</th>
                 <td width="60%">
                 {% for t in clin_template.in_templates.all %}
                     <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %}
@@ -87,7 +87,7 @@ $(function(){
             </td></tr>
         {% endif %}
         {% if clin_template.tags.all %}
-            <tr><th width="20%">tags:</th>
+            <tr><th width="20%">{% trans 'Topics' %}:</th>
                 <td width="60%">
                 {% for tag in clin_template.tags.all %}
                     <a href="{% site_base %}tags/{{ tag.id }}/">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
@@ -148,23 +148,23 @@ $(function(){
 	<hr>
 {% endif %}
 
-<p>The template is a list of data items that could make a form- below you see the data items, and alongside each, there is a note of the kind of data that could be recorded against them.</p>
+<p>{% trans "The template is a list of data items that could make a form- below you see the data items, and alongside each, there is a note of the kind of data that could be recorded against them." %}</p>
 
 {% if clin_template.accept_comments %}
-	<p>You can see any comments by clicking on the '<strong>show x comments</strong>' beside each item, or click '<strong>add comment</strong>' to have your say.</p>
+	<p>{% trans "You can see any comments by clicking on the '<strong>show x comments</strong>' beside each item, or click '<strong>add comment</strong>' to have your say." %}</p>
 {% else %}
-	<p>This template does not accept comments, but you can <a href="/templates/{{ clin_template.id }}/addreview/">add a review.</a>.</p>
+	<p>{% trans 'This template does not accept comments, but you can <a href="/templates/{{ clin_template.id }}/addreview/">add a review.</a>.' %}</p>
 {% endif %}
 
 
   <ul class="subnav">
   	{% if clin_template.accept_comments %}
-    <li><a href="javascript:toggleallcomments()" id="toggleallcomments">show all comments</a></li>
+    <li><a href="javascript:toggleallcomments()" id="toggleallcomments">{% trans "Show all comments"%}</a></li>
     {% endif %}
         {% ifequal asData '1' %}
-            <li><a href="/templates/{{ clin_template.id }}/?asData=0">see template form</a></li>
+            <li><a href="/templates/{{ clin_template.id }}/?asData=0">{% trans "See template form"%}</a></li>
         {% else %}
-            <li><a href="/templates/{{ clin_template.id }}/?asData=1">see template data</a></li>
+            <li><a href="/templates/{{ clin_template.id }}/?asData=1">{% trans "See template data"%}</a></li>
         {% endifequal %}
     </ul>
 
