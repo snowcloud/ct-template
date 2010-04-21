@@ -38,12 +38,13 @@ class CTTemplateTest(TestCase):
 			)
 		return user
 	
-	def _make_membership(self, user, group, is_active=True, is_editor=False, post_updates='single'):
+	def _make_membership(self, user, group, is_active=True, is_editor=False, updates='single'):
 		"""docstring for _make_membership"""
 		member = GroupMembership(user=user, group=group)
 		member.is_active = is_active
 		member.is_editor = is_editor
-		member.post_updates = post_updates
+		member.post_updates = updates
+		member.tool_updates = updates
 		member.save()
 		return member
 
@@ -72,22 +73,23 @@ class CTTemplateTest(TestCase):
 		.
 		"""
 		group1 = CTGroup.objects.get(name='Test group one')
+		group2 = CTGroup.objects.get(name='Test group two')
 		user = self._make_user('chic')
 		
-		template = ClinTemplate(xmlmodel=ct_xml, workgroup=group1)
+		template = ClinTemplate(xmlmodel=ct_xml, workgroup=group2)
 		template.save()
 		template.add_comment("i001", "a big fat comment", user)
-		c = template.add_comment("i001", "another big fat comment ", user)
+		template.add_comment("i001", "another big fat comment ", user)
 		# print template.get_comment(c)
 		
-		self.assertEquals(len(mail.outbox), 0)
-		# self.assertEquals(mail.outbox[0].subject, '[example.com] Test group two update')
-		# self.assertEquals(len(mail.outbox[0].bcc), 2)
+		self.assertEquals(len(mail.outbox), 2)
+		self.assertEquals(mail.outbox[0].subject, '[example.com] Test group two update')
+		self.assertEquals(len(mail.outbox[0].bcc), 1)
 
 		mail.outbox = []
-		self.failUnlessEqual(CTEvent.objects.count(), 0)
+		self.failUnlessEqual(CTEvent.objects.count(), 2)
 		process_digests()
-		self.assertEquals(len(mail.outbox), 0)
+		self.assertEquals(len(mail.outbox), 1)
 		# print
 		# print mail.outbox[0].bcc
 		# print mail.outbox[0].subject

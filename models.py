@@ -65,6 +65,12 @@ class ClinTemplate(models.Model):
 		except KeyError:
 			raise AttributeError, name
 
+	def get_workgroup(self):
+		"""kludge cos field should be just group to be same as other models
+			TODO: change field name and update all references"""
+		return self.workgroup
+	group = property(get_workgroup)
+
 	def get_item(self, item_id, name='item'):
 		items = self.xmlroot.getiterator("%s%s" % (name, self.xmlns))
 		item = None
@@ -117,6 +123,7 @@ class ClinTemplate(models.Model):
 		result = set([template.workgroup for template in self.in_templates.all()])
 		result.add(self.workgroup)
 		return result
+	multi_groups = property(_all_groups)
 	
 	# def _email_notify(self, content):
 	#	  import string
@@ -145,31 +152,15 @@ class ClinTemplate(models.Model):
 			comment = self.get_comment(comment)
 			author= comment.get("author")
 			content = comment.text
-			url = '%s%s#comment' % ( settings.APP_BASE[:-1], self.get_absolute_url())
+			item_id = comment.get("id").split(':')[0]
+			item_ref = '%s_%s' % (self.id, item_id)
+			url = '%s%s%s/#%s' % ( settings.APP_BASE[:-1], self.get_absolute_url(), item_ref, item_ref)
 			review_date = _format_comment_date(comment.get('review_date'))			
 		else:
 			raise Exception('not enabled')
-			# line_1 = _('A discussion post has been added to: %s.') % self.group.name
-			# author= self.author.get_full_name()
-			# content = '%s\n%s' % (self.title, self.summary)
-			# url = '%s%s' % ( settings.APP_BASE[:-1], self.get_absolute_url())
-
-		# print author, content
-		# print url
-
-		# t=string.Template(settings.EMAIL_REVIEW_CONTENT_TEMPLATE)
-		# item_ref = '%s_%s' % (self.id, item_id)
-		# content = t.safe_substitute(
-		#	  line_1= "The %s template has been updated.\n%s\n" % (self.name, self._used_in()),
-		#	  line_2= "Data item '%s' has a new review comment." % item.attrib["label"],
-		#	  author= author, 
-		#	  review_date= datetime.datetime.now().strftime("%d/%m/%Y, %H.%M"), comment= comment_text,
-		#	  url= '%stemplates/%i/%s/#%s' % ( settings.APP_BASE, self.id, item_ref, item_ref),
-		#	  )
-
 					
 		content = render_to_string('email_template_comment_content.txt', {
-			'line_1': "The %s template has a new review comment.\n%s\n" % (self.name, self._used_in()),
+			'line_1': "The %s template has a new review comment.\n%s" % (self.name, self._used_in()),
 			'line_2': '',
 			'author': author, 
 			'review_date':  review_date, #self.publish.strftime("%d/%m/%Y, %H.%M"),
@@ -215,24 +206,17 @@ class ClinTemplate(models.Model):
 			comment.text = comment_text
 			self.get_comments(item).append(comment)
 			self.xmlmodel = ET.tostring(root).replace('ns0:', '')
-			#<review_comment author="derek" review_date="20060410T2130"> bollocks. </review_comment>
-			
-			# t=string.Template(settings.EMAIL_REVIEW_CONTENT_TEMPLATE)
-			# item_ref = '%s_%s' % (self.id, item_id)
-			# content = t.safe_substitute(
-			#	  line_1= "The %s template has been updated.\n%s\n" % (self.name, self._used_in()),
-			#	  line_2= "Data item '%s' has a new review comment." % item.attrib["label"],
-			#	  author= author, 
-			#	  review_date= datetime.datetime.now().strftime("%d/%m/%Y, %H.%M"), comment= comment_text,
-			#	  url= '%stemplates/%i/%s/#%s' % ( settings.APP_BASE, self.id, item_ref, item_ref),
-			#	  )
-			# self._email_notify(content)
 			self.save()
 
 			enabled, content = self.get_notify_content(comment=comment_id)
-			print content
-			# email_notify(self.group, content, 'resource')
-			# add_notify_event(obj, 'notify_comment', 'resource', item_id)
+			# print content
+			# if hasattr(group, 'multiple_groups'):
+			# 	all_groups = group.multiple_groups
+			# else:
+			# 	all_groups = [group]
+			
+			email_notify(self.multi_groups, content, 'resource')
+			add_notify_event(self, 'notify_comment', 'resource', comment_id)
 			
 			return comment_id
 
