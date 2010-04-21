@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n markup ct_tags ct_groups_tags eltree sitevars utils %}
+{% load i18n markup tagging_tags ct_tags ct_groups_tags eltree sitevars utils %}
 
 {% block title %}{{ clin_template.name }}{% endblock %}
 {% block head_extra %}
@@ -86,14 +86,17 @@ $(function(){
                 {% endfor %}
             </td></tr>
         {% endif %}
-        {% if clin_template.tags.all %}
+        {% tags_for_object clin_template as tag_list %}
+        {% if tag_list %}
             <tr><th width="20%">{% trans 'Topics' %}:</th>
                 <td width="60%">
-                {% for tag in clin_template.tags.all %}
-                    <a href="{% site_base %}tags/{{ tag.id }}/">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+                {% for tag in tag_list %}
+                    <a href="{% url tag tag.name %}">{% trans tag.name %}</a>{% if not forloop.last %},{% endif %}
                 {% endfor %}
             </td></tr>
         {% endif %}
+
+
     </table>
 </div>
 
