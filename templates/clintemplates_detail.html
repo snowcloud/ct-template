@@ -3,52 +3,44 @@
 
 {% block title %}{{ clin_template.name }}{% endblock %}
 {% block head_extra %}
+<script type='text/javascript' src='/media/js/jquery-1.4.2.min.js'></script>
+<script type="text/javascript">
 
-<script type='text/javascript' src='{% site_base %}media/js/dojo/dojo/dojo.js'></script>
-  <script type="text/javascript">
-    dojo.require("dojo.fx");
-    dojo.require("dojo.NodeList-fx");
-    function togglecomments(el) {
-        // var divname = 'h_' + el;
-        var div = dojo.byId('h_' + el);
-        var a = document.getElementById('l_' + el);
-        if (div.style['display'] == 'none') {
-            dojo.fx.wipeIn({node: div, duration: 300}).play();
-            dojo.byId(a).innerHTML = 'hide';
-        } else {
-            dojo.fx.wipeOut({ node: div, duration: 300}).play();
-            dojo.byId(a).innerHTML = 'show';
-        }
-    }
-    function toggleallcomments() {
-        var div = dojo.byId("toggleallcomments");
-        var show = div.innerHTML.indexOf("show") > -1;
-        if (show) { div.innerHTML= "hide all comments" }
-        else { div.innerHTML= "show all comments" }
-        
-        if (show) {
-            dojo.query(".ct_comments_hide_show")
-                .wipeIn().play();
-            t = 'hide'   
-        } else {
-            dojo.query(".ct_comments_hide_show")
-                .wipeOut().play();
-            t = 'show'
-        }
-        dojo.query(".ct_comments_hide_show").innerHTML= t
-        // comment_toggles=dojo.html.getElementsByClass("toggle_comment");
-        // if (show) { t = "hide" }
-        // else  {  t = "show"  }
-        // for (var i=0; i<comment_toggles.length; i++) {
-        //     dojo.dom.textContent(comment_toggles[i], t);
-        // }
+function togglecomments(el) {
+    // var divname = 'h_' + el;
 
+	var div = $("#h_" + el)
+	var a = $("#l_" + el)
+	if (div.css('display')=='none') {
+		a.text('hide')
+	} else {
+		a.text('show')
+	}
+	div.toggle(300);
+}
+
+function toggleallcomments() {
+    var div = $("#toggleallcomments");
+    var show = div.text().indexOf("show") > -1;
+    if (show) { div.text("hide all comments") }
+    else { div.text("show all comments") }
+    
+    if (show) {
+        $(".ct_comments_hide_show").show(300)
+        t = 'hide'   
+    } else {
+        $(".ct_comments_hide_show").hide(300)
+        t = 'show'
     }
-    dojo.addOnLoad(function(){
-        {% if comment_id  %}
-            togglecomments('{{comment_id}}');
-        {% endif %}})
-  </script>
+    $(".toggle_comment").text(t)
+}
+
+$(function(){
+    {% if comment_id  %}
+        togglecomments('{{comment_id}}');
+    {% endif %}})
+
+</script>
 {% endblock %}
 
 {% block breadcrumbs %}

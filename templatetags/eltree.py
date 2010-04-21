@@ -74,12 +74,12 @@ def included_template(value):
     return _get_template(elattrib(value, 'include'))
 
 @register.filter
-def included_template_items(value):
+def included_template_items(value, nsp):
     clin_template = included_template(value)
     if clin_template is None:
         return None
     else:
-        return items(clin_template.xmlroot)
+        return items(clin_template.xmlroot, nsp)
 
 def _get_shared_values(share_id, template):
     vs = None

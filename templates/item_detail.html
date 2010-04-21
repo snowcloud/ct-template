@@ -60,7 +60,7 @@
             </div>
         </div>
         {% if elem|includes_template %}
-            {% for elem_incl in elem|included_template_items %}
+            {% for elem_incl in elem|included_template_items:template.xmlns %}
                 {% item_display elem_incl top_template_id elem child_level asData user %}
             {% endfor%}
         {% endif %}
