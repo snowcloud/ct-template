@@ -164,19 +164,19 @@ $(function(){
   	{% if clin_template.accept_comments %}
     <li><a href="javascript:toggleallcomments()" id="toggleallcomments">{% trans "Show all comments"%}</a></li>
     {% endif %}
-        {% ifequal asData '1' %}
-            <li><a href="/templates/{{ clin_template.id }}/?asData=0">{% trans "See template form"%}</a></li>
+        {% ifequal tView '1' %}
+            <li><a href="/templates/{{ clin_template.id }}/?tView=0">{% trans "See template form"%}</a></li>
         {% else %}
-            <li><a href="/templates/{{ clin_template.id }}/?asData=1">{% trans "See template data"%}</a></li>
+            <li><a href="/templates/{{ clin_template.id }}/?tView=1">{% trans "See template data"%}</a></li>
         {% endifequal %}
     </ul>
 
-{% ifequal asData '1' %}<form action="">{% endifequal %}
+{% ifequal tView '1' %}<form action="">{% endifequal %}
 
 {% for elem in clin_template.xmlroot|items:clin_template.xmlns %}
-    {% item_display elem clin_template.id clin_template 0 asData user %}
+    {% item_display elem clin_template.id clin_template 0 tView user %}
 {% endfor%}
 
-{% ifequal asData '1' %}</form>{% endifequal %}
+{% ifequal tView '1' %}</form>{% endifequal %}
 
 {% endblock %}

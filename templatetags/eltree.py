@@ -119,7 +119,7 @@ def item_editor(item):
     }
 
 @register.inclusion_tag('item_detail.html')
-def item_display(item, top_template_id, template, level=0, asData=None, user=None):
+def item_display(item, top_template_id, template, level=0, tView=None, user=None):
     if not isinstance (template, ClinTemplate):
         template = _get_template(elattrib(template, 'include'))
     return {
@@ -128,7 +128,7 @@ def item_display(item, top_template_id, template, level=0, asData=None, user=Non
         'template': template,
         'this_level': level,
         'child_level': level + 1,
-        'asData': asData,
+        'tView': tView,
         'user': user
     }
 

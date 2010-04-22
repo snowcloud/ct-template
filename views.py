@@ -19,16 +19,16 @@ def index(request):
 def detail(request, object_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
     check_permission(request.user, object.workgroup, 'resource', 'r')
-    asData = request.GET.get('asData', '0')
-    return render_to_response('clintemplates_detail.html', RequestContext( request, {'clin_template': object, 'asData': asData }))
+    tView = request.GET.get('tView', '0')
+    return render_to_response('clintemplates_detail.html', RequestContext( request, {'clin_template': object, 'tView': tView }))
 
 def showcomment(request, object_id, comment_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
     check_permission(request.user, object.workgroup, 'resource', 'r')
     check_permission(request.user, object.workgroup, 'comment', 'r')
-    asData = request.GET.get('asData', '0')
+    tView = request.GET.get('tView', '0')
     
-    return render_to_response('clintemplates_detail.html', RequestContext( request, {'clin_template': object, 'comment_id': comment_id, 'asData': asData}))
+    return render_to_response('clintemplates_detail.html', RequestContext( request, {'clin_template': object, 'comment_id': comment_id, 'tView': tView}))
 
 
 @login_required
@@ -37,14 +37,14 @@ def addcomment(request, object_id, comment_id):
     check_permission(request.user, object.workgroup, 'comment', 'w')
     
     if request.POST:
-        asData = request.POST.get('asData', '0')
+        tView = request.POST.get('tView', '0')
         top_template_id = request.POST.get('top', '')
         if top_template_id == '':
             template_id = object_id
         else:
             template_id = top_template_id
         abs_comment_id = '%s_%s' % (object_id, comment_id)
-        redirect_str = '%stemplates/%s/%s/?asData=%s#%s' % (settings.APP_BASE, template_id, abs_comment_id, asData, abs_comment_id)
+        redirect_str = '%stemplates/%s/%s/?tView=%s#%s' % (settings.APP_BASE, template_id, abs_comment_id, tView, abs_comment_id)
         if request.POST['result'] == 'Cancel':
             return HttpResponseRedirect(redirect_str)
         else:
@@ -59,7 +59,7 @@ def addcomment(request, object_id, comment_id):
     else:
         comment_text = ''
         error_message = ''
-        asData = request.GET.get('asData', '0')
+        tView = request.GET.get('tView', '0')
         top_template_id = request.GET.get('top', '')
     
     return render_to_response(
@@ -69,7 +69,7 @@ def addcomment(request, object_id, comment_id):
             'comment_id': comment_id,
             'error_message': error_message,
             'comment_text': comment_text,
-            'asData': asData,
+            'tView': tView,
             'top_template_id': top_template_id            
             }))
 
@@ -93,8 +93,8 @@ def addreview(request, object_id):
     check_permission(request.user, object.workgroup, 'comment', 'w')
 
     if request.method == 'POST':
-        asData = request.POST.get('asData', '0')
-        redirect_str = '%stemplates/%s/?asData=%s' % (settings.APP_BASE, object.id, asData)
+        tView = request.POST.get('tView', '0')
+        redirect_str = '%stemplates/%s/?tView=%s' % (settings.APP_BASE, object.id, tView)
         if request.POST['result'] == 'Cancel':
             return HttpResponseRedirect(redirect_str)
         else:
@@ -112,8 +112,8 @@ def addreview(request, object_id):
         form = ReviewForm()
         form.ignore_errors = True
         #form.errors().clear()
-        asData = request.GET.get('asData', '0')
+        tView = request.GET.get('tView', '0')
 
     response = render_to_response('clintemplates_add_review.html',  
-        RequestContext( request, { 'form': form, 'clin_template': object, 'asData': asData }) )
+        RequestContext( request, { 'form': form, 'clin_template': object, 'tView': tView }) )
     return response

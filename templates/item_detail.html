@@ -6,7 +6,7 @@
             <div class="ct_col_fixedtext" id="{{ template.id }}_{{ elem|elattrib:"id" }}">{{ elem|elattrib:"label" }}</div>
         {% else %}
             <div class="ct_col1" id="{{ template.id }}_{{ elem|elattrib:"id" }}">{{ elem|elattrib:"label"|capfirst }}
-                 {% ifnotequal asData '1' %}
+                 {% ifnotequal tView '1' %}
                     {% if elem|elattrib:"cardinality" %}<span class="small">(repeat:&nbsp;{{ elem|elattrib:"cardinality" }})</span>{% endif %}
                     {% if elem|included_template_name %}<span class="small">(included template: {{ elem|included_template_name }})</span>{% endif %}
                  {% endifnotequal %}</div>
@@ -14,7 +14,7 @@
         <div class="ct_col2">
             <div class="ct_info">
                 <span class="left">
-                    {% ifequal asData '1' %}
+                    {% ifequal tView '1' %}
                         {{ elem|elattrib:"valueType" }} {{ elem|included_template_name }} {{ elem|elattrib:"select" }} {{ elem|elattrib:"cardinality" }}
                     {% endifequal %}
                 &nbsp;</span>
@@ -29,7 +29,7 @@
                 {% else %}
                     {% if user.is_authenticated %}
                         {% if template.workgroup|can_comment:user %}
-                            <a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?asData={{ asData }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+                            <a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
                         {% endif %}
                     {% else %}
                         <a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">{% trans "Log in to add comment" %}</a>
@@ -39,7 +39,7 @@
                 {% endif %}
                 </span>
             </div>
-            {% ifequal asData '1' %}
+            {% ifequal tView '1' %}
                 {% for v in elem|values:template %}
                     <div class="{% cycle ct_value_even,ct_value_odd as rowcolors %}">{{ v.text }}
                         {% if v|elattrib:"score" %}<span class="small">[score= {{ v|elattrib:"score" }}]</span>{% endif %}</div>
@@ -55,7 +55,7 @@
                     <div class="ct_comment">
                         {{ v.text|escape|textile }}
                         {% if forloop.last %}
-                            <span class="right" style="background-color: #eeeeff;">&nbsp;&nbsp;<a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?asData={{ asData }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>&nbsp;<img src="{% site_base %}media/icons/comments.png"/>&nbsp;</span><br/>
+                            <span class="right" style="background-color: #eeeeff;">&nbsp;&nbsp;<a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>&nbsp;<img src="{% site_base %}media/icons/comments.png"/>&nbsp;</span><br/>
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -63,11 +63,11 @@
         </div>
         {% if elem|includes_template %}
             {% for elem_incl in elem|included_template_items:template.xmlns %}
-                {% item_display elem_incl top_template_id elem child_level asData user %}
+                {% item_display elem_incl top_template_id elem child_level tView user %}
             {% endfor%}
         {% endif %}
         {% for child in elem|items:template.xmlns %}
-            {% item_display child top_template_id template child_level asData user %}
+            {% item_display child top_template_id template child_level tView user %}
         {% endfor%}
     
     </div>
