@@ -6,7 +6,7 @@
 
 {% ifequal tView '2' %}
 	
-	<p>{{ clin_template.documentation.text }}</p>
+	<p>{{ clin_template.documentation.text|safe }}</p>
 	
 	
 {% else %}
