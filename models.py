@@ -39,6 +39,8 @@ class ClinTemplate(models.Model):
 	included_templates = models.ManyToManyField('self', symmetrical=False, related_name='in_templates', blank=True, null=True)
 	_xmlroot = None
 	_metadata = None
+	_model = None
+	_documentation = None
 	_complexity_score = 0
 
 	class Admin:
@@ -72,7 +74,7 @@ class ClinTemplate(models.Model):
 	group = property(get_workgroup)
 
 	def get_item(self, item_id, name='item'):
-		items = self.xmlroot.getiterator("%s%s" % (name, self.xmlns))
+		items = self.model.getiterator("%s%s" % (name, self.xmlns))
 		item = None
 		for i in items:
 			if i.get("id") == item_id:
@@ -91,7 +93,7 @@ class ClinTemplate(models.Model):
 		return self.metadata.get('label', 'no label set')
 	label = property(_label)
 
-	def get_metadata(self):
+	def _get_metadata(self):
 		if self._metadata:
 			return self._metadata
 		# {'gub': 'jings', 'frud': 'kludge'}
@@ -102,7 +104,21 @@ class ClinTemplate(models.Model):
 		result = [(r.tag, r.text) for r in items.getchildren() if not r.tag.startswith('_')]
 		self._metadata = SortedDict(result)
 		return self._metadata
-	metadata = property(get_metadata)
+	metadata = property(_get_metadata)
+
+	def _get_model(self):
+		if self._model:
+			return self._model
+		self._model = self.xmlroot.find("%smodel" % self.xmlns)
+		return self._model
+	model = property(_get_model)
+
+	def _get_documentation(self):
+		if self._documentation:
+			return self._documentation
+		self._documentation = self.xmlroot.find("%sdocumentation" % self.xmlns)
+		return self._documentation
+	documentation = property(_get_documentation)
 
 	def _xmlns(self):
 		"""reads xmlns attribute of root, returns as string if present, otherwise empty string"""
@@ -227,7 +243,7 @@ class ClinTemplate(models.Model):
 		item = self.get_item(item_id)
 
 	def save(self):
-		self._xmlroot = self._metadata = None
+		self._xmlroot = self._metadata = self._model = self._documentation = None
 		self._template_id = slugify(self.metadata.get('template_id', 'template id not set'))
 		super(ClinTemplate, self).save()
 
