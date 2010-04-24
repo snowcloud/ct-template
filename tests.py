@@ -119,44 +119,46 @@ ct_xml = """
 	        <status>draft</status>
 	        <source>results4care.nl</source>
 	    </metadata>
-	    <item id="i001" label="Total Glasgow Coma Scale Score" valueType="integer">
-	          <review_comments>
-	            <review_comment id="i001:c0" author="guest" author_type="anonymous" review_date="20061115T1259">Test comment 0
-	            </review_comment>
-	            <review_comment id="i001:c1" author="guest" author_type="anonymous" review_date="20061115T1402">Test comment 1
-	            </review_comment>
-	        </review_comments></item>
-	    <item id="i010" label="Eye opening" valueType="ordinal_list">
-	        <valueset>
-	            <value score="4">Spontaneous</value>
-	            <value score="3">To speech</value>
-	            <value score="2">To pain</value>
-	            <value score="1">No response</value>
-	            <value score="C">Not possible to determine</value>
-	        </valueset>
-	    </item>
-	    <item id="i020" label="Best verbal response" valueType="ordinal_list" widget="radioset">
-	        <valueset>
-	            <value score="6">To verbal command: obeys</value>
-	            <value score="5">To painful stimulus: localizes pain</value>
-	            <value score="4">Flexion-withdrawal</value>
-	            <value score="3">Flexion-abnormal</value>
-	            <value score="2">Extension</value>
-	            <value score="1">No response</value>
-	            <value score="P">Paralysis</value>
-	        </valueset>
-	    </item>
-	    <item id="i030" label="Best motor response" valueType="ordinal_list">
-	        <valueset>
-	            <value score="5">Oriented and converses</value>
-	            <value score="4">Disoriented and converses</value>
-	            <value score="3">Inappropriate words</value>
-	            <value score="2">Incomprehensible sounds</value>
-	            <value score="1">No response</value>
-	            <value score="T">Tube/Tracheotomy</value>
-	        </valueset>
-	    </item>
-		<item id="i040" label="Skin problems" valueType="include_template" include="infant-skin-problems"></item>
+		<model>
+		    <item id="i001" label="Total Glasgow Coma Scale Score" valueType="integer">
+		          <review_comments>
+		            <review_comment id="i001:c0" author="guest" author_type="anonymous" review_date="20061115T1259">Test comment 0
+		            </review_comment>
+		            <review_comment id="i001:c1" author="guest" author_type="anonymous" review_date="20061115T1402">Test comment 1
+		            </review_comment>
+		        </review_comments></item>
+		    <item id="i010" label="Eye opening" valueType="ordinal_list">
+		        <valueset>
+		            <value score="4">Spontaneous</value>
+		            <value score="3">To speech</value>
+		            <value score="2">To pain</value>
+		            <value score="1">No response</value>
+		            <value score="C">Not possible to determine</value>
+		        </valueset>
+		    </item>
+		    <item id="i020" label="Best verbal response" valueType="ordinal_list" widget="radioset">
+		        <valueset>
+		            <value score="6">To verbal command: obeys</value>
+		            <value score="5">To painful stimulus: localizes pain</value>
+		            <value score="4">Flexion-withdrawal</value>
+		            <value score="3">Flexion-abnormal</value>
+		            <value score="2">Extension</value>
+		            <value score="1">No response</value>
+		            <value score="P">Paralysis</value>
+		        </valueset>
+		    </item>
+		    <item id="i030" label="Best motor response" valueType="ordinal_list">
+		        <valueset>
+		            <value score="5">Oriented and converses</value>
+		            <value score="4">Disoriented and converses</value>
+		            <value score="3">Inappropriate words</value>
+		            <value score="2">Incomprehensible sounds</value>
+		            <value score="1">No response</value>
+		            <value score="T">Tube/Tracheotomy</value>
+		        </valueset>
+		    </item>
+			<item id="i040" label="Skin problems" valueType="include_template" include="infant-skin-problems"></item>
+		</model>
 	</clinicaltemplate>
 """
 incl_xml="""
@@ -169,17 +171,19 @@ incl_xml="""
 		    <status>draft</status>
 		    <source>NHS Tayside community systems</source>
 		</metadata>
-	    <item id="i001" label="Infant skin problems" select="multi_select" valueType="nominal_list">
-	        <valueset>
-	            <value>Dryness</value>
-	            <value>Rash</value>
-	            <value>Scabies</value>
-	            <value>Ringworm</value>
-	            <value>Thrush</value>
-	            <value>Impetigo</value>
-	        </valueset>
-	    <review_comments><review_comment author="guest" author_type="anonymous" review_date="20071016T1445">From a data standards viewpoint items such as this would cause problems as there are 2 concepts within the values, ie skin symptoms and skin diseases.
-	Rgds
-	Alison Wallis</review_comment></review_comments></item>
+		<model>
+		    <item id="i001" label="Infant skin problems" select="multi_select" valueType="nominal_list">
+		        <valueset>
+		            <value>Dryness</value>
+		            <value>Rash</value>
+		            <value>Scabies</value>
+		            <value>Ringworm</value>
+		            <value>Thrush</value>
+		            <value>Impetigo</value>
+		        </valueset>
+		    <review_comments><review_comment author="guest" author_type="anonymous" review_date="20071016T1445">From a data standards viewpoint items such as this would cause problems as there are 2 concepts within the values, ie skin symptoms and skin diseases.
+		Rgds
+		Alison Wallis</review_comment></review_comments></item>
+		</model>
 	</clinicaltemplate>
 """		
