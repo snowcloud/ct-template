@@ -170,7 +170,7 @@ $(document).ready(function() {
         <li><a href="{% url template-detail clin_template.id %}?tView=0"><span>{% trans "View as form"%}</span></a></li>
         <li><a href="{% url template-detail clin_template.id %}?tView=1"><span>{% trans "View as data"%}</span></a></li>
 		
-		{% if clin_template.documentation.text %}
+		{% if clin_template.documentation %}
 	        <li><a href="{% url template-detail clin_template.id %}?tView=2"><span>{% trans 'Documentation' %}</span></a></li>
 		{% endif %}
     </ul>

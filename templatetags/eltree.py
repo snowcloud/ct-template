@@ -1,4 +1,7 @@
 from django import template
+from django.contrib.markup.templatetags.markup import textile
+from django.template.defaultfilters import safe
+from django.utils.safestring import mark_safe
 from xml.etree import ElementTree as Elem
 import time
 import datetime
@@ -41,6 +44,16 @@ def items(value, nsp):
 	v = value.findall(ns("item", nsp))
 	if v is None: return ""
 	else: return v
+
+@register.filter
+def doc_content(value):
+	"""docstring for markup"""
+	content = value.get('content', '')
+	m = value.get('markup', None)
+	if m == 'textile':
+		return textile(content)
+	else:
+		return mark_safe(content)
 
 @register.filter
 def fixedtext(value):

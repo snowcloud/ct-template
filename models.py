@@ -116,7 +116,9 @@ class ClinTemplate(models.Model):
 	def _get_documentation(self):
 		if self._documentation:
 			return self._documentation
-		self._documentation = self.xmlroot.find("%sdocumentation" % self.xmlns)
+		docs = self.xmlroot.find("%sdocumentation" % self.xmlns)
+		if docs:
+			self._documentation = [{'content': sec.text, 'markup': sec.get('markup', '') }  for sec in docs.getchildren()]
 		return self._documentation
 	documentation = property(_get_documentation)
 
