@@ -111,7 +111,7 @@ class ClinTemplate(models.Model):
 			return self._model
 		self._model = self.xmlroot.find("%smodel" % self.xmlns)
 		return self._model
-	model = property(_get_model)
+	inf_model = property(_get_model)
 
 	def _get_documentation(self):
 		if self._documentation:

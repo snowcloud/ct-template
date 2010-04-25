@@ -14,7 +14,7 @@
 {% else %}
 	{% ifequal tView '1' %}<form action="">{% endifequal %}
 
-	{% for elem in clin_template.model|items:clin_template.xmlns %}
+	{% for elem in clin_template.inf_model|items:clin_template.xmlns %}
 	    {% item_display elem clin_template.id clin_template 0 tView user %}
 	{% endfor%}
 
