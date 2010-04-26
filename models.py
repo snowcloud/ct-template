@@ -36,10 +36,12 @@ class ClinTemplate(models.Model):
 	is_public = models.BooleanField(blank=False, default=1)
 	accept_comments = models.BooleanField(blank=False, default=1)
 	accept_reviews = models.BooleanField(blank=False, default=1)
+	enable_editing = models.BooleanField(blank=False, default=0)
+	enable_voting = models.BooleanField(blank=False, default=0)
 	included_templates = models.ManyToManyField('self', symmetrical=False, related_name='in_templates', blank=True, null=True)
 	_xmlroot = None
 	_metadata = None
-	_model = None
+	_inf_model = None
 	_documentation = None
 	_complexity_score = 0
 
@@ -74,7 +76,7 @@ class ClinTemplate(models.Model):
 	group = property(get_workgroup)
 
 	def get_item(self, item_id, name='item'):
-		items = self.model.getiterator("%s%s" % (name, self.xmlns))
+		items = self.inf_model.getiterator("%s%s" % (name, self.xmlns))
 		item = None
 		for i in items:
 			if i.get("id") == item_id:
@@ -107,10 +109,10 @@ class ClinTemplate(models.Model):
 	metadata = property(_get_metadata)
 
 	def _get_model(self):
-		if self._model:
-			return self._model
-		self._model = self.xmlroot.find("%smodel" % self.xmlns)
-		return self._model
+		if self._inf_model:
+			return self._inf_model
+		self._inf_model = self.xmlroot.find("%smodel" % self.xmlns)
+		return self._inf_model
 	inf_model = property(_get_model)
 
 	def _get_documentation(self):
@@ -245,7 +247,7 @@ class ClinTemplate(models.Model):
 		item = self.get_item(item_id)
 
 	def save(self):
-		self._xmlroot = self._metadata = self._model = self._documentation = None
+		self._xmlroot = self._metadata = self._inf_model = self._documentation = None
 		self._template_id = slugify(self.metadata.get('template_id', 'template id not set'))
 		super(ClinTemplate, self).save()
 
