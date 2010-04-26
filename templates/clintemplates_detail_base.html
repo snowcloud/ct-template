@@ -15,7 +15,7 @@ function togglecomments(el) {
 
 	var div = $("#h_" + el)
 	var a = $("#l_" + el)
-	if (div.css('display')=='{% trans 'none' %}') {
+	if (div.css('display')=='none') {
 		a.text('{% trans 'Hide comments' %}')
 	} else {
 		a.text('{% trans 'Show comments' %}')
@@ -40,9 +40,13 @@ function toggleallcomments() {
 }
 
 $(document).ready(function() {
-	{% if comment_id  %}togglecomments('{{comment_id}}');{% endif %}
-	$("#ct-tabs").tabs();
 	$("#ct-tabs").show();
+	$("#ct-tabs").tabs({
+		cache: true,
+		load: function(event, ui) {
+			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
+	    } 
+	});
 	$("#ct-tabs-alt").hide();
 });
 
