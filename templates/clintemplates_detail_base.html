@@ -16,25 +16,25 @@ function togglecomments(el) {
 	var div = $("#h_" + el)
 	var a = $("#l_" + el)
 	if (div.css('display')=='{% trans 'none' %}') {
-		a.text('{% trans 'Hide' %}')
+		a.text('{% trans 'Hide comments' %}')
 	} else {
-		a.text('{% trans 'Show' %}')
+		a.text('{% trans 'Show comments' %}')
 	}
-	div.toggle(300);
+	div.slideToggle(300);
 }
 
 function toggleallcomments() {
     var div = $("#toggleallcomments");
-    var show = div.text().indexOf("{% trans "Show" %}") > -1;
+    var show = div.text().indexOf("{% trans "Show all comments" %}") > -1;
     if (show) { div.text("{% trans 'Hide all comments' %}") }
     else { div.text("{% trans 'Show all comments' %}") }
     
     if (show) {
         $(".ct_comments_hide_show").show(300)
-        t = '{% trans 'Hide' %}'   
+        t = '{% trans 'Hide comments' %}'   
     } else {
         $(".ct_comments_hide_show").hide(300)
-        t = '{% trans 'Show' %}'
+        t = '{% trans 'Show comments' %}'
     }
     $(".toggle_comment").text(t)
 }

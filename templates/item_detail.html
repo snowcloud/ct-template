@@ -22,8 +22,8 @@
                 {% if template.accept_comments %}
 
                 {% if elem|review_comments:template.xmlns %}
-                  <a href="javascript:togglecomments('{{ template.id }}_{{ elem|elattrib:"id" }}')" class="toggle_comment" id="l_{{ template.id }}_{{ elem|elattrib:"id" }}">{% trans 'Show' %}</a>
-					{%blocktrans count elem|review_comments:template.xmlns|length as counter%}{{ counter }} comment{%plural%}{{ counter }} comments{%endblocktrans%}<img src="{% site_base %}media/icons/comments.png"/>
+                  <a href="javascript:togglecomments('{{ template.id }}_{{ elem|elattrib:"id" }}')" class="toggle_comment" id="l_{{ template.id }}_{{ elem|elattrib:"id" }}">{% trans 'Show comments' %}</a> <span class="ct_count_bubble">{{ elem|review_comments:template.xmlns|length }}</span>
+					{# {%blocktrans count elem|review_comments:template.xmlns|length as counter%}{{ counter }} comment{%plural%}{{ counter }} comments{%endblocktrans%}<img src="{% site_base %}media/icons/comments.png"/> #}
 	{# {% trans "Show" %}</a> #}
 	{#                   {{ elem|review_comments:template.xmlns|length }} comment{{ elem|review_comments:template.xmlns|length|pluralize }} <img src="{% site_base %}media/icons/comments.png"/> #}
                 {% else %}
