@@ -35,7 +35,7 @@ def showcomment(request, object_id, comment_id):
 	check_permission(request.user, object.workgroup, 'comment', 'r')
 	tView = request.GET.get('tView', '0')
 	
-	return render_to_response('clintemplates_detail.html', RequestContext( request, {'clin_template': object, 'comment_id': comment_id, 'tView': tView}))
+	return render_to_response('clintemplates_detail.html', RequestContext( request, {'base_template': "clintemplates_detail_base.html", 'clin_template': object, 'comment_id': comment_id, 'tView': tView}))
 
 
 @login_required
