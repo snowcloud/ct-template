@@ -1,6 +1,6 @@
 {% extends base_template %}
 
-{% load eltree %}
+{% load i18n eltree %}
 
 {% block template_detail %}
 
@@ -12,6 +12,11 @@
 	
 	
 {% else %}
+	<div class="ct_info">
+		<span class="left">&nbsp;</span>
+		<span class="right"><a href="javascript:toggleallcomments()" id="toggleallcomments">{% trans "Show all comments"%}</a>
+	</span></div>
+	
 	{% ifequal tView '1' %}<form action="">{% endifequal %}
 
 	{% for elem in clin_template.inf_model|items:clin_template.xmlns %}
