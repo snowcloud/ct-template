@@ -13,7 +13,7 @@
 
 function togglecomments(el) {
     // var divname = 'h_' + el;
-
+	//alert(el)
 	var div = $("#h_" + el)
 	var a = $("#l_" + el)
 	if (div.css('display')=='none') {
@@ -24,21 +24,7 @@ function togglecomments(el) {
 	div.slideToggle(300);
 }
 
-function toggleallcomments() {
-    var div = $("#toggleallcomments");
-    var show = div.text().indexOf("{% trans "Show all comments" %}") > -1;
-    if (show) { div.text("{% trans 'Hide all comments' %}") }
-    else { div.text("{% trans 'Show all comments' %}") }
-    
-    if (show) {
-        $(".ct_comments_hide_show").show(300)
-        t = '{% trans 'Hide comments' %}'   
-    } else {
-        $(".ct_comments_hide_show").hide(300)
-        t = '{% trans 'Show comments' %}'
-    }
-    $(".toggle_comment").text(t)
-}
+// needs 
 
 $(document).ready(function() {
 	$("#ct-tabs").show();
@@ -46,9 +32,43 @@ $(document).ready(function() {
 		cache: true,
 		load: function(event, ui) {
 			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
+			$('.toggleallcomments').click(function(event){
+			    var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1;
+			    if (show) { $(this).text("{% trans 'Hide all comments' %}"); }
+			    else { $(this).text("{% trans 'Show all comments' %}"); }
+
+			    if (show) {
+			        $(".ct_comments_hide_show").show(300);
+			        t = '{% trans 'Hide comments' %}'   ;
+			    } else {
+			        $(".ct_comments_hide_show").hide(300);
+			        t = '{% trans 'Show comments' %}';
+			    }
+			    $(".toggle_comment").text(t);
+				return false;
+		   });
 	    } 
 	});
 	$("#ct-tabs-alt").hide();
+   
+	{# $(".toggleallcomments").click(function() { #}
+	{# 		alert($(this)); #}
+	{# 	    var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1; #}
+	{# 	    if (show) { $(this).text("{% trans 'Hide all comments' %}") } #}
+	{# 	    else { $(this).text("{% trans 'Show all comments' %}") } #}
+	{#      #}
+	{# 	    if (show) { #}
+	{# 	        $(".ct_comments_hide_show").show(300) #}
+	{# 	        t = '{% trans 'Hide comments' %}'    #}
+	{# 	    } else { #}
+	{# 	        $(".ct_comments_hide_show").hide(300) #}
+	{# 	        t = '{% trans 'Show comments' %}' #}
+	{# 	    } #}
+	{# 	    $(".toggle_comment").text(t) #}
+	{# 		return false; #}
+	{# 	} #}
+	{#  #}
+	{# ) #}
 });
 
 </script>
@@ -183,7 +203,7 @@ $(document).ready(function() {
 <div id="ct-tabs-alt">
   <ul class="subnav">
   	{% if clin_template.accept_comments %}
-    <li><a href="javascript:toggleallcomments()" id="toggleallcomments">{% trans "Show all comments"%}</a></li>
+    <li><a href="" class="toggleallcomments">{% trans "Show all comments"%}</a></li>
     {% endif %}
     <li><a href="/templates/{{ clin_template.id }}/?tView=0">{% trans "See template form"%}</a></li>
     <li><a href="/templates/{{ clin_template.id }}/?tView=1">{% trans "See template data"%}</a></li>

@@ -76,7 +76,7 @@ class ClinTemplate(models.Model):
 	group = property(get_workgroup)
 
 	def get_item(self, item_id, name='item'):
-		items = self.inf_model.getiterator("%s%s" % (name, self.xmlns))
+		items = self.xmlroot.getiterator("%s%s" % (name, self.xmlns))
 		item = None
 		for i in items:
 			if i.get("id") == item_id:
@@ -120,7 +120,8 @@ class ClinTemplate(models.Model):
 			return self._documentation
 		docs = self.xmlroot.find("%sdocumentation" % self.xmlns)
 		if docs:
-			self._documentation = [{'content': sec.text, 'markup': sec.get('markup', '') }  for sec in docs.getchildren()]
+			# self._documentation = [{'content': sec.text, 'markup': sec.get('markup', ''), 'elem': sec }  for sec in docs.getchildren()]
+			self._documentation = docs.getchildren()
 		return self._documentation
 	documentation = property(_get_documentation)
 
@@ -206,6 +207,7 @@ class ClinTemplate(models.Model):
 			return comment_id
 		root = self.xmlroot
 		item = self.get_item(item_id)
+		print item
 		if item != None:
 			comment = ET.Element("review_comment")
 			# user = utils.get_current_user()

@@ -48,7 +48,7 @@ def items(value, nsp):
 @register.filter
 def doc_content(value):
 	"""docstring for markup"""
-	content = value.get('content', '')
+	content = value.text
 	m = value.get('markup', None)
 	if m == 'textile':
 		return textile(content)
