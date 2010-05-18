@@ -97,7 +97,7 @@ def included_template_items(value, nsp):
 
 def _get_shared_values(share_id, template):
 	vs = None
-	for e in template.xmlroot.findall(ns('shared_valueset', template.xmlns)):
+	for e in template.inf_model.findall(ns('shared_valueset', template.xmlns)):
 		if e.attrib['id'] == share_id:
 			vs = e
 			break
