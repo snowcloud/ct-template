@@ -88,7 +88,17 @@ $(document).ready(function() {
 
 <h1>{{ clin_template.name }}</h1>
 
-  {# {{ clin_template.note|default_if_none:""|textile }} #}
+  {{ clin_template.note|default_if_none:""|textile }}
+  {% tags_for_object clin_template as tag_list %}
+
+
+  {% if tag_list %}
+      <p>{% trans 'Topics' %}:
+          {% for tag in tag_list %}
+              <a href="{% url tag tag.name %}">{% trans tag.name %}</a>{% if not forloop.last %},{% endif %}
+          {% endfor %}</p>
+  {% endif %}
+
 
 {% comment %}
 {% if user.is_staff %}
@@ -96,40 +106,40 @@ $(document).ready(function() {
 {% endif %}
 {% endcomment %}  
 
-<div id="ct_metadata">
-    <table width="90%">
-        {% for item in clin_template.metadata.items %}
-            <tr><th width="20%">{% trans item.0 %}:</th><td width="60%">{{ item.1|default_if_none:""|textile }}</td></tr>
-        {% endfor %}
-        {% if clin_template.included_templates.all %}
-            <tr><th width="20%">{% trans 'Includes' %}:</th>
-                <td width="60%">
-                {% for t in clin_template.included_templates.all %}
-                    <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            </td></tr>
-        {% endif %}
-        {% if clin_template.in_templates.all %}
-            <tr><th width="20%">{% trans 'Used in' %}:</th>
-                <td width="60%">
-                {% for t in clin_template.in_templates.all %}
-                    <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            </td></tr>
-        {% endif %}
-        {% tags_for_object clin_template as tag_list %}
-        {% if tag_list %}
-            <tr><th width="20%">{% trans 'Topics' %}:</th>
-                <td width="60%">
-                {% for tag in tag_list %}
-                    <a href="{% url tag tag.name %}">{% trans tag.name %}</a>{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            </td></tr>
-        {% endif %}
-
-
-    </table>
-</div>
+{# <div id="ct_metadata"> #}
+{#     <table width="90%"> #}
+{#         {% for item in clin_template.metadata.items %} #}
+{#             <tr><th width="20%">{% trans item.0 %}:</th><td width="60%">{{ item.1|default_if_none:""|textile }}</td></tr> #}
+{#         {% endfor %} #}
+{#         {% if clin_template.included_templates.all %} #}
+{#             <tr><th width="20%">{% trans 'Includes' %}:</th> #}
+{#                 <td width="60%"> #}
+{#                 {% for t in clin_template.included_templates.all %} #}
+{#                     <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %} #}
+{#                 {% endfor %} #}
+{#             </td></tr> #}
+{#         {% endif %} #}
+{#         {% if clin_template.in_templates.all %} #}
+{#             <tr><th width="20%">{% trans 'Used in' %}:</th> #}
+{#                 <td width="60%"> #}
+{#                 {% for t in clin_template.in_templates.all %} #}
+{#                     <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %} #}
+{#                 {% endfor %} #}
+{#             </td></tr> #}
+{#         {% endif %} #}
+{#         {% tags_for_object clin_template as tag_list %} #}
+{#         {% if tag_list %} #}
+{#             <tr><th width="20%">{% trans 'Topics' %}:</th> #}
+{#                 <td width="60%"> #}
+{#                 {% for tag in tag_list %} #}
+{#                     <a href="{% url tag tag.name %}">{% trans tag.name %}</a>{% if not forloop.last %},{% endif %} #}
+{#                 {% endfor %} #}
+{#             </td></tr> #}
+{#         {% endif %} #}
+{#  #}
+{#  #}
+{#     </table> #}
+{# </div> #}
 
 <br/>
 

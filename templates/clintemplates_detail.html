@@ -57,16 +57,24 @@
 	{% endfor %}
 	{% endwith %}
 	
-	
 {% else %}
-	
-	{% ifequal tView '1' %}<form action="">{% endifequal %}
+	{% ifequal tView '3'  %} 	{# metadata view #}
 
-	{% for elem in clin_template.inf_model|items:clin_template.xmlns %}
-	    {% item_display elem clin_template.id clin_template 0 tView user %}
-	{% endfor%}
+		<table width="90%">
+	        {% for item in clin_template.metadata.items %}
+	            <tr><th width="20%">{% trans item.0 %}:</th><td width="60%">{{ item.1|default_if_none:""|textile }}</td></tr>
+	        {% endfor %}
+    	</table>
+		
+	{% else %} 	{# form or data view #}
+		{% ifequal tView '1' %}<form action="">{% endifequal %}
 
-	{% ifequal tView '1' %}</form>{% endifequal %}
+		{% for elem in clin_template.inf_model|items:clin_template.xmlns %}
+		    {% item_display elem clin_template.id clin_template 0 tView user %}
+		{% endfor%}
+
+		{% ifequal tView '1' %}</form>{% endifequal %}
+	{% endifequal %}
 	
 {% endifequal %}
 
