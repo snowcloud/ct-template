@@ -86,7 +86,10 @@ class CTTemplateTest(TestCase):
 		template1.add_comment("i001", "a big fat comment", user)
 		template1.add_comment("i001", "another big fat comment ", user)
 		# print template.get_comment(c)
-		
+		self.assertEquals(template2.label, 'Glasgow Coma Scale')
+		self.assertEquals(template2.metadata.get('template_id', 'no label set'), 'glasgow-coma-scale')
+		print template2.metadata['template_id']
+
 		self.assertEquals(len(mail.outbox), 2)
 		self.assertEquals(mail.outbox[0].subject, '[example.com] Test group two update')
 		self.assertEquals(len(mail.outbox[0].bcc), 1)
@@ -112,12 +115,12 @@ class CTTemplateTest(TestCase):
 ct_xml = """
 	<clinicaltemplate>
 	    <metadata>
-	        <note>Observation: Level of consciousness by using the the Glasgow Coma Scale.</note>
-	        <template_id>glasgow-coma-scale</template_id>
-	        <label>Glasgow Coma Scale</label>
-	        <version>061</version>
-	        <status>draft</status>
-	        <source>results4care.nl</source>
+	        <item id="m010" label="note">Observation: Level of consciousness by using the the Glasgow Coma Scale.</item>
+	        <item id="m020" label="template_id">glasgow-coma-scale</item>
+	        <item id="m030" label="label">Glasgow Coma Scale</item>
+	        <item id="m040" label="version">061</item>
+	        <item id="m050" label="status">draft</item>
+	        <item id="m060" label="source">results4care.nl</item>
 	    </metadata>
 		<model>
 		    <item id="i001" label="Total Glasgow Coma Scale Score" valueType="integer">
@@ -164,12 +167,12 @@ ct_xml = """
 incl_xml="""
 	<clinicaltemplate>
 		<metadata>
-		    <note>This is a simple summary which will normally be used as part of a larger template.</note>
-		    <template_id>infant-skin-problems</template_id>
-		    <label>Infant skin problems</label>
-		    <version>0.1</version>
-		    <status>draft</status>
-		    <source>NHS Tayside community systems</source>
+	        <item id="m010" label="note">This is a simple summary which will normally be used as part of a larger template.</item>
+	        <item id="m020" label="template_id">infant-skin-problems</item>
+	        <item id="m030" label="label">Infant skin problems</item>
+	        <item id="m040" label="version">0.1</item>
+	        <item id="m050" label="status">draft</item>
+	        <item id="m060" label="source">NHS Tayside community systems</item>
 		</metadata>
 		<model>
 		    <item id="i001" label="Infant skin problems" select="multi_select" valueType="nominal_list">

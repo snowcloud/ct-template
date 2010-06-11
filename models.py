@@ -101,10 +101,9 @@ class ClinTemplate(models.Model):
 		# {'gub': 'jings', 'frud': 'kludge'}
 		self._metadata = SortedDict()
 		items = self.xmlroot.find("%smetadata" % self.xmlns)
-		if items is None:
-			return {}
-		result = [(r.tag, r.text) for r in items.getchildren() if not r.tag.startswith('_')]
-		self._metadata = SortedDict(result)
+		if items:
+			result = [(r.get('label'), r.text) for r in items.getchildren()]
+			self._metadata = SortedDict(result)
 		return self._metadata
 	metadata = property(_get_metadata)
 

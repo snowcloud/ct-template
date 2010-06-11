@@ -197,6 +197,7 @@ $(document).ready(function() {
 		{% if clin_template.documentation %}
 	        <li><a href="{% url template-detail clin_template.id %}?tView=2"><span>{% trans 'Documentation' %}</span></a></li>
 		{% endif %}
+        <li><a href="{% url template-detail clin_template.id %}?tView=3"><span>{% trans "Metadata"%}</span></a></li>
     </ul>
 </div>
 
@@ -208,6 +209,7 @@ $(document).ready(function() {
     <li><a href="/templates/{{ clin_template.id }}/?tView=0">{% trans "See template form"%}</a></li>
     <li><a href="/templates/{{ clin_template.id }}/?tView=1">{% trans "See template data"%}</a></li>
     <li><a href="/templates/{{ clin_template.id }}/?tView=2">{% trans "Documentation"%}</a></li>
+    <li><a href="/templates/{{ clin_template.id }}/?tView=3">{% trans "Metadata"%}</a></li>
   </ul>
 
 {% block template_detail %}{% endblock template_detail %}
