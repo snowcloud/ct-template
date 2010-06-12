@@ -74,10 +74,12 @@
 	{# </table> #}
     {% for item in template.metadata.items %}
         <h2>{% trans item.0 %}:</h2>
-		<p>{{ item.1|default_if_none:""|textile }}</p>
+		<p>{{ item.1.text|default_if_none:""|textile }}</p>
 		
 		{#  TODO: NEED TO USE ELEMENTS IN DICT, NOT STRINGS #}
-		{# {% include "item_comments_link.html" %} #}
+		{% with item.1 as elem %}
+		{% include "item_comments_link.html" %}
+		{% endwith %}
 		
     {% endfor %}
 

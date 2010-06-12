@@ -49,6 +49,7 @@ $(document).ready(function() {
 		   });
 	    } 
 	});
+	{% if tView %}$("#ct-tabs").tabs('select', {{tView}});{% endif %}
 	$("#ct-tabs-alt").hide();
    
 	{# $(".toggleallcomments").click(function() { #}
