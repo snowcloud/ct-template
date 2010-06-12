@@ -1,0 +1,37 @@
+{% load i18n sitevars utils markup eltree ct_groups_tags %}
+
+<div class="ct_col2">
+	            <div class="ct_info group">
+	                <span class="left">
+	                &nbsp;</span>
+	                <span class="right">
+	                {% if template.accept_comments %}
+            {% if elem|review_comments:template.xmlns %}
+              <a href="javascript:togglecomments('{{ template.id }}_{{ elem|elattrib:"id" }}')" class="toggle_comment" id="l_{{ template.id }}_{{ elem|elattrib:"id" }}">{% trans 'Show comments' %}</a> <span class="ct_count_bubble">{{ elem|review_comments:template.xmlns|length }}</span>
+            {% else %}
+                {% if user.is_authenticated %}
+                    {% if template.workgroup|can_comment:user %}
+                        <a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">{% trans "Log in to add comment" %}</a>
+                {% endif %}
+
+            {% endif %}
+	                {% endif %}
+	                </span>
+	            </div>
+	            <div class="ct_comments_hide_show" id="h_{{ template.id }}_{{ elem|elattrib:"id" }}" style="display: none;">
+	                {% for v in elem|review_comments:template.xmlns %}
+	                    <div class="ct_comment_info">
+	                        {{ v|elattrib:"author" }} - {{ v|elattrib:"review_date"|date:"j F Y, H:i" }}
+	                    </div>
+	                    <div class="ct_comment">
+	                        {{ v.text|escape|textile }}
+	                        {% if forloop.last %}
+	                            <span class="right" style="background-color: #eeeeff;">&nbsp;&nbsp;<a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>&nbsp;<img src="{% site_base %}media/icons/comments.png"/>&nbsp;</span><br/>
+	                        {% endif %}
+	                    </div>
+	                {% endfor %}
+	            </div>
+	        </div>
