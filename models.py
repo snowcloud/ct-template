@@ -49,10 +49,10 @@ class ClinTemplate(models.Model):
 		pass
 
 	def __repr__(self):
-		return '%s' % self.metadata.get('label', 'no label set')
+		return '%s' % self.get_metadata_text('label', 'no label set')
 
 	def __unicode__(self):
-		return '%s' % self.metadata.get('label', 'no label set')
+		return '%s' % self.get_metadata_text('label', 'no label set')
 
 	def get_absolute_url(self):
 		return "/templates/%i/" % self.id
@@ -64,11 +64,21 @@ class ClinTemplate(models.Model):
 	xmlroot = property(_get_xmlroot)
 	
 	def __getattr__(self, name):
-		try:
-			return self.metadata[name]
-		except KeyError:
+		result = self.get_metadata_text(name)
+		if result is None:
 			raise AttributeError, name
+		return result
 
+	def get_metadata_text(self, key, default=None):
+		"""docstring for get_metadata"""
+		e = self.metadata.get(key, None)
+		if e is None:
+			# print '*** ', key, e
+			return default
+		else:
+			# print key, e.text
+			return e.text
+		
 	def get_workgroup(self):
 		"""kludge cos field should be just group to be same as other models
 			TODO: change field name and update all references"""
@@ -92,17 +102,18 @@ class ClinTemplate(models.Model):
 	name = property(_name)
 
 	def _label(self):
-		return self.metadata.get('label', 'no label set')
+		return self.get_metadata_text('label', 'no label set')
 	label = property(_label)
 
 	def _get_metadata(self):
+		""" self.metadata is a SortedDict with key, element.
+			use get_metadata_text to get text, or self['label'] for shortcut to text"""
 		if self._metadata:
 			return self._metadata
-		# {'gub': 'jings', 'frud': 'kludge'}
 		self._metadata = SortedDict()
 		items = self.xmlroot.find("%smetadata" % self.xmlns)
 		if items:
-			result = [(r.get('label'), r.text) for r in items.getchildren()]
+			result = [(r.get('label'), r) for r in items.getchildren()]
 			self._metadata = SortedDict(result)
 		return self._metadata
 	metadata = property(_get_metadata)
@@ -206,7 +217,6 @@ class ClinTemplate(models.Model):
 			return comment_id
 		root = self.xmlroot
 		item = self.get_item(item_id)
-		print item
 		if item != None:
 			comment = ET.Element("review_comment")
 			# user = utils.get_current_user()

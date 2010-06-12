@@ -83,12 +83,14 @@ class CTTemplateTest(TestCase):
 		template2.save()
 		template2.included_templates.add(template1)
 		template2.save()
+		# print template2.metadata
+		# print template2.name
 		template1.add_comment("i001", "a big fat comment", user)
 		template1.add_comment("i001", "another big fat comment ", user)
 		# print template.get_comment(c)
 		self.assertEquals(template2.label, 'Glasgow Coma Scale')
-		self.assertEquals(template2.metadata.get('template_id', 'no label set'), 'glasgow-coma-scale')
-		print template2.metadata['template_id']
+		# self.assertEquals(template2.metadata.get('template_id', 'no label set'), 'glasgow-coma-scale')
+		# print template2.metadata['template_id'].text
 
 		self.assertEquals(len(mail.outbox), 2)
 		self.assertEquals(mail.outbox[0].subject, '[example.com] Test group two update')
@@ -162,6 +164,46 @@ ct_xml = """
 		    </item>
 			<item id="i040" label="Skin problems" valueType="include_template" include="infant-skin-problems"></item>
 		</model>
+		<documentation>
+			<item id="d001" label="Purpose" markup="textile">
+
+				To record and monitor the level of consciousness of a patient (NVICV, 2008).
+
+				Het vaststellen en bewaken van het bewustzijnsniveau van een patient (NVICV, 2008).
+
+				h3. Reason
+
+				Measuring the level of consciousness is important for the diagnoses, the prognosis and for follow-up of the condition of the patient.
+
+				Het meten van het bewustzijnsniveau is bealngrijk voor de diagnose, de prognose en het volgen van de conditie van de patient.
+
+				h3. Target Users
+
+				Monitoring patients (NVICV, 2010):
+				- after intracranial surgery
+				- in case of neurological disorders (CVA, encefalitis, meningitis)
+				- the level of consciousness with trauma patients
+				- after intoxication with substances which can influence the level of consciousness
+
+		        <review_comments>
+					<review_comment author="Derek Hoy" author_type="member" id="d001:c0" review_date="20100421T0105">commentosos.</review_comment>
+					<review_comment author="William Goossen" author_type="member" id="d001:c1" review_date="20100427T2316">comontosos whiskeyanos perplexos Fryske Hynder
+						http://www.usheitdistillery.nl/welkom.html </review_comment>
+					<review_comment author="Derek Hoy" author_type="member" id="d001:c2" review_date="20100429T1330">lorem ipsum etc etc</review_comment>
+					<review_comment author="Derek Hoy" author_type="member" id="d001:c3" review_date="20100429T1338">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</review_comment>
+					<review_comment author="William Goossen" author_type="member" id="d001:c4" review_date="20100604T1109">Derek, I still miss here a set of content areas such as instructions, references, interpretations, care process. Can you add these too?</review_comment>
+				</review_comments>
+		</item>
+
+		<item id="d002" label="Evidence Base" markup="textile">
+
+			The Glasgow Coma Scale is used to record and monitor the level of consciousness of patients with a lowered consciousness because of brain injury. Measuring the level of consciousness is important for the diagnoses, the prognosis and for follow-up of the condition of the patient. The latter to be able to detect a further drop of consciousness, on time, so action can be taken. There are separate directions of use for adults and children. This model describes the use of the GCS for adults. For children there is developed an adapted Pediatric Glasgow Coma Scale (PGCS). This is described in a separated DCM.
+
+			The developers are the first to report the Glasgow Coma Scale as a scale to record coma after trauma (Teasdale en Jennett, 1974). The Glasgow Coma Scale is an international accepted scale which gives a good estimate of the severity of the brain injury. This results in the fact that in the 'CBO richtlijn: ernstig traumatisch hersenletsel' (2002) (guideline for severe traumatic brain injury), the Glasgow Coma Scale is the only instrument for determining the level of consciousness within this category of patients that is mentioned. All abstract words with which a drop of consciousness is described is actually a 'translation' of what one can observe with the patient, this means what the patient does, spontaneous or after stimulation. The gain of the Glasgow Coma Scale is that this scale only reflects what the patient does, in simple terms (Bruining, Lauwers &amp;amp; Thijs, 1991). For 'CVA-ketenzorg' (CVA Chain of Care Information System) the description and evaluation of Meijer (2004) are applicable. He listed a couple of instruments concerning prognosis and that way optimized the route of the CVA patient through the Chain of Care. Moreover the psychometric traits of the instruments have been analysed, among others based on Wade (1994).
+		</item>
+		
+		
+		</documentation>
 	</clinicaltemplate>
 """
 incl_xml="""
