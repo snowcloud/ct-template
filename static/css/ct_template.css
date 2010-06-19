@@ -1,0 +1,13 @@
+/* self-clear floats */
+/* line 2, ../../compass/src/ct_template.sass */
+.group:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+
+/* @end */
+/* @group templates */
+/* line 13, ../../compass/src/ct_template.sass */
+#ct-tabs { display: none; }
+
+/* line 16, ../../compass/src/ct_template.sass */
+.ct_item { clear: left; padding-left: 2em; margin-bottom: 6px; margin-left: 0px; margin-top: 0em; background-color: White; border: none White; padding-bottom: 0.5em; }
+
+/* @end */

@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-11 17:17+0200\n"
+"POT-Creation-Date: 2010-06-19 14:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,24 +21,8 @@ msgstr ""
 #: templates/clintemplates_detail.html:9
 #: templates/clintemplates_detail_base.html:36
 #: templates/clintemplates_detail_base.html:38
-#: templates/clintemplates_detail_base.html:207
+#: templates/clintemplates_detail_base.html:218
 msgid "Show all comments"
-msgstr ""
-
-#: templates/clintemplates_detail.html:26
-#: templates/clintemplates_detail_base.html:22
-#: templates/clintemplates_detail_base.html:45 templates/item_detail.html:25
-msgid "Show comments"
-msgstr ""
-
-#: templates/clintemplates_detail.html:30
-#: templates/clintemplates_detail.html:48 templates/item_detail.html:32
-#: templates/item_detail.html.py:58
-msgid "Add comment"
-msgstr ""
-
-#: templates/clintemplates_detail.html:33 templates/item_detail.html:35
-msgid "Log in to add comment"
 msgstr ""
 
 #: templates/clintemplates_detail_base.html:20
@@ -45,76 +30,83 @@ msgstr ""
 msgid "Hide comments"
 msgstr ""
 
+#: templates/clintemplates_detail_base.html:22
+#: templates/clintemplates_detail_base.html:45
+#: templates/item_comments_link.html:10 templates/item_detail.html:25
+msgid "Show comments"
+msgstr ""
+
 #: templates/clintemplates_detail_base.html:37
 msgid "Hide all comments"
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:78
+#: templates/clintemplates_detail_base.html:79
 msgid "Home"
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:79
+#: templates/clintemplates_detail_base.html:80
 msgid "Groups"
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:86
+#: templates/clintemplates_detail_base.html:87
 msgid "in"
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:105
-msgid "Includes"
-msgstr ""
-
-#: templates/clintemplates_detail_base.html:113
-msgid "Used in"
-msgstr ""
-
-#: templates/clintemplates_detail_base.html:122
+#: templates/clintemplates_detail_base.html:97
 msgid "Topics"
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:185
+#: templates/clintemplates_detail_base.html:196
 msgid ""
 "The template is a list of data items that could make a form- below you see "
 "the data items, and alongside each, there is a note of the kind of data that "
 "could be recorded against them."
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:188
+#: templates/clintemplates_detail_base.html:199
 msgid ""
 "You can see any comments by clicking on the '<strong>show x comments</"
 "strong>' beside each item, or click '<strong>add comment</strong>' to have "
 "your say."
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:190
+#: templates/clintemplates_detail_base.html:201
 msgid ""
 "This template does not accept comments, but you can <a href=\"/templates/"
 "{{ clin_template.id }}/addreview/\">add a review.</a>."
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:195
+#: templates/clintemplates_detail_base.html:206
 msgid "View as form"
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:196
+#: templates/clintemplates_detail_base.html:207
 msgid "View as data"
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:198
-#: templates/clintemplates_detail_base.html:211
+#: templates/clintemplates_detail_base.html:209
+#: templates/clintemplates_detail_base.html:222
 msgid "Documentation"
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:200
-#: templates/clintemplates_detail_base.html:212
+#: templates/clintemplates_detail_base.html:211
+#: templates/clintemplates_detail_base.html:223
 msgid "Metadata"
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:209
+#: templates/clintemplates_detail_base.html:220
 msgid "See template form"
 msgstr ""
 
-#: templates/clintemplates_detail_base.html:210
+#: templates/clintemplates_detail_base.html:221
 msgid "See template data"
+msgstr ""
+
+#: templates/item_comments_link.html:14 templates/item_comments_link.html:32
+#: templates/item_detail.html:32 templates/item_detail.html.py:58
+msgid "Add comment"
+msgstr ""
+
+#: templates/item_comments_link.html:17 templates/item_detail.html:35
+msgid "Log in to add comment"
 msgstr ""
