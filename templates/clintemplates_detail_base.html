@@ -16,6 +16,7 @@ function togglecomments(el) {
 	//alert(el)
 	var div = $("#h_" + el)
 	var a = $("#l_" + el)
+	{# alert(div.css('display')) #}
 	if (div.css('display')=='none') {
 		a.text('{% trans 'Hide comments' %}')
 	} else {
@@ -31,20 +32,22 @@ $(document).ready(function() {
 	$("#ct-tabs").tabs({
 		cache: true,
 		load: function(event, ui) {
+			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}
 			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
-			$('.toggleallcomments').click(function(event){
+			var view = '#ct_view' + $("#ct-tabs").tabs('option', 'selected');
+			$(view + ' .toggleallcomments').click(function(event){
 			    var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1;
 			    if (show) { $(this).text("{% trans 'Hide all comments' %}"); }
 			    else { $(this).text("{% trans 'Show all comments' %}"); }
-
+				{# alert(view + " " + show); #}
 			    if (show) {
-			        $(".ct_comments_hide_show").show(300);
+			        $(view + " .ct_comments_hide_show").show(300);
 			        t = '{% trans 'Hide comments' %}'   ;
 			    } else {
-			        $(".ct_comments_hide_show").hide(300);
+			        $(view + " .ct_comments_hide_show").hide(300);
 			        t = '{% trans 'Show comments' %}';
 			    }
-			    $(".toggle_comment").text(t);
+			    $(view + " .toggle_comment").text(t);
 				return false;
 		   });
 	    } 

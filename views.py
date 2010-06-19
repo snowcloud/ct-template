@@ -50,7 +50,7 @@ def addcomment(request, object_id, comment_id):
 			template_id = object_id
 		else:
 			template_id = top_template_id
-		abs_comment_id = '%s_%s' % (object_id, comment_id)
+		abs_comment_id = '%s_%s_%s' % (object_id, tView, comment_id)
 		redirect_str = '%stemplates/%s/%s/?tView=%s#%s' % (settings.APP_BASE, template_id, abs_comment_id, tView, abs_comment_id)
 		if request.POST['result'] == 'Cancel':
 			return HttpResponseRedirect(redirect_str)

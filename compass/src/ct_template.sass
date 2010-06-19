@@ -13,7 +13,11 @@
 #ct-tabs
 	display: none
 
-.ct_item
+.ct_node_children
+	margin-left: 0
+	padding: 0
+	
+.ct_node
 	clear: left
 	padding-left: 2em
 	margin-bottom: 6px
@@ -22,24 +26,102 @@
 	background-color: White
 	border: none White
 	padding-bottom: 0.5em
+	list-style-type: none
 
-.ct_level0
-	border-top: thin solid #b1bdb1
-	border-left: thin solid #b1bdb1
-	background-color: #e8eff8
+// form view
+#ct_view0
+	.ct_level0
+		border-top: thin solid #b1bdb1
+		border-left: thin solid #b1bdb1
+		background-color: #e8eff8
 
-.ct_level1
-	border-top: thin solid #e5dfd2
+	.ct_level1
+		border-top: thin solid #e5dfd2
 
-.ct_level2
-	border-top: thin solid #e5dfd2
-	background-color: #f5f2f7
+	.ct_level2
+		border-top: thin solid #e5dfd2
+		background-color: #f5f2f7
 
-.ct_level3
-	border-top: thin solid #e5dfd2
+	.ct_level3
+		border-top: thin solid #e5dfd2
 
-.ct_level4
-	border-top: thin solid #e5dfd2
+	.ct_level4
+		border-top: thin solid #e5dfd2
+
+// documentation view
+#ct_view2
+	.ct_level0
+		border-top: thin solid #b1bdb1
+
+.ct_node_label
+	h3
+		float: left
+		width: 75%
+		margin-bottom: 1em
+		
+.all_comments_link
+	float: right
+	width: 25%
+	//	background-color: #dde
+	text-align: right
+	padding-right: 1.5em
+	padding-bottom: 0.5em
+	
+.comment_link
+	float: right
+	width: 25%
+	//	background-color: #dde
+	text-align: right
+
+.ct_count_bubble
+	color: white
+	background-color: black
+	padding-right: 1em
+	padding-left: 1em
+	border-radius: 6px
+	-webkit-border-radius: 6px
+	-mox-border-radius: 6px
+
+.ct_value_odd
+	background-color: #FAEED5
+
+.ct_value_even
+	background-color: #FCF4E4
+
+.ct_comments, .ct_comments_hide_show
+	font-size: 0.9em
+	background-color: #708090
+	clear: both
+	margin-bottom: 2px
+
+.ct_comments_hide_show
+	margin-top: 4px
+
+.ct_comments_hide_show span.right
+	border-right: thin solid #708090
+	border-bottom: thin solid #708090
+	position: absolute
+	right: 2px
+
+
+.ct_comment
+	color: White
+	padding-left: 8px
+	position: relative
+	padding-bottom: 8px
+
+.ct_comment p
+	line-height: 1.4em
+	margin-top: 6px
+
+.ct_comment img
+	display: inline
+
+.ct_comment_info
+	background-color: #696969
+	color: White
+	border-top: thin solid #708090
+	padding-left: 8px
 
 
 /* @end */

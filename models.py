@@ -129,7 +129,12 @@ class ClinTemplate(models.Model):
 		self._inf_model = self.xmlroot.find("%smodel" % self.xmlns)
 		return self._inf_model
 	inf_model = property(_get_model)
-
+	
+	def _get_dataset(self):
+		"""returns the inf_model- used to provide alternative view"""
+		return self.inf_model
+	dataset = property(_get_dataset)
+	
 	def _get_documentation(self):
 		if self._documentation:
 			return self._documentation

@@ -10,6 +10,9 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 
 register = template.Library()
+from django.template import Context, loader, TemplateDoesNotExist
+
+CT_VIEWS = ('inf_model', 'dataset', 'documentation', 'metadata')
 
 # TODO can this go in settings?
 #	   should be dynamic, read from xml
@@ -40,8 +43,7 @@ def elattrib(value, arg):
 
 @register.filter
 def items_for_view(t, view):
-	views = ('inf_model', 'inf_model', 'documentation', 'metadata')
-	return getattr(t, views[int(view)])
+	return getattr(t, CT_VIEWS[int(view)])
 
 @register.filter
 def items(value, nsp):
@@ -50,6 +52,25 @@ def items(value, nsp):
 	if v is None: return ""
 	else: return v
 
+@register.simple_tag
+def elem_body(elem, view, template):
+	v = CT_VIEWS[int(view)]
+	func = globals()['%s_body' % v]
+	return func(elem, template)
+
+def inf_model_body(elem, template):
+	return item_display_widget(elem, template)
+
+def dataset_body(elem, template):
+	return item_display_dataset(elem, template)
+	
+def documentation_body(elem, template):
+	return doc_content(elem)
+
+def metadata_body(elem, template):
+	"""docstring for metadata_body"""
+	return elem.text
+	
 @register.filter
 def doc_content(value):
 	"""docstring for markup"""
@@ -98,7 +119,7 @@ def included_template_items(value, nsp):
 	if clin_template is None:
 		return None
 	else:
-		return items(clin_template.xmlroot, nsp)
+		return items(clin_template.inf_model, nsp)
 
 def _get_shared_values(share_id, template):
 	vs = None
@@ -150,8 +171,6 @@ def item_display(item, top_template_id, template, level=0, tView=None, user=None
 		'tView': tView,
 		'user': user
 	}
-
-from django.template import Context, loader, TemplateDoesNotExist
 
 @register.simple_tag
 def item_display_widget(item, template):
@@ -229,4 +248,13 @@ def item_display_widget(item, template):
 	except TemplateDoesNotExist:
 		return '<div class="ct_widget">[ERROR: TEMPLATE NOT FOUND]</div>'
 	
+# @register.inclusion_tag('item_detail_dataset.html')
+def item_display_dataset(item, template):
+	c = Context({ 'elem': item, 'template': template })
+	
+	try:
+		t_loaded = loader.get_template('item_detail_dataset.html')	
+		return t_loaded.render(c)
+	except TemplateDoesNotExist:
+		return '<div>[ERROR: TEMPLATE NOT FOUND]</div>'
 

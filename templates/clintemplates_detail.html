@@ -5,12 +5,14 @@
 {% block template_detail %}
 
 <div id="ct_view{{tView}}">
-	<p><a href="" class="toggleallcomments">{% trans "Show all comments"%}</a></p>
+	<div class="group">
+	<div class="all_comments_link"><a href="" class="toggleallcomments">{% trans "Show all comments"%}</a></div>
+	</div>
 	
 	{% ifequal tView '1' %}<form action="">{% endifequal %}
 
 	{% for elem in clin_template|items_for_view:tView|items:clin_template.xmlns %}
-	    x{# {% item_display elem clin_template.id clin_template 0 tView user %} #}
+	    {% item_display elem clin_template.id clin_template 0 tView user %}
 	{% endfor%}
 
 	{% ifequal tView '1' %}</form>{% endifequal %}

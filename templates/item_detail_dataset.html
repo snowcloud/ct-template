@@ -1,0 +1,6 @@
+{% load i18n eltree %}
+{# {% load i18n eltree sitevars utils markup ct_groups_tags %} #}
+{% for v in elem|values:template %}
+    <div class="{% cycle ct_value_even,ct_value_odd as rowcolors %}">{{ v.text }}
+        {% if v|elattrib:"score" %}<span class="small">[score= {{ v|elattrib:"score" }}]</span>{% endif %}</div>
+{% endfor %}
