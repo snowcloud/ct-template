@@ -39,6 +39,11 @@ def elattrib(value, arg):
 		return value.get(arg, "")
 
 @register.filter
+def items_for_view(t, view):
+	views = ('inf_model', 'inf_model', 'documentation', 'metadata')
+	return getattr(t, views[int(view)])
+
+@register.filter
 def items(value, nsp):
 	if value is None: return ""
 	v = value.findall(ns("item", nsp))

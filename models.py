@@ -40,7 +40,7 @@ class ClinTemplate(models.Model):
 	enable_voting = models.BooleanField(blank=False, default=0)
 	included_templates = models.ManyToManyField('self', symmetrical=False, related_name='in_templates', blank=True, null=True)
 	_xmlroot = None
-	_metadata = None
+	_metadata = _metadata_dict = None
 	_inf_model = None
 	_documentation = None
 	_complexity_score = 0
@@ -71,7 +71,7 @@ class ClinTemplate(models.Model):
 
 	def get_metadata_text(self, key, default=None):
 		"""docstring for get_metadata"""
-		e = self.metadata.get(key, None)
+		e = self.metadata_dict.get(key, None)
 		if e is None:
 			# print '*** ', key, e
 			return default
@@ -106,17 +106,22 @@ class ClinTemplate(models.Model):
 	label = property(_label)
 
 	def _get_metadata(self):
-		""" self.metadata is a SortedDict with key, element.
-			use get_metadata_text to get text, or self['label'] for shortcut to text"""
+		""" self.metadata is a collection of elements"""
 		if self._metadata:
 			return self._metadata
-		self._metadata = SortedDict()
-		items = self.xmlroot.find("%smetadata" % self.xmlns)
-		if items:
-			result = [(r.get('label'), r) for r in items.getchildren()]
-			self._metadata = SortedDict(result)
+		self._metadata = self.xmlroot.find("%smetadata" % self.xmlns)
 		return self._metadata
 	metadata = property(_get_metadata)
+
+	def _get_metadata_dict(self):
+		""" self.metadata_dict is a SortedDict with key, element.
+			use get_metadata_text to get text, or self['label'] for shortcut to text"""
+		if self._metadata_dict:
+			return self._metadata_dict
+		if self.metadata:
+			self._metadata_dict = SortedDict([(r.get('label'), r) for r in self.metadata.getchildren()])
+		return self._metadata_dict
+	metadata_dict = property(_get_metadata_dict)
 
 	def _get_model(self):
 		if self._inf_model:
@@ -128,10 +133,10 @@ class ClinTemplate(models.Model):
 	def _get_documentation(self):
 		if self._documentation:
 			return self._documentation
-		docs = self.xmlroot.find("%sdocumentation" % self.xmlns)
-		if docs:
-			# self._documentation = [{'content': sec.text, 'markup': sec.get('markup', ''), 'elem': sec }  for sec in docs.getchildren()]
-			self._documentation = docs.getchildren()
+		self._documentation = self.xmlroot.find("%sdocumentation" % self.xmlns)
+		# if docs:
+		# 	# self._documentation = [{'content': sec.text, 'markup': sec.get('markup', ''), 'elem': sec }  for sec in docs.getchildren()]
+		# 	self._documentation = docs.getchildren()
 		return self._documentation
 	documentation = property(_get_documentation)
 
