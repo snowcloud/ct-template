@@ -259,7 +259,7 @@ class ClinTemplate(models.Model):
 
 	def save(self):
 		self._xmlroot = self._metadata = self._inf_model = self._documentation = None
-		self._template_id = slugify(self.metadata.get('template_id', 'template id not set'))
+		self._template_id = slugify(self.get_metadata_text('template_id', 'template id not set'))
 		super(ClinTemplate, self).save()
 
 from dh_django_utils import utils
