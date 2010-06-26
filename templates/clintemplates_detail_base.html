@@ -12,11 +12,10 @@
 <script type="text/javascript">
 
 function togglecomments(el) {
-    // var divname = 'h_' + el;
+	// var divname = 'h_' + el;
 	//alert(el)
 	var div = $("#h_" + el)
 	var a = $("#l_" + el)
-	{# alert(div.css('display')) #}
 	if (div.css('display')=='none') {
 		a.text('{% trans 'Hide comments' %}')
 	} else {
@@ -25,62 +24,41 @@ function togglecomments(el) {
 	div.slideToggle(300);
 }
 
-// needs 
-
 $(document).ready(function() {
-	$("#ct-tabs").show();
+    $("#ct-tabs").show();
 	$("#ct-tabs").tabs({
 		cache: true,
+        {% if tView %}selected: {{ tView }},{% endif %}
 		load: function(event, ui) {
 			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}
 			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
 			var view = '#ct_view' + $("#ct-tabs").tabs('option', 'selected');
 			$(view + ' .toggleallcomments').click(function(event){
-			    var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1;
-			    if (show) { $(this).text("{% trans 'Hide all comments' %}"); }
-			    else { $(this).text("{% trans 'Show all comments' %}"); }
+				var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1;
+				if (show) { $(this).text("{% trans 'Hide all comments' %}"); }
+				else { $(this).text("{% trans 'Show all comments' %}"); }
 				{# alert(view + " " + show); #}
-			    if (show) {
-			        $(view + " .ct_comments_hide_show").show(300);
-			        t = '{% trans 'Hide comments' %}'   ;
-			    } else {
-			        $(view + " .ct_comments_hide_show").hide(300);
-			        t = '{% trans 'Show comments' %}';
-			    }
-			    $(view + " .toggle_comment").text(t);
+				if (show) {
+					$(view + " .ct_comments_hide_show").show(300);
+					t = '{% trans 'Hide comments' %}'	;
+				} else {
+					$(view + " .ct_comments_hide_show").hide(300);
+					t = '{% trans 'Show comments' %}';
+				}
+				$(view + " .toggle_comment").text(t);
 				return false;
 		   });
-	    } 
+		} 
 	});
-	{% if tView %}$("#ct-tabs").tabs('select', {{tView}});{% endif %}
 	$("#ct-tabs-alt").hide();
-   
-	{# $(".toggleallcomments").click(function() { #}
-	{# 		alert($(this)); #}
-	{# 	    var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1; #}
-	{# 	    if (show) { $(this).text("{% trans 'Hide all comments' %}") } #}
-	{# 	    else { $(this).text("{% trans 'Show all comments' %}") } #}
-	{#      #}
-	{# 	    if (show) { #}
-	{# 	        $(".ct_comments_hide_show").show(300) #}
-	{# 	        t = '{% trans 'Hide comments' %}'    #}
-	{# 	    } else { #}
-	{# 	        $(".ct_comments_hide_show").hide(300) #}
-	{# 	        t = '{% trans 'Show comments' %}' #}
-	{# 	    } #}
-	{# 	    $(".toggle_comment").text(t) #}
-	{# 		return false; #}
-	{# 	} #}
-	{#  #}
-	{# ) #}
 });
 
 </script>
 {% endblock %}
 
 {% block breadcrumbs %}
-  <a href="{% site_base %}">{% trans 'Home' %}</a>  &gt;
-  <a href="{% site_base %}groups">{% trans 'Groups' %}</a>  &gt;
+  <a href="{% site_base %}">{% trans 'Home' %}</a>	&gt;
+  <a href="{% site_base %}groups">{% trans 'Groups' %}</a>	&gt;
   <a href="{% url group clin_template.workgroup.slug %}">{{ clin_template.workgroup.name }}</a>
 {% endblock %}
 
@@ -97,10 +75,10 @@ $(document).ready(function() {
 
 
   {% if tag_list %}
-      <p>{% trans 'Topics' %}:
-          {% for tag in tag_list %}
-              <a href="{% url tag tag.name %}">{% trans tag.name %}</a>{% if not forloop.last %},{% endif %}
-          {% endfor %}</p>
+	  <p>{% trans 'Topics' %}:
+		  {% for tag in tag_list %}
+			  <a href="{% url tag tag.name %}">{% trans tag.name %}</a>{% if not forloop.last %},{% endif %}
+		  {% endfor %}</p>
   {% endif %}
 
 
@@ -111,38 +89,38 @@ $(document).ready(function() {
 {% endcomment %}  
 
 {# <div id="ct_metadata"> #}
-{#     <table width="90%"> #}
-{#         {% for item in clin_template.metadata.items %} #}
-{#             <tr><th width="20%">{% trans item.0 %}:</th><td width="60%">{{ item.1|default_if_none:""|textile }}</td></tr> #}
-{#         {% endfor %} #}
-{#         {% if clin_template.included_templates.all %} #}
-{#             <tr><th width="20%">{% trans 'Includes' %}:</th> #}
-{#                 <td width="60%"> #}
-{#                 {% for t in clin_template.included_templates.all %} #}
-{#                     <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %} #}
-{#                 {% endfor %} #}
-{#             </td></tr> #}
-{#         {% endif %} #}
-{#         {% if clin_template.in_templates.all %} #}
-{#             <tr><th width="20%">{% trans 'Used in' %}:</th> #}
-{#                 <td width="60%"> #}
-{#                 {% for t in clin_template.in_templates.all %} #}
-{#                     <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %} #}
-{#                 {% endfor %} #}
-{#             </td></tr> #}
-{#         {% endif %} #}
-{#         {% tags_for_object clin_template as tag_list %} #}
-{#         {% if tag_list %} #}
-{#             <tr><th width="20%">{% trans 'Topics' %}:</th> #}
-{#                 <td width="60%"> #}
-{#                 {% for tag in tag_list %} #}
-{#                     <a href="{% url tag tag.name %}">{% trans tag.name %}</a>{% if not forloop.last %},{% endif %} #}
-{#                 {% endfor %} #}
-{#             </td></tr> #}
-{#         {% endif %} #}
-{#  #}
-{#  #}
-{#     </table> #}
+{#	   <table width="90%"> #}
+{#		   {% for item in clin_template.metadata.items %} #}
+{#			   <tr><th width="20%">{% trans item.0 %}:</th><td width="60%">{{ item.1|default_if_none:""|textile }}</td></tr> #}
+{#		   {% endfor %} #}
+{#		   {% if clin_template.included_templates.all %} #}
+{#			   <tr><th width="20%">{% trans 'Includes' %}:</th> #}
+{#				   <td width="60%"> #}
+{#				   {% for t in clin_template.included_templates.all %} #}
+{#					   <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %} #}
+{#				   {% endfor %} #}
+{#			   </td></tr> #}
+{#		   {% endif %} #}
+{#		   {% if clin_template.in_templates.all %} #}
+{#			   <tr><th width="20%">{% trans 'Used in' %}:</th> #}
+{#				   <td width="60%"> #}
+{#				   {% for t in clin_template.in_templates.all %} #}
+{#					   <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %} #}
+{#				   {% endfor %} #}
+{#			   </td></tr> #}
+{#		   {% endif %} #}
+{#		   {% tags_for_object clin_template as tag_list %} #}
+{#		   {% if tag_list %} #}
+{#			   <tr><th width="20%">{% trans 'Topics' %}:</th> #}
+{#				   <td width="60%"> #}
+{#				   {% for tag in tag_list %} #}
+{#					   <a href="{% url tag tag.name %}">{% trans tag.name %}</a>{% if not forloop.last %},{% endif %} #}
+{#				   {% endfor %} #}
+{#			   </td></tr> #}
+{#		   {% endif %} #}
+{#	#}
+{#	#}
+{#	   </table> #}
 {# </div> #}
 
 <br/>
@@ -159,38 +137,38 @@ $(document).ready(function() {
 	<p class="small">ratings: 1 = serious concern, 2 = some concern, 3 = acceptable for use, 4 = useful, 5 = recommended</p>
 
 	<div class="siteresources">
-	    <table width="100%">
-	        {% for review in clin_template.clintemplatereview_set.all %}
+		<table width="100%">
+			{% for review in clin_template.clintemplatereview_set.all %}
 				<tr><th width="20%">{{ review.reviewer.get_full_name }}:<br/>
 				<span class="small">{{ review.review_date|date:"j F Y, H:i" }}</span><br/>
 				<span class="small">{{ review.rating|rating_display }}</span>
 				</th>
 				<td width="60%">{{ review.review|linebreaksbr }}</td></tr>
 			{% endfor %}
-	    </table>
+		</table>
 	</div>
 	{% endif %}
 
 	{% comment %}
-	    if not authorised
-	        log in to add a review
-	    else
-	        check perm can comment
-        
-	        if user.is_authenticated %}
-	            {% if clin_template.workgroup|can_comment:user
-                
+		if not authorised
+			log in to add a review
+		else
+			check perm can comment
+		
+			if user.is_authenticated %}
+				{% if clin_template.workgroup|can_comment:user
+				
 	{% endcomment %}
 
 	<p>
 	{% if user.is_authenticated %}
-	    {% if clin_template.workgroup|can_comment:user %}
-	       <a href="/templates/{{ clin_template.id }}/addreview/">Add a review of this template.</a>
-	    {% else %}
-	        Sorry, you don't have access to add a review.
-	    {% endif %}
+		{% if clin_template.workgroup|can_comment:user %}
+		   <a href="/templates/{{ clin_template.id }}/addreview/">Add a review of this template.</a>
+		{% else %}
+			Sorry, you don't have access to add a review.
+		{% endif %}
 	{% else %}
-	    <a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">log in</a> to add a review.
+		<a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">log in</a> to add a review.
 	{% endif %}
 	</p>
 	<hr>
@@ -205,25 +183,25 @@ $(document).ready(function() {
 {% endif %}
 
 <div id="ct-tabs">
-    <ul>
-        <li><a href="{% url template-detail clin_template.id %}?tView=0"><span>{% trans "View as form"%}</span></a></li>
-        <li><a href="{% url template-detail clin_template.id %}?tView=1"><span>{% trans "View as data"%}</span></a></li>
+	<ul>
+		<li><a href="{% url template-detail clin_template.id %}?tView=0"><span>{% trans "View as form"%}</span></a></li>
+		<li><a href="{% url template-detail clin_template.id %}?tView=1"><span>{% trans "View as data"%}</span></a></li>
 		{% if clin_template.documentation %}
-	        <li><a href="{% url template-detail clin_template.id %}?tView=2"><span>{% trans 'Documentation' %}</span></a></li>
+			<li><a href="{% url template-detail clin_template.id %}?tView=2"><span>{% trans 'Documentation' %}</span></a></li>
 		{% endif %}
-        <li><a href="{% url template-detail clin_template.id %}?tView=3"><span>{% trans "Metadata"%}</span></a></li>
-    </ul>
+		<li><a href="{% url template-detail clin_template.id %}?tView=3"><span>{% trans "Metadata"%}</span></a></li>
+	</ul>
 </div>
 
 <div id="ct-tabs-alt">
   <ul class="subnav">
-  	{% if clin_template.accept_comments %}
-    <li><a href="" class="toggleallcomments">{% trans "Show all comments"%}</a></li>
-    {% endif %}
-    <li><a href="/templates/{{ clin_template.id }}/?tView=0">{% trans "See template form"%}</a></li>
-    <li><a href="/templates/{{ clin_template.id }}/?tView=1">{% trans "See template data"%}</a></li>
-    <li><a href="/templates/{{ clin_template.id }}/?tView=2">{% trans "Documentation"%}</a></li>
-    <li><a href="/templates/{{ clin_template.id }}/?tView=3">{% trans "Metadata"%}</a></li>
+	{% if clin_template.accept_comments %}
+	<li><a href="" class="toggleallcomments">{% trans "Show all comments"%}</a></li>
+	{% endif %}
+	<li><a href="/templates/{{ clin_template.id }}/?tView=0">{% trans "See template form"%}</a></li>
+	<li><a href="/templates/{{ clin_template.id }}/?tView=1">{% trans "See template data"%}</a></li>
+	<li><a href="/templates/{{ clin_template.id }}/?tView=2">{% trans "Documentation"%}</a></li>
+	<li><a href="/templates/{{ clin_template.id }}/?tView=3">{% trans "Metadata"%}</a></li>
   </ul>
 
 {% block template_detail %}{% endblock template_detail %}
