@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load sitevars i18n eltree forms %}
+
+{% block title %}{% trans "Edit" %}{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="/media/css/ct_template.css" type="text/css" media="screen, projection">
+{% endblock %}
+
+{% block content %}
+
+<h2>{{ clin_template.name }} template</h2>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="" method="post">{% csrf_token %}
+
+    <fieldset>
+        <legend><span>{% trans 'Edit' %}</span></legend>
+        <ol>
+             {% show_errors form.non_field_errors %}
+             {% for field in form %}
+                  {% show_field field "li" %}
+             {% endfor %}
+        </ol>
+    </fieldset>
+     <fieldset class="submit">
+        <input type="submit" name="result" value="{% trans 'Submit' %}">
+        <input type="submit" name="result" value="{% trans 'Cancel' %}" />
+    </fieldset>
+
+</form>
+
+{% endblock %}
+ 
