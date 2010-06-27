@@ -8,6 +8,7 @@
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+<script src="/media/js/ct_collapsible.js"></script>
 
 <script type="text/javascript">
 
@@ -25,6 +26,14 @@ function togglecomments(el) {
 }
 
 $(document).ready(function() {
+    $("head").append("<link>");
+    css = $("head").children(":last");
+    css.attr({
+      rel:  "stylesheet",
+      type: "text/css",
+      href: "/media/css/ct_template_enhanced.css"
+    });
+    
     $("#ct-tabs").show();
 	$("#ct-tabs").tabs({
 		cache: true,
@@ -48,6 +57,7 @@ $(document).ready(function() {
 				$(view + " .toggle_comment").text(t);
 				return false;
 		   });
+		   if (view=="#ct_view2") { $('#ct_view2 h3').collapsible(); };
 		} 
 	});
 	$("#ct-tabs-alt").hide();
@@ -177,7 +187,7 @@ $(document).ready(function() {
 <p>{% trans "The template is a list of data items that could make a form- below you see the data items, and alongside each, there is a note of the kind of data that could be recorded against them." %}</p>
 
 {% if clin_template.accept_comments %}
-	<p>{% trans "You can see any comments by clicking on the '<strong>show x comments</strong>' beside each item, or click '<strong>add comment</strong>' to have your say." %}</p>
+	<p>{% trans "You can see any comments by clicking on the '<strong>show comments</strong>' beside each item, or click '<strong>add comment</strong>' to have your say." %}</p>
 {% else %}
 	<p>{% trans 'This template does not accept comments, but you can <a href="/templates/{{ clin_template.id }}/addreview/">add a review.</a>.' %}</p>
 {% endif %}

@@ -11,11 +11,11 @@ $.fn.collapsible = function(){
 	
 		//define
 		var collapsibleHeading = $(this);
-		var collapsibleContent = collapsibleHeading.next();
+		var collapsibleContent = collapsibleHeading.closest('.ct_node').find('.ct_node_body');
 		
 		//modify markup & attributes
 		collapsibleHeading.addClass('collapsible-heading')
-			.prepend('<span class="collapsible-heading-status"></span>')
+            // .prepend('<span class="collapsible-heading-status"></span>')
 			.wrapInner('<a href="#" class="collapsible-heading-toggle"></a>');
 			
 		collapsibleContent.addClass('collapsible-content');

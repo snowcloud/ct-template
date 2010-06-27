@@ -1,13 +1,14 @@
 from django.forms import *
+from django.utils.translation import ugettext as _
 
 
 class CTNewForm(Form):
-    title = CharField()
-    text = CharField(widget=Textarea(attrs={'class': 'item_big_text'}))
+    title = CharField(label=_('Title'))
+    text = CharField(label=_('Text'), widget=Textarea(attrs={'class': 'item_big_text'}))
 
 class ItemForm(Form):
-    title = CharField(widget=HiddenInput())
-    text = CharField(widget=Textarea(attrs={'class': 'item_big_text'}))
+    title = CharField(label=_('Title'), widget=HiddenInput())
+    text = CharField(label=_('Text'), widget=Textarea(attrs={'class': 'item_big_text'}))
 
 class ReviewForm(Form):
     rating = IntegerField()

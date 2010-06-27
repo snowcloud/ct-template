@@ -65,7 +65,7 @@ msgstr ""
 
 #: templates/clintemplates_detail_base.html:199
 msgid ""
-"You can see any comments by clicking on the '<strong>show x comments</"
+"You can see any comments by clicking on the '<strong>show comments</"
 "strong>' beside each item, or click '<strong>add comment</strong>' to have "
 "your say."
 msgstr ""

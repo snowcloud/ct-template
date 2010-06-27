@@ -1,14 +1,14 @@
-/* line 1, ../../compass/src/ct_template_enhanced.sass */
-.collapsible-heading { padding-left: 15px; background: url(../images/icon-triangle.png) 0 6px no-repeat; }
+/* line 3, ../../compass/src/ct_template_enhanced.sass */
+.collapsible-heading { padding-left: 15px; background: url(../icons/icon-triangle.png) 0 12px no-repeat; }
 
-/* line 5, ../../compass/src/ct_template_enhanced.sass */
-.collapsible-heading-collapsed { background-position: 0 -84px; }
+/* line 7, ../../compass/src/ct_template_enhanced.sass */
+.collapsible-heading-collapsed { background-position: 0 -78px; }
 
-/* line 8, ../../compass/src/ct_template_enhanced.sass */
+/* line 10, ../../compass/src/ct_template_enhanced.sass */
 .collapsible-heading-toggle { text-decoration: none; color: #333333; }
 
-/* line 12, ../../compass/src/ct_template_enhanced.sass */
+/* line 14, ../../compass/src/ct_template_enhanced.sass */
 .collapsible-heading-status { position: absolute; left: -99999px; }
 
-/* line 17, ../../compass/src/ct_template_enhanced.sass */
+/* line 19, ../../compass/src/ct_template_enhanced.sass */
 .collapsible-content-collapsed { display: none; }

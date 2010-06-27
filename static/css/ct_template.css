@@ -28,7 +28,7 @@
 #ct_view2 .ct_level0, #ct_view3 .ct_level0 { border-top: thin solid #b1bdb1; }
 
 /* line 57, ../../compass/src/ct_template.sass */
-.ct_node_label h3 { float: left; width: 65%; margin-bottom: 1em; }
+.ct_node_label h3 { float: left; width: 60%; margin-bottom: 1em; }
 
 /* line 68, ../../compass/src/ct_template.sass */
 #ct_view3 .ct_node_body { background-color: #ebf3ec; }
