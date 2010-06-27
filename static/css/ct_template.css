@@ -25,51 +25,54 @@
 #ct_view0 .ct_level4 { border-top: thin solid #e5dfd2; }
 
 /* line 53, ../../compass/src/ct_template.sass */
-#ct_view2 .ct_level0 { border-top: thin solid #b1bdb1; }
+#ct_view2 .ct_level0, #ct_view3 .ct_level0 { border-top: thin solid #b1bdb1; }
 
 /* line 57, ../../compass/src/ct_template.sass */
 .ct_node_label h3 { float: left; width: 65%; margin-bottom: 1em; }
 
-/* line 62, ../../compass/src/ct_template.sass */
+/* line 68, ../../compass/src/ct_template.sass */
+#ct_view3 .ct_node_body { background-color: #eeffee; }
+
+/* line 73, ../../compass/src/ct_template.sass */
 .all_comments_link { float: right; width: 25%; text-align: right; padding-right: 1.5em; padding-bottom: 0.5em; }
 
-/* line 70, ../../compass/src/ct_template.sass */
+/* line 81, ../../compass/src/ct_template.sass */
 .edit_link { float: right; width: 10%; text-align: right; }
 
-/* line 76, ../../compass/src/ct_template.sass */
+/* line 87, ../../compass/src/ct_template.sass */
 .comment_link { float: right; width: 25%; text-align: right; }
 
-/* line 82, ../../compass/src/ct_template.sass */
+/* line 93, ../../compass/src/ct_template.sass */
 .ct_count_bubble { color: white; background-color: black; padding-right: 1em; padding-left: 1em; border-radius: 6px; -webkit-border-radius: 6px; -mox-border-radius: 6px; }
 
-/* line 91, ../../compass/src/ct_template.sass */
+/* line 102, ../../compass/src/ct_template.sass */
 .ct_value_odd { background-color: #faeed5; }
 
-/* line 94, ../../compass/src/ct_template.sass */
+/* line 105, ../../compass/src/ct_template.sass */
 .ct_value_even { background-color: #fcf4e4; }
 
-/* line 97, ../../compass/src/ct_template.sass */
+/* line 108, ../../compass/src/ct_template.sass */
 .ct_comments, .ct_comments_hide_show { font-size: 0.9em; background-color: #708090; clear: both; margin-bottom: 2px; }
 
-/* line 103, ../../compass/src/ct_template.sass */
+/* line 114, ../../compass/src/ct_template.sass */
 .ct_comments_hide_show { margin-top: 4px; }
 
-/* line 106, ../../compass/src/ct_template.sass */
+/* line 117, ../../compass/src/ct_template.sass */
 .ct_comments_hide_show span.right { border-right: thin solid #708090; border-bottom: thin solid #708090; position: absolute; right: 2px; }
 
-/* line 113, ../../compass/src/ct_template.sass */
+/* line 124, ../../compass/src/ct_template.sass */
 .ct_comment { color: White; padding-left: 8px; position: relative; padding-bottom: 8px; }
 
-/* line 119, ../../compass/src/ct_template.sass */
+/* line 130, ../../compass/src/ct_template.sass */
 .ct_comment p { line-height: 1.4em; margin-top: 6px; }
 
-/* line 123, ../../compass/src/ct_template.sass */
+/* line 134, ../../compass/src/ct_template.sass */
 .ct_comment img { display: inline; }
 
-/* line 126, ../../compass/src/ct_template.sass */
+/* line 137, ../../compass/src/ct_template.sass */
 .ct_comment_info { background-color: #696969; color: White; border-top: thin solid #708090; padding-left: 8px; }
 
-/* line 132, ../../compass/src/ct_template.sass */
+/* line 143, ../../compass/src/ct_template.sass */
 textarea.item_big_text { width: 95%; height: 25em; }
 
 /* @end */
