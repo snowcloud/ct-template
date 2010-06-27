@@ -1,0 +1,17 @@
+<clinicaltemplate>
+    <metadata>
+        <item id="m010" label="label">{{ label }}</item>
+        <item id="m020" label="template_id">{{ template_id }}</item>
+        <item id="m030" label="note">{{ note }}</item>
+        <item id="m040" label="version">001</item>
+        <item id="m050" label="status">draft</item>
+        <item id="m060" label="source"></item>
+    </metadata>
+    <model>
+        <item id="i001" label="First item" valueType="freetext"></item>
+    </model>
+	<documentation>
+		<item id="d001" label="Purpose" markup="textile">-- to do --</item>
+        <item id="d002" label="Evidence Base" markup="textile">-- to do --</item>
+    </documentation>
+</clinicaltemplate>
