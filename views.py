@@ -1,9 +1,14 @@
 """ views for ct_template app
 
 """
+import datetime
+
+from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
+from django.template.defaultfilters import slugify
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
@@ -11,8 +16,10 @@ from django.contrib.auth.decorators import login_required
 from django.forms import *
 from django.http import Http404
 
-from ct_template.models import ClinTemplate, ClinTemplateReview
+from ct_groups.models import CTGroup
 from ct_groups.decorators import check_permission
+from ct_template.models import ClinTemplate, ClinTemplateReview
+from ct_template.forms import *
 
 def index(request):
     obj_list = ClinTemplate.objects.order_by('_template_id')
@@ -31,9 +38,33 @@ def detail(request, object_id):
     
     return render_to_response(t, RequestContext( request, {'base_template': base_t, 'clin_template': object, 'tView': tView }))
 
-class ItemForm(Form):
-    title = CharField(widget=HiddenInput())
-    text = CharField(widget=Textarea(attrs={'class': 'item_big_text'}))
+def new_template(request, group_slug):
+    """docstring for new_template"""
+    object = get_object_or_404(CTGroup, slug=group_slug)
+    check_permission(request.user, object, 'resource', 'w')
+
+    if request.POST:
+        if request.POST['result'] == _('Cancel'):
+            return HttpResponseRedirect(object.get_absolute_url())
+        else:
+            form = CTNewForm(request.POST)
+            if form.is_valid():
+                label = form.cleaned_data['title']
+                template_id = slugify(label)
+                note = form.cleaned_data['text']
+                rendered = render_to_string('clintemplates_new.xml', 
+                    { 'label': label, 'template_id': template_id, 'note': note })
+                # print rendered
+                ct = ClinTemplate(xmlmodel=rendered, workgroup=object, accept_reviews=False, enable_editing=True)                                
+                ct.save()
+                return HttpResponseRedirect(reverse('template-detail',kwargs={'object_id':ct.id}))
+    else:
+        form = CTNewForm()
+        
+        
+    print group_slug
+    return render_to_response('clintemplates_new.html', 
+        RequestContext( request, {'group': object, 'form': form }))
 
 
 @login_required
@@ -111,19 +142,6 @@ def addcomment(request, object_id, comment_id):
             'top_template_id': top_template_id            
             }))
 
-class ReviewForm(Form):
-    rating = IntegerField()
-    review = CharField(widget=Textarea(attrs={'rows': 20, 'cols': 50, 'class': 't_area'}))
-
-    def clean_rating(self):
-        try:
-            if (self.cleaned_data.get('rating') < 1) or (self.cleaned_data.get('rating') > 5):
-                raise ValidationError(u'Rating must be from 1-5.')
-            return self.cleaned_data['rating']
-        except AttributeError:
-            return None
-
-import datetime
 
 @login_required
 def addreview(request, object_id):

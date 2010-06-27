@@ -1,6 +1,10 @@
 from django.forms import *
 
 
+class CTNewForm(Form):
+    title = CharField()
+    text = CharField(widget=Textarea(attrs={'class': 'item_big_text'}))
+
 class ItemForm(Form):
     title = CharField(widget=HiddenInput())
     text = CharField(widget=Textarea(attrs={'class': 'item_big_text'}))

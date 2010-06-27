@@ -5,7 +5,7 @@
         <item id="m030" label="note">{{ note }}</item>
         <item id="m040" label="version">001</item>
         <item id="m050" label="status">draft</item>
-        <item id="m060" label="source"></item>
+        <item id="m060" label="source">-- to do --</item>
     </metadata>
     <model>
         <item id="i001" label="First item" valueType="freetext"></item>
