@@ -42,6 +42,7 @@ $(document).ready(function() {
 			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}
 			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
 			var view = '#ct_view' + $("#ct-tabs").tabs('option', 'selected');
+            if (view=="#ct_view2") { $('#ct_view2 h3').collapsible(); };
 			$(view + ' .toggleallcomments').click(function(event){
 				var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1;
 				if (show) { $(this).text("{% trans 'Hide all comments' %}"); }
@@ -57,7 +58,6 @@ $(document).ready(function() {
 				$(view + " .toggle_comment").text(t);
 				return false;
 		   });
-		   if (view=="#ct_view2") { $('#ct_view2 h3').collapsible(); };
 		} 
 	});
 	$("#ct-tabs-alt").hide();
