@@ -1,8 +1,8 @@
 /* line 3, ../../compass/src/ct_template_enhanced.sass */
-.collapsible-heading { padding-left: 15px; background: url(../icons/icon-triangle.png) 0 12px no-repeat; }
+.collapsible-heading { padding-left: 15px; background: url(../icons/icon-triangle.png) 0 8px no-repeat; }
 
 /* line 7, ../../compass/src/ct_template_enhanced.sass */
-.collapsible-heading-collapsed { background-position: 0 -78px; }
+.collapsible-heading-collapsed { background-position: 0 -82px; }
 
 /* line 10, ../../compass/src/ct_template_enhanced.sass */
 .collapsible-heading-toggle { text-decoration: none; color: #333333; }

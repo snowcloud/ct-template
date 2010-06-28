@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load sitevars i18n eltree forms %}
+{% load sitevars i18n eltree forms ct_tags %}
 
 {% block title %}{% trans "New" %}{% endblock %}
 
@@ -11,7 +11,7 @@
 
 {% block content %}
 
-<h2>{% trans "New" %}</h2>
+<h2>{{ "New template"|site_resource_name }}</h2>
 
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
@@ -19,7 +19,7 @@
 <form action="" method="post">{% csrf_token %}
 
     <fieldset>
-        <legend><span>{% trans 'New' %}</span></legend>
+        <legend><span>{% trans 'Your details' %}</span></legend>
         <ol>
              {% show_errors form.non_field_errors %}
              {% for field in form %}
