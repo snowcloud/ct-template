@@ -57,9 +57,32 @@ class ClinTemplate(models.Model):
     def get_absolute_url(self):
         return "/templates/%i/" % self.id
     
+    def _get_error_model(self, err_msg):
+        """docstring for _get_error_model"""
+        root = ET.Element("clinicaltemplate")
+        output = ET.ElementTree(root)
+        
+        metadata = ET.Element("metadata")
+        root.append(metadata)
+        n = ET.Element("item")
+        n.attrib['id'] = 'm000'
+        n.attrib['label'] = 'label'
+        n.text = '*** Error in model xml ***'
+        metadata.append(n)
+        n = ET.Element("item")
+        n.attrib['id'] = 'm001'
+        n.attrib['label'] = 'error'
+        n.text = err_msg
+        metadata.append(n)
+        # print ET.tostring(root)
+        return output
+        
     def _get_xmlroot(self):
         if self._xmlroot is None:
-            self._xmlroot = ET.XML(self.xmlmodel)
+            try:
+                self._xmlroot = ET.XML(self.xmlmodel)
+            except UnicodeEncodeError, e:
+                self._xmlroot = self._get_error_model(str(e))
         return self._xmlroot
     xmlroot = property(_get_xmlroot)
     
@@ -109,7 +132,7 @@ class ClinTemplate(models.Model):
         """ self.metadata is a collection of elements"""
         if self._metadata:
             return self._metadata
-        self._metadata = self.xmlroot.find("%smetadata" % self.xmlns)
+        self._metadata = self.xmlroot.find("%smetadata" % self.xmlns) or ET.Element("error")
         return self._metadata
     metadata = property(_get_metadata)
 
@@ -118,7 +141,7 @@ class ClinTemplate(models.Model):
             use get_metadata_text to get text, or self['label'] for shortcut to text"""
         if self._metadata_dict:
             return self._metadata_dict
-        if self.metadata:
+        if not self.metadata is None:
             self._metadata_dict = SortedDict([(r.get('label'), r) for r in self.metadata.getchildren()])
         return self._metadata_dict
     metadata_dict = property(_get_metadata_dict)
