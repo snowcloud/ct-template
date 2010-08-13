@@ -49,10 +49,10 @@ class ClinTemplate(models.Model):
         pass
 
     def __repr__(self):
-        return '%s' % self.get_metadata_text('label', 'no label set')
+        return '%s' % self.label
 
     def __unicode__(self):
-        return '%s' % self.get_metadata_text('label', 'no label set')
+        return '%s' % self.label
 
     def get_absolute_url(self):
         return "/templates/%i/" % self.id
@@ -125,7 +125,7 @@ class ClinTemplate(models.Model):
     name = property(_name)
 
     def _label(self):
-        return self.get_metadata_text('label', 'no label set')
+        return self.get_metadata_text('label', None) or self.get_metadata_text('Name', 'no label set')
     label = property(_label)
 
     def _get_metadata(self):
@@ -292,12 +292,13 @@ class ClinTemplate(models.Model):
         item = self.get_item(item_id)
 
     def save_model(self):
-        self.xmlmodel = ET.tostring(self.xmlroot).replace('ns0:', '')
-        self.save()
+        if self.get_metadata_text('error') is None:
+            self.xmlmodel = ET.tostring(self.xmlroot).replace('ns0:', '')
+            self.save()
         
-    def save(self):
+    def save(self, *args, **kwargs):
         self._xmlroot = self._metadata = self._inf_model = self._documentation = None
-        self._template_id = slugify(self.get_metadata_text('template_id', 'template id not set'))
+        self._template_id = slugify(self.get_metadata_text('template_id', None) or self.label)
         super(ClinTemplate, self).save()
 
 from dh_django_utils import utils
