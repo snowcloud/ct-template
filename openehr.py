@@ -253,6 +253,9 @@ tree = ET.parse("%s%s" % (path, fname))
 template_id = tree.findtext(ns('template_id/value'))
 concept = tree.findtext(ns('concept'))
 
+# SEE NEW FORMAT FOR METADATA
+raise Exception('code below is old format')
+
 template_attrs = {
     'template_id': template_id, 'label': concept,
     'version': "0.1", 'status': "draft", 'source': "",
