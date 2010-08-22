@@ -127,16 +127,32 @@ def ns(path, nsp=UML):
         result = path.replace('.//', './/%s' % nsp)
     else:
         result = '%s%s' % (nsp, path.replace('/', '/%s' % nsp))
-    # print result
     return result
-    
+
+def strip_tag(s, sep='::'):
+    """stips prefix from tags, eg DCM::"""
+    i = s.find(sep)
+    if i > -1:
+        return s[i+len(sep):]
+    else:
+        return s
+
+def get_metadata(node):
+    """docstring for self._get_metadata"""
+    result = {}
+    for m in node.findall(ns("TaggedValue")):
+        result.setdefault(strip_tag(m.attrib['tag']), []).append(m.attrib.get('value', '-'))
+    for k, v in result.items():
+        result[k] = ' | '.join(v)
+    return result
+
 class Association(object):
     """docstring for Association
     """
     def __init__(self, node):
         super(Association, self).__init__()
         self.node = node
-        self.metadata = dict([(n.attrib['tag'], n.attrib['value']) for n in node.findall(ns("ModelElement.taggedValue/TaggedValue"))])
+        self.metadata = get_metadata(node.find(ns("ModelElement.taggedValue")))
         self.id = self.metadata['ea_localid']
         self.source = self.metadata['ea_sourceID']
         self.target = self.metadata['ea_targetID']
@@ -155,7 +171,7 @@ class ModelNode(object):
             self.stereotype = node.find(ns("ModelElement.stereotype/Stereotype")).attrib['name']
         except AttributeError:
             self.stereotype = 'unknown'
-        self.metadata = dict([(n.attrib['tag'], n.attrib['value']) for n in node.findall(ns("ModelElement.taggedValue/TaggedValue"))])
+        self.metadata = get_metadata(node.find(ns("ModelElement.taggedValue")))
         self.id = self.metadata['ea_localid']
         self.valueset = list(node.findall(ns("Classifier.feature/Attribute")))
         self.parent = None
@@ -172,7 +188,6 @@ class ModelNode(object):
             v.text = value.attrib['name']
             score = value.find(ns('Attribute.initialValue/Expression[@body]'))
             if not score is None:
-                # print score.tag
                 v.attrib['score'] = score.attrib.get('body', '-')
             vs.append(v)
         node.append(vs)
@@ -201,16 +216,7 @@ class DCM(object):
     def name(self):
         """docstring for name"""
         return self.metadata.get('Name', 'error-no-name-set')
-        
-    def _get_metadata(self, node):
-        """docstring for self._get_metadata"""
-        result = {}
-        for m in node.findall(ns("TaggedValue")):
-            result.setdefault(m.attrib['tag'][5:], []).append(m.attrib.get('value', '-'))
-        for k, v in result.items():
-            result[k] = ' | '.join(v)
-        return result
-        
+                
     def _get_docs(self):
         """docstring for _get_docs"""
         docs = {}
@@ -247,9 +253,7 @@ class DCM(object):
         if (concept.stereotype == 'state' and 
             (concept.metadata.get('genlinks', 'no genlink') == 'Parent=BL;')):
             return 'yes_no'
-            
         return VALUETYPES.get(concept.stereotype, 'freetext') #'freetext'
-        
         
     def _make_links(self, concept=None, i=0):
         """docstring for _make_links"""
@@ -259,7 +263,6 @@ class DCM(object):
             parent.children.append(child)
             child.parent = parent
             child.cardinality = a.cardinality
-            print parent.name, child.name, child.cardinality
             
     def _write_metadata_to_output(self):
         root = ET.Element("metadata")
@@ -291,7 +294,7 @@ class DCM(object):
                 concept = self.rootconcept
                 n = node
             else:
-            # id="i001" label="Total Glasgow Coma Scale Score" valueType="integer"
+                # id="i001" label="Total Glasgow Coma Scale Score" valueType="integer"
                 attrs = { 'id': 'i%04d' % self.item_id, 'label': concept.name,
                     'cardinality': concept.cardinality,
                     'valueType': self._valuetype_for_concept(concept) }
@@ -299,10 +302,6 @@ class DCM(object):
                 self.item_id += 10
                 if concept.valueset:
                     concept.write_valueset(n)
-                # print self.concept_id
-                # tag = ET.Element('name')
-                # tag.text = concept.name
-                # n.append(tag)
                 node.append(n)
             for i, c in enumerate(concept.children):
                 _write_info(self, n, c)
@@ -313,7 +312,7 @@ class DCM(object):
         xmi = tree.find('XMI.content')
         self.content = dict([(c.attrib['name'], c)
             for c in  xmi.findall(ns("Model/Namespace.ownedElement/Package/Namespace.ownedElement/Package"))])
-        self.metadata = self._get_metadata(xmi)
+        self.metadata = get_metadata(xmi)
         self.documentation = self._get_docs()
         self._get_concepts()
         self._find_rootconcept()
@@ -331,5 +330,4 @@ class DCM(object):
     def get_output(self):
         """docstring for dump_output"""
         return ET.tostring(self.root)
-        # ET.dump(self.output)
 
