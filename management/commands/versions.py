@@ -19,8 +19,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """args is tuple of strings following"""
-        
         try:
-            commit_versions(args[0])
+            path = args[0]
         except IndexError:
             raise CommandError('Needs argument <path_to_version_files>')
+        commit_versions(path)
