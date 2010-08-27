@@ -1,6 +1,8 @@
 
 import codecs
+import glob
 import os
+import subprocess
 
 
 def inc(i, limit=999):
@@ -30,7 +32,44 @@ def save_version(fn, txt, encoding='UTF-8'):
     finally:
         outfile.close()
     
+
+def gitAdd(fileName, repoDir):
+    cmd = 'git add ' + fileName
+    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
+    pipe.wait()
+    return
+
+def gitCommit(fileName, repoDir, m='auto commit'):
+    cmd = 'git commit -m "%s" %s' % (m, fileName)
+    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
+    pipe.wait()
+    return
+
+def gitPush(repoDir):
+    cmd = 'git push'
+    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
+    pipe.wait()
+    return
+
+def commit_versions(version_path):
+    """docstring for commit_versions"""
     
+    # version_path = '/Users/derek/dev_django/ct_repo/dcm/'    
+    gitAdd('*.xml', version_path)
+    gitCommit('', version_path)
+    # removes anything from the list that is not a file (directories, symlinks)
+    files = filter(os.path.isfile, glob.glob(version_path + "*.xml"))
+    for f in files:
+        os.remove(f)
+    files = filter(os.path.isfile, glob.glob(version_path + "*"))
+    files.sort(key=lambda x: os.path.getmtime(x))
+    for f in files:
+        xml = f[:-4]
+        os.rename(f, xml)
+        gitAdd(os.path.split(xml)[1], version_path)
+        gitCommit('', version_path)
+        os.remove(xml)
+    gitPush(version_path)
 
 if __name__ == '__main__':
     
@@ -44,14 +83,12 @@ if __name__ == '__main__':
     # print sys.path
     
     from r4c import settings
-    
     setup_environ(settings)
-    
-    from ct_template.models import ClinTemplate
-    
-    ct = ClinTemplate.objects.get(id=1)
-    fn = '%sdcm.xml' % settings.CT_VERSIONS
-    save_version(fn, ct.xmlmodel)
 
-    print '======\nyurp'
+    # from ct_template.models import ClinTemplate
+    # ct = ClinTemplate.objects.get(id=1)
+    # ct.save()
+
+    commit_versions(settings.CT_VERSIONS)
+    print '======\ncommitted any changed versions'
 

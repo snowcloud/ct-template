@@ -1,3 +1,4 @@
+from ct_template.version import commit_versions
 from django.core.management.base import BaseCommand, CommandError
 
 """
@@ -6,8 +7,8 @@ PYTHONPATH=/Users/derek/dev_django:/Users/derek/dev_django/shared_apps:/Users/de
 should work
 """
 class Command(BaseCommand):
-    args = '<poll_id poll_id ...>'
-    help = 'Closes the specified poll for voting'
+    args = '<path_to_version_files>'
+    help = 'process path dir, commits *.xml, then renames all others to xml and commits. Git push to finish'
     # option_list = BaseCommand.option_list + (
     #     make_option('--delete',
     #         action='store_true',
@@ -18,6 +19,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """args is tuple of strings following"""
-        self.stdout.write('%s\n' % str(args))
-        self.stdout.write('%s\n' % str(options))
-        self.stdout.write('Successfully done it\n')
+        
+        try:
+            commit_versions(args[0])
+        except IndexError:
+            raise CommandError('Needs argument <path_to_version_files>')
