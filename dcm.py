@@ -3,7 +3,7 @@ import elementtree.ElementTree as ET
 
 
 UML = "{omg.org/UML1.3}"
-# DOC_HEADINGS = ('',)
+## DOC_HEADINGS = ('',)
 
 VALUETYPES = {
     'data': 'integer',
