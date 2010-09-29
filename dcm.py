@@ -284,6 +284,7 @@ class DCM(object):
             attrs = { 'id': 'd%04d' % self.item_id, 'label': k,  'markup': 'textile' }
             n = ET.Element("item", attrs)
             n.text = v
+            self.item_id += 10
             root.append(n)
         
     def _write_infomodel_to_output(self, node, concept=None):
