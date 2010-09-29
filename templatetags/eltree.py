@@ -200,6 +200,8 @@ def item_display_widget(item, template):
             'yes_no_na': 'radioset_ynna', 
             'nominal_list': 'select', 
             'ordinal_list': 'select',
+            
+            # openEHR
             'DV_BOOLEAN': 'textline',
             'DV_CODED_TEXT': 'select',
             'DV_COUNT': 'textline',
@@ -211,7 +213,11 @@ def item_display_widget(item, template):
             'DV_ORDINAL': 'select',
             'DV_PROPORTION': 'textline',
             'DV_QUANTITY': 'integer',
-            'DV_TEXT': 'textline',            
+            'DV_TEXT': 'textline',
+            
+            # CEN13606
+            'PQ': 'integer',
+            'SIMPLE_TEXT': 'freetext',
         }
         if datatype in templates:
             widget = templates[datatype]

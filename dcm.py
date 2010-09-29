@@ -286,6 +286,7 @@ class DCM(object):
             n.text = v
             self.item_id += 10
             root.append(n)
+            
         
     def _write_infomodel_to_output(self, node, concept=None):
         """docstring for _write_to_output"""
