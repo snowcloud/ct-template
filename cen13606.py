@@ -97,30 +97,34 @@ def get_term_defs(node, lang='en-gb'):
                         result[code] = item.find(ns('value')).text
     return result
     
-def process_opt(processor, to_node, term_defs, opt_element):
+def process_model(processor, to_node, opt_element, term_defs):
     """
     recursive descent parsing of opt_element.
     passes element to processor
     processor returns current node in output tree for element to be added to
     """
     node_info = get_node_info(opt_element, term_defs)
-    next_node, term_defs = processor.process_me(to_node, node_info)
+    next_node, term_defs = processor.process_model_node(to_node, node_info)
     for n in node_info['subnodes']:
-        process_opt(processor, next_node, term_defs, n)
+        process_model(processor, next_node, n, term_defs)
 
 class ArchProcessor(object):
     """docstring for ArchProcessor"""
-    def __init__(self, attrs= {}, note=''):
+    def __init__(self, tree, attrs= {}):
         super(ArchProcessor, self).__init__()
+        
+        self.source_tree = tree
+        self.source_root = tree.find(ns('definition'))
+        self.source_ontology = tree.find(ns('ontology'))
         self.root = ET.Element("clinicaltemplate", attrs)
-        n = ET.Element("note")
-        n.text = note
-        self.root.append(n)
+        self.model = ET.Element("model")
+        self.root.append(self.model)
         self.output = ET.ElementTree(self.root)
         self.id = 0
         
     def dump_output(self):
         """docstring for dump_output"""
+        self._write_metadata_to_output()
         print ET.tostring(self.root)
         # ET.dump(self.output)
         
@@ -149,14 +153,39 @@ class ArchProcessor(object):
         #       maybe should be using child elements for all other than basic?
 
     
-    
-    def process_me(self, to_node, node_info):
+    def get_metadata(self, term_defs):
+        """docstring for self._get_metadata"""
+        result = {}
+        # for m in node.findall(ns("TaggedValue")):
+        #     result.setdefault(strip_tag(m.attrib['tag']), []).append(m.attrib.get('value', '-'))
+        # for k, v in result.items():
+        #     result[k] = ' | '.join(v)
+        result['template_id'] = self.source_tree.findtext(ns('archetype_id'))
+        result['label'] = term_defs.get(self.source_tree.findtext(ns('concept_code')), 'label-not-set')
+        self.metadata = result
+        
+    def _write_metadata_to_output(self):
+        output = ET.Element("metadata")
+        self.root.append(output)
+        
+        self.item_id = 10
+        for k, v in self.metadata.items():
+            # <item id="m010" label="label">My second DCM</item>
+            attrs = { 'id': 'm%04d' % self.item_id, 'label': k }
+            n = ET.Element("item", attrs)
+            n.text = v
+            self.item_id += 10
+            output.append(n)
+        self.item_id = 0
+
+
+    def process_model_node(self, to_node, node_info):
         """read node_info and-
         if a group or control, add child to to_node in output tree, fill and return child
         else return to_node
         """
         if to_node is None:
-            to_node = self.root
+            to_node = self.model
         
         if node_info.get('rm_attribute_name', None) == 'name':
             to_node.attrib['label'] = node_info.get('label', '')
@@ -166,7 +195,7 @@ class ArchProcessor(object):
             el = ET.Element("item", attrs)
             to_node.append(el)
             to_node = el
-            self.id += 1
+            self.id += 10
             for attribs in node_info.get('item_attrs', []):
                 self._add_item_attribs(el, attribs)
         
