@@ -7,12 +7,16 @@ from ct_template.version import save_version
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
-from dh_django_utils import utils
 from django.conf import settings
 from django.utils.datastructures import SortedDict
 from tagging.fields import TagField
 from xml.etree import ElementTree as ET
 import datetime
+
+try:
+    from scutils.middleware import get_current_user
+except ImportError:
+    from dh_django_utils.utils import get_current_user
 
 def _encode_comment_date(d):
     return d.strftime("%Y%m%dT%H%M")
@@ -330,6 +334,6 @@ class ClinTemplateReview(models.Model):
 
     def save(self):
         if self.reviewer_id is None:
-            self.reviewer_id = utils.get_current_user().id
+            self.reviewer_id = get_current_user().id
         super(ClinTemplateReview, self).save()
     
