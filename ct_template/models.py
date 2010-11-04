@@ -309,8 +309,6 @@ class ClinTemplate(models.Model):
             save_version(fn, self.xmlmodel)
         super(ClinTemplate, self).save()
 
-from dh_django_utils import utils
-
 class ClinTemplateReview(models.Model):
     reviewer = models.ForeignKey(User)
     review_date = models.DateTimeField(default=datetime.datetime.now(), blank=False, null=True)
