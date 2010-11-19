@@ -304,7 +304,7 @@ class ClinTemplate(models.Model):
     def save(self, *args, **kwargs):
         self._xmlroot = self._metadata = self._inf_model = self._documentation = None
         self._template_id = slugify(self.get_metadata_text('template_id', None) or self.label)
-        if settings.CT_VERSION_SAVES:
+        if self.id and settings.CT_VERSION_SAVES:
             fn = '%s%05d_%s.xml' % (settings.CT_VERSIONS, self.id, self._template_id)
             save_version(fn, self.xmlmodel)
         super(ClinTemplate, self).save()

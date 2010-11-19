@@ -29,7 +29,7 @@
 	                    <div class="ct_comment">
 	                        {{ v.text|escape|textile }}
 	                        {% if forloop.last %}
-	                            <span class="right" style="background-color: #eeeeff;">&nbsp;&nbsp;<a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>&nbsp;<img src="{% site_base %}media/icons/comments.png"/>&nbsp;</span><br/>
+	                            <span class="right" style="background-color: #eeeeff;">&nbsp;&nbsp;<a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>&nbsp;<img src="{% site_base %}static/icons/comments.png"/>&nbsp;</span><br/>
 	                        {% endif %}
 	                    </div>
 	                {% endfor %}
