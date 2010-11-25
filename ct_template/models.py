@@ -31,6 +31,20 @@ def _format_comment_date(d_str):
     d = datetime.datetime(year, month, day, hours, minutes)
     return d.strftime("%d/%m/%Y, %H.%M")
 
+def format_comment_url(object_id, template_id, tView, comment_id):
+    """docstring for fname"""
+    # top_template_id is to direct to including template if comment has been added there.
+    # really should be different for group ???
+    # simplest is not to use and leave to caller to fix up = status quo
+    
+    # if top_template_id == '':
+    #     template_id = object_id
+    # else:
+    #     template_id = top_template_id
+    
+    abs_comment_id = '%s_%s_%s' % (object_id, tView, comment_id)
+    return '%stemplates/%s/%s/?tView=%s#%s' % (settings.APP_BASE, template_id, abs_comment_id, tView, abs_comment_id)
+
 class ClinTemplate(models.Model):
     #name = models.CharField(max_length=64, core=True)
     #note = models.TextField()
@@ -222,8 +236,8 @@ class ClinTemplate(models.Model):
             author= comment.get("author")
             content = comment.text
             item_id = comment.get("id").split(':')[0]
-            item_ref = '%s_%s' % (self.id, item_id)
-            url = '%s%s%s/#%s' % ( settings.APP_BASE[:-1], self.get_absolute_url(), item_ref, item_ref)
+            url = format_comment_url(self.id, self.id, 3, item_id)
+            
             review_date = _format_comment_date(comment.get('review_date'))          
         else:
             raise Exception('not enabled')
@@ -334,4 +348,3 @@ class ClinTemplateReview(models.Model):
         if self.reviewer_id is None:
             self.reviewer_id = get_current_user().id
         super(ClinTemplateReview, self).save()
-    

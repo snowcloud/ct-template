@@ -18,7 +18,7 @@ from django.http import Http404
 
 from ct_groups.models import CTGroup
 from ct_groups.decorators import check_permission
-from ct_template.models import ClinTemplate, ClinTemplateReview
+from ct_template.models import ClinTemplate, ClinTemplateReview, format_comment_url
 from ct_template.forms import *
 
 def index(request):
@@ -96,9 +96,10 @@ def showcomment(request, object_id, comment_id):
     check_permission(request.user, object.workgroup, 'resource', 'r')
     check_permission(request.user, object.workgroup, 'comment', 'r')
     tView = request.GET.get('tView', '0')
-    
+    # fix for mangled URL in email, eg tView=3D3
+    if tView.startswith('3D'):
+        tView = tView[2:]
     return render_to_response('clintemplates_detail.html', RequestContext( request, {'base_template': "clintemplates_detail_base.html", 'clin_template': object, 'comment_id': comment_id, 'tView': tView}))
-
 
 @login_required
 def addcomment(request, object_id, comment_id):
@@ -112,8 +113,9 @@ def addcomment(request, object_id, comment_id):
             template_id = object_id
         else:
             template_id = top_template_id
-        abs_comment_id = '%s_%s_%s' % (object_id, tView, comment_id)
-        redirect_str = '%stemplates/%s/%s/?tView=%s#%s' % (settings.APP_BASE, template_id, abs_comment_id, tView, abs_comment_id)
+        # abs_comment_id = '%s_%s_%s' % (object_id, tView, comment_id)
+        # redirect_str = '%stemplates/%s/%s/?tView=%s#%s' % (settings.APP_BASE, template_id, abs_comment_id, tView, abs_comment_id)
+        redirect_str = format_comment_url(object_id, template_id, tView, comment_id)
         if request.POST['result'] == _('Cancel'):
             return HttpResponseRedirect(redirect_str)
         else:
