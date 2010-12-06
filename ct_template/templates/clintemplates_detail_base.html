@@ -37,6 +37,7 @@ $(document).ready(function() {
     $("#ct-tabs").show();
 	$("#ct-tabs").tabs({
 		cache: true,
+        {% if not clin_template.inf_model %}disabled: [0, 1],{% endif %}
         {% if tView %}selected: {{ tView }},{% endif %}
 		load: function(event, ui) {
 			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}

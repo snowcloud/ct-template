@@ -7,9 +7,6 @@
         <item id="m050" label="status">draft</item>
         <item id="m060" label="source">-- to do --</item>
     </metadata>
-    <model>
-        <item id="i001" label="First item" valueType="freetext"></item>
-    </model>
 	<documentation>
 		<item id="d001" label="Purpose" markup="textile">-- to do --</item>
         <item id="d002" label="Evidence Base" markup="textile">-- to do --</item>
