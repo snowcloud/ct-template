@@ -31,7 +31,7 @@ $(document).ready(function() {
     css.attr({
       rel:  "stylesheet",
       type: "text/css",
-      href: "/media/css/ct_template_enhanced.css"
+      href: "/static/css/ct_template_enhanced.css"
     });
     
     $("#ct-tabs").show();
@@ -184,8 +184,6 @@ $(document).ready(function() {
 	</p>
 	<hr>
 {% endif %}
-
-<p>{% trans "The template is a list of data items that could make a form- below you see the data items, and alongside each, there is a note of the kind of data that could be recorded against them." %}</p>
 
 {% if clin_template.accept_comments %}
 	<p>{% trans "You can see any comments by clicking on the '<strong>show comments</strong>' beside each item, or click '<strong>add comment</strong>' to have your say." %}</p>

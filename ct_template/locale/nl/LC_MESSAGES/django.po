@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-19 14:19+0200\n"
+"POT-Creation-Date: 2010-12-09 21:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,95 +18,132 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: forms.py:6 forms.py:10
+msgid "Title"
+msgstr "Titel"
+
+#: forms.py:7 forms.py:11
+msgid "Text"
+msgstr "Tekst"
+
+#: views.py:47 views.py:80 views.py:119 views.py:156
+#: templates/clintemplates_add_comment.html:22
+#: templates/clintemplates_new.html:32 templates/item_edit_text.html:29
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: templates/clintemplates_add_comment.html:11
+#: templates/item_comments_link.html:14 templates/item_comments_link.html:32
+#: templates/item_detail.html:18 templates/item_detail.html.py:50
+#: templates/item_detail.html:101 templates/item_detail.html.py:127
+msgid "Add comment"
+msgstr "Commentaar toevoegen"
+
+#: templates/clintemplates_add_comment.html:21
+#: templates/clintemplates_new.html:31 templates/item_edit_text.html:28
+msgid "Submit"
+msgstr "Verstuur"
+
 #: templates/clintemplates_detail.html:9
-#: templates/clintemplates_detail_base.html:36
-#: templates/clintemplates_detail_base.html:38
-#: templates/clintemplates_detail_base.html:218
+#: templates/clintemplates_detail_base.html:48
+#: templates/clintemplates_detail_base.html:50
+#: templates/clintemplates_detail_base.html:208
 msgid "Show all comments"
-msgstr ""
+msgstr "Laat alle commentaren zien"
 
-#: templates/clintemplates_detail_base.html:20
-#: templates/clintemplates_detail_base.html:42
+#: templates/clintemplates_detail_base.html:21
+#: templates/clintemplates_detail_base.html:54
 msgid "Hide comments"
-msgstr ""
+msgstr "Verberg de commentaren"
 
-#: templates/clintemplates_detail_base.html:22
-#: templates/clintemplates_detail_base.html:45
-#: templates/item_comments_link.html:10 templates/item_detail.html:25
+#: templates/clintemplates_detail_base.html:23
+#: templates/clintemplates_detail_base.html:57
+#: templates/item_comments_link.html:10 templates/item_detail.html:11
+#: templates/item_detail.html.py:94
 msgid "Show comments"
-msgstr ""
+msgstr "Toon commentaren"
 
-#: templates/clintemplates_detail_base.html:37
+#: templates/clintemplates_detail_base.html:49
 msgid "Hide all comments"
-msgstr ""
+msgstr "Verberg alle commentaren"
+
+#: templates/clintemplates_detail_base.html:71
+msgid "Home"
+msgstr "Homepage"
+
+#: templates/clintemplates_detail_base.html:72
+msgid "Groups"
+msgstr "Groepen"
 
 #: templates/clintemplates_detail_base.html:79
-msgid "Home"
-msgstr ""
-
-#: templates/clintemplates_detail_base.html:80
-msgid "Groups"
-msgstr ""
-
-#: templates/clintemplates_detail_base.html:87
 msgid "in"
-msgstr ""
+msgstr "in"
 
-#: templates/clintemplates_detail_base.html:97
+#: templates/clintemplates_detail_base.html:89
 msgid "Topics"
-msgstr ""
+msgstr "Onderwerpen"
 
-#: templates/clintemplates_detail_base.html:196
+#: templates/clintemplates_detail_base.html:189
 msgid ""
-"The template is a list of data items that could make a form- below you see "
-"the data items, and alongside each, there is a note of the kind of data that "
-"could be recorded against them."
+"You can see any comments by clicking on the '<strong>show comments</strong>' "
+"beside each item, or click '<strong>add comment</strong>' to have your say."
 msgstr ""
+"U kunt alle commentaren zien door te klikken op '<strong>Toon commentaren</"
+"strong>' naast elk item kunt u op '<strong>Commentaar toevoegen</strong>' "
+"klikken om uw mening te geven."
 
-#: templates/clintemplates_detail_base.html:199
-msgid ""
-"You can see any comments by clicking on the '<strong>show comments</"
-"strong>' beside each item, or click '<strong>add comment</strong>' to have "
-"your say."
-msgstr ""
-
-#: templates/clintemplates_detail_base.html:201
+#: templates/clintemplates_detail_base.html:191
 msgid ""
 "This template does not accept comments, but you can <a href=\"/templates/"
 "{{ clin_template.id }}/addreview/\">add a review.</a>."
 msgstr ""
+"Deze DCM accepteert geen commentaren, maar u kunt <a href=\"/templates/"
+"{{ clin_template.id }}/addreview/\">een review toevoegen.</a>."
 
-#: templates/clintemplates_detail_base.html:206
+#: templates/clintemplates_detail_base.html:196
 msgid "View as form"
-msgstr ""
+msgstr "Formulier"
 
-#: templates/clintemplates_detail_base.html:207
+#: templates/clintemplates_detail_base.html:197
 msgid "View as data"
-msgstr ""
+msgstr "Gegevens"
 
-#: templates/clintemplates_detail_base.html:209
-#: templates/clintemplates_detail_base.html:222
+#: templates/clintemplates_detail_base.html:199
+#: templates/clintemplates_detail_base.html:212
 msgid "Documentation"
-msgstr ""
+msgstr "Documentatie"
+
+#: templates/clintemplates_detail_base.html:201
+#: templates/clintemplates_detail_base.html:213
+msgid "Metadata"
+msgstr "Metadata"
+
+#: templates/clintemplates_detail_base.html:210
+msgid "See template form"
+msgstr "Zie formulier"
 
 #: templates/clintemplates_detail_base.html:211
-#: templates/clintemplates_detail_base.html:223
-msgid "Metadata"
-msgstr ""
-
-#: templates/clintemplates_detail_base.html:220
-msgid "See template form"
-msgstr ""
-
-#: templates/clintemplates_detail_base.html:221
 msgid "See template data"
-msgstr ""
+msgstr "Zie gegevens"
 
-#: templates/item_comments_link.html:14 templates/item_comments_link.html:32
-#: templates/item_detail.html:32 templates/item_detail.html.py:58
-msgid "Add comment"
-msgstr ""
+#: templates/clintemplates_new.html:4
+msgid "New"
+msgstr "Nieuw"
 
-#: templates/item_comments_link.html:17 templates/item_detail.html:35
+#: templates/clintemplates_new.html:22
+msgid "Your details"
+msgstr "Uw gegevens"
+
+#: templates/item_comments_link.html:17 templates/item_detail.html:21
+#: templates/item_detail.html.py:104
 msgid "Log in to add comment"
-msgstr ""
+msgstr "Inloggen om commentaar te geven"
+
+#: templates/item_detail.html:28 templates/item_edit_text.html:4
+#: templates/item_edit_text.html.py:19
+msgid "Edit"
+msgstr "Bewerk"
+
+#: templates/item_detail_dataset.html:3
+msgid "cardinality"
+msgstr "cardinaliteit"
