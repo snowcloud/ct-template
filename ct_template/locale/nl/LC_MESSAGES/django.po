@@ -88,7 +88,7 @@ msgid ""
 "You can see any comments by clicking on the '<strong>show comments</strong>' "
 "beside each item, or click '<strong>add comment</strong>' to have your say."
 msgstr ""
-"U kunt alle commentaren zien door te klikken op '<strong>Toon commentaren</"
+"U kunt alle commentaren zien door te klikken op '<strong>Laat alle commentaren zien</"
 "strong>' naast elk item kunt u op '<strong>Commentaar toevoegen</strong>' "
 "klikken om uw mening te geven."
 
