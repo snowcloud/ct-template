@@ -1,5 +1,5 @@
 from django.template.defaultfilters import slugify
-import elementtree.ElementTree as ET
+from xml.etree import ElementTree as ET
 
 
 UML = "{omg.org/UML1.3}"
