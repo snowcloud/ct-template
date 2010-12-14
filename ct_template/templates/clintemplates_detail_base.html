@@ -63,12 +63,12 @@ $(document).ready(function() {
 				var show = $(this).text().indexOf("{% trans "Show all text" %}") > -1;
 				if (show) { $(this).text("{% trans 'Hide all text' %}"); }
 				else { $(this).text("{% trans 'Show all text' %}"); }
-				{# alert(view + " " + show); #}
-                {# collapsible-content collapsible-content-collapsed  #}
                 if (show) {
                     $(view + " .collapsible-content").removeClass("collapsible-content-collapsed");
+                    $(view + " .collapsible-heading").removeClass("collapsible-heading-collapsed");
                 } else {
                     $(view + " .collapsible-content").addClass("collapsible-content-collapsed");
+                    $(view + " .collapsible-heading").addClass("collapsible-heading-collapsed");
                 }
 				return false;
 		   });
