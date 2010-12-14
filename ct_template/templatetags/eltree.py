@@ -141,7 +141,8 @@ def values(value, template):
         return _get_shared_values(share_id, template)
 
 @register.filter
-def review_comments(value, nsp):
+def review_comments(value, template):
+    nsp = template.xmlns
     c = value.find(ns("review_comments", nsp))
     if c is None:
         return ""
@@ -149,6 +150,8 @@ def review_comments(value, nsp):
     if v is None:
         return ""
     else:
+        if template.group.resource_comment_reversed:
+            v.reverse()
         return v
 
 @register.inclusion_tag('item_editor_menu.html')
