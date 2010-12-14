@@ -1,5 +1,6 @@
 from django.template.defaultfilters import slugify
-from xml.etree import ElementTree as ET
+import elementtree.ElementTree as ET
+# from xml.etree import ElementTree as ET
 
 
 UML = "{omg.org/UML1.3}"
@@ -225,7 +226,7 @@ class DCM(object):
         # fragmented and inconsistent in xmi
         
         for k, node in self.content.items():
-            if k != 'Information Model':
+            if k.lower() != 'information model':
                 try:
                     txt = node.find(ns(".//TaggedValue[@tag='documentation']")).attrib['value']
                 except AttributeError:
@@ -235,13 +236,14 @@ class DCM(object):
         
     def _get_assocs(self):
         """docstring for _link_assocs"""
-        infomodel = self.content['Information Model']
+        infomodel = self.content.get('Information Model', None) or self.content['Information model']
         self.associations = [Association(n)
             for n in infomodel.findall(ns('Namespace.ownedElement/Association'))]
-            
+        print [(a.source, a.target) for a in self.associations]
+        
     def _get_concepts(self):
         """docstring for _link_assocs"""
-        infomodel = self.content['Information Model']
+        infomodel = self.content.get('Information Model', None) or self.content['Information model']
         nodes = [ModelNode(n)
             for n in infomodel.findall(ns('Namespace.ownedElement/Class'))]
         self.model_dict = dict([(n.id, n) for n in nodes])
@@ -263,6 +265,7 @@ class DCM(object):
             parent.children.append(child)
             child.parent = parent
             child.cardinality = a.cardinality
+            print parent.id, parent.name, child.id, child.name
             
     def _write_metadata_to_output(self):
         root = ET.Element("metadata")
@@ -295,6 +298,7 @@ class DCM(object):
             if concept is None:
                 concept = self.rootconcept
                 n = node
+                print 'root name:', concept.id, concept.name, concept.children
             else:
                 # id="i001" label="Total Glasgow Coma Scale Score" valueType="integer"
                 attrs = { 'id': 'i%04d' % self.item_id, 'label': concept.name,
@@ -305,6 +309,7 @@ class DCM(object):
                 if concept.valueset:
                     concept.write_valueset(n)
                 node.append(n)
+                print 'name:', concept.name
             for i, c in enumerate(concept.children):
                 _write_info(self, n, c)
         self.item_id = 10
