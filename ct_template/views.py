@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.forms import *
 from django.http import Http404
 
+from ct_framework.forms import ConfirmForm
 from ct_groups.models import CTGroup
 from ct_groups.decorators import check_permission
 from ct_template.models import ClinTemplate, ClinTemplateReview, format_comment_url
@@ -61,12 +62,36 @@ def new_template(request, group_slug):
     else:
         form = CTNewForm()
         
-        
-    print group_slug
     return render_to_response('clintemplates_new.html', 
         RequestContext( request, {'group': object, 'form': form }))
 
+@login_required
+def delete(request, object_id):
+    """docstring for delete"""
+    object = get_object_or_404(ClinTemplate, pk=object_id)
+    check_permission(request.user, object.workgroup, 'resource', 'd')
 
+    if request.POST:
+        if request.POST['result'] == _('Cancel'):
+            return HttpResponseRedirect(object.get_absolute_url())
+        else:
+            form = ConfirmForm(request.POST)
+            if form.is_valid():
+                object.delete()
+                return HttpResponseRedirect(reverse('group',kwargs={'group_slug': object.workgroup.slug}))
+    else:
+        form = ConfirmForm(initial={ 'resource_name': object.name })
+        
+    return render_to_response('ct_framework/confirm.html', 
+        RequestContext( request, 
+            {   'form': form,
+                'title': _('Delete this %s?') % _(getattr(settings, 'RESOURCE_NAME', _('Clinical Template')))
+            })
+        )
+    
+    
+    
+    
 @login_required
 def edititem(request, object_id, view_id, item_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)

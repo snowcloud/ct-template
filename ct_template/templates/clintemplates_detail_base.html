@@ -79,6 +79,10 @@ $(document).ready(function() {
 <p>{% trans 'in' %} <a href="{% url group clin_template.workgroup.slug %}">{{ clin_template.workgroup.name }}</a></p>
 {% endif %}
 
+{% if clin_template.workgroup|resource_delete:user %}
+    <p><a href="{% url template-delete clin_template.id %}">{% trans 'Delete' %}</a></p>
+{% endif %}
+
 <h1>{{ clin_template.name }}</h1>
 
   {{ clin_template.note|default_if_none:""|textile }}
@@ -217,5 +221,8 @@ $(document).ready(function() {
 
 </div>
 
+{% if clin_template.workgroup|resource_delete:user %}
+    <p><a href="{% url template-delete clin_template.id %}">{% trans 'Delete' %}</a></p>
+{% endif %}
 
 {% endblock %}
