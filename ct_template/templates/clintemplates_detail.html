@@ -6,6 +6,9 @@
 
 <div id="ct_view{{tView}}">
 	<div class="group">
+	{% if tView = '2' %}
+    	<div><a href="" class="togglealldocs">{% trans "Show all text"%}</a></div>
+	{% endif %}
 	<div class="all_comments_link"><a href="" class="toggleallcomments">{% trans "Show all comments"%}</a></div>
 	</div>
 	

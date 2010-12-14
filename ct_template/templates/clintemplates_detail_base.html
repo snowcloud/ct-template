@@ -59,6 +59,20 @@ $(document).ready(function() {
 				$(view + " .toggle_comment").text(t);
 				return false;
 		   });
+		   $(view + ' .togglealldocs').click(function(event){
+				var show = $(this).text().indexOf("{% trans "Show all text" %}") > -1;
+				if (show) { $(this).text("{% trans 'Hide all text' %}"); }
+				else { $(this).text("{% trans 'Show all text' %}"); }
+				{# alert(view + " " + show); #}
+                {# collapsible-content collapsible-content-collapsed  #}
+                if (show) {
+                    $(view + " .collapsible-content").removeClass("collapsible-content-collapsed");
+                } else {
+                    $(view + " .collapsible-content").addClass("collapsible-content-collapsed");
+                }
+				return false;
+		   });
+		
 		} 
 	});
 	$("#ct-tabs-alt").hide();
