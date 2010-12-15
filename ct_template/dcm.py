@@ -145,6 +145,10 @@ def get_metadata(node):
         result.setdefault(strip_tag(m.attrib['tag']), []).append(m.attrib.get('value', '-'))
     for k, v in result.items():
         result[k] = ' | '.join(v)
+    name = result.get('Name', None)
+    if name is None:
+        name = result.get('DCM.Name', 'error-no-name-set')
+    result['Name'] = name
     return result
 
 class Association(object):
@@ -239,7 +243,6 @@ class DCM(object):
         infomodel = self.content.get('Information Model', None) or self.content['Information model']
         self.associations = [Association(n)
             for n in infomodel.findall(ns('Namespace.ownedElement/Association'))]
-        print [(a.source, a.target) for a in self.associations]
         
     def _get_concepts(self):
         """docstring for _link_assocs"""
@@ -260,12 +263,16 @@ class DCM(object):
     def _make_links(self, concept=None, i=0):
         """docstring for _make_links"""
         for a in self.associations:
-            parent = self.model_dict[a.target]
-            child = self.model_dict[a.source]
+            if self.topdown:
+                parent = self.model_dict[a.target]
+                child = self.model_dict[a.source]
+            else:
+                parent = self.model_dict[a.source]
+                child = self.model_dict[a.target]
             parent.children.append(child)
             child.parent = parent
             child.cardinality = a.cardinality
-            print parent.id, parent.name, child.id, child.name
+            # print parent.id, parent.name, child.id, child.name
             
     def _write_metadata_to_output(self):
         root = ET.Element("metadata")
@@ -298,7 +305,6 @@ class DCM(object):
             if concept is None:
                 concept = self.rootconcept
                 n = node
-                print 'root name:', concept.id, concept.name, concept.children
             else:
                 # id="i001" label="Total Glasgow Coma Scale Score" valueType="integer"
                 attrs = { 'id': 'i%04d' % self.item_id, 'label': concept.name,
@@ -309,13 +315,13 @@ class DCM(object):
                 if concept.valueset:
                     concept.write_valueset(n)
                 node.append(n)
-                print 'name:', concept.name
             for i, c in enumerate(concept.children):
                 _write_info(self, n, c)
         self.item_id = 10
         _write_info(self, node)
         
-    def process(self, tree, infomodel=True, docs=True, metadata=True):
+    def process(self, tree, infomodel=True, docs=True, metadata=True, topdown=True):
+        self.topdown = topdown
         xmi = tree.find('XMI.content')
         self.content = dict([(c.attrib['name'], c)
             for c in  xmi.findall(ns("Model/Namespace.ownedElement/Package/Namespace.ownedElement/Package"))])
