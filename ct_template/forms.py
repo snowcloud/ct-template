@@ -1,10 +1,17 @@
 from django.forms import *
+from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
-
+from ct_template.models import ClinTemplate
 
 class CTNewForm(Form):
     title = CharField(label=_('Title'))
     text = CharField(label=_('Text'), widget=Textarea(attrs={'class': 'item_big_text'}))
+    
+    def clean_title(self):
+        t = slugify(self.cleaned_data['title'])
+        if ClinTemplate.objects.filter(_template_id=t).exists():
+            raise ValidationError(_('A resource with this name already exists.'))
+        return self.cleaned_data['title']
 
 class ItemForm(Form):
     title = CharField(label=_('Title'), widget=HiddenInput())
