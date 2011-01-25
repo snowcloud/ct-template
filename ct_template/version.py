@@ -39,6 +39,18 @@ def gitAdd(fileName, repoDir):
     pipe.wait()
     return
 
+def gitRm(fileName, repoDir):
+    cmd = 'git rm ' + fileName
+    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
+    pipe.wait()
+    return
+
+def gitMv(fileName, repoDir):
+    cmd = 'git mv ' + fileName
+    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
+    pipe.wait()
+    return
+
 def gitCommit(fileName, repoDir, m='auto commit'):
     cmd = 'git commit -m "%s" %s' % (m, fileName)
     pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
@@ -57,18 +69,15 @@ def commit_versions(version_path):
     # version_path = '/Users/derek/dev_django/ct_repo/dcm/'    
     gitAdd('*.xml', version_path)
     gitCommit('', version_path)
-    # removes anything from the list that is not a file (directories, symlinks)
-    files = filter(os.path.isfile, glob.glob(version_path + "*.xml"))
-    for f in files:
-        os.remove(f)
-    files = filter(os.path.isfile, glob.glob(version_path + "*"))
+    files = filter(os.path.isfile, glob.glob(version_path + "*.xml.*"))
     files.sort(key=lambda x: os.path.getmtime(x))
+    print files
     for f in files:
         xml = f[:-4]
+        # rename will silently delete target if it exists
         os.rename(f, xml)
         gitAdd(os.path.split(xml)[1], version_path)
         gitCommit('', version_path)
-        os.remove(xml)
     gitPush(version_path)
 
 if __name__ == '__main__':
