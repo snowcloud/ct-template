@@ -69,7 +69,7 @@ def commit_versions(version_path):
     # version_path = '/Users/derek/dev_django/ct_repo/dcm/'    
     gitAdd('*.xml', version_path)
     gitCommit('', version_path)
-    files = filter(os.path.isfile, glob.glob(version_path + "*.xml.*"))
+    files = filter(os.path.isfile, glob.glob(version_path + "*.xml.???"))
     files.sort(key=lambda x: os.path.getmtime(x))
     print files
     for f in files:
