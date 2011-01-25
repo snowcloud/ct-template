@@ -70,6 +70,8 @@ def commit_versions(version_path):
     gitAdd('*.xml', version_path)
     gitCommit('', version_path)
     files = filter(os.path.isfile, glob.glob(version_path + "*.xml.???"))
+    print version_path + "*.xml.???"
+    print files
     files.sort(key=lambda x: os.path.getmtime(x))
     print files
     for f in files:
