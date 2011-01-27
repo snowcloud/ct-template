@@ -54,7 +54,7 @@ def gitMv(fileName, repoDir):
     return
 
 def gitCommit(fileName, repoDir, m='auto commit'):
-    cmd = 'git commit --author %s -m "%s" %s' % (settings.CT_VERSION_USER, m, fileName)
+    cmd = 'git commit -m "%s" %s' % (m, fileName)
     pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
     pipe.wait()
     return
