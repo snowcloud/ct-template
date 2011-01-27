@@ -1,4 +1,6 @@
 
+from django.conf import settings
+
 import codecs
 import glob
 import os
@@ -52,7 +54,7 @@ def gitMv(fileName, repoDir):
     return
 
 def gitCommit(fileName, repoDir, m='auto commit'):
-    cmd = 'git commit -m "%s" %s' % (m, fileName)
+    cmd = 'git commit --author %s -m "%s" %s' % (settings.CT_VERSION_USER, m, fileName)
     pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
     pipe.wait()
     return
@@ -97,6 +99,6 @@ if __name__ == '__main__':
     # ct = ClinTemplate.objects.get(id=1)
     # ct.save()
 
-    commit_versions(settings.CT_VERSIONS)
+    commit_versions(settings.CT_VERSION_PATH)
     print '======\ncommitted any changed versions'
 
