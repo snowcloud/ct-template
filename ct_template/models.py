@@ -45,10 +45,13 @@ def format_comment_url(object_id, template_id, tView, comment_id):
     abs_comment_id = '%s_%s_%s' % (object_id, tView, comment_id)
     return '%stemplates/%s/%s/?tView=%s#%s' % (settings.APP_BASE, template_id, abs_comment_id, tView, abs_comment_id)
 
+def make_template_id(obj):
+    return  slugify(obj.get_metadata_text('template_id', None) or obj.label)
+    
 class ClinTemplate(models.Model):
     #name = models.CharField(max_length=64, core=True)
     #note = models.TextField()
-    _template_id = models.SlugField(max_length=64, unique=True, blank=True, null=False)
+    _template_id = models.SlugField(help_text='Do not change', max_length=64, unique=True, blank=True, null=False)
     xmlmodel = models.TextField()
     workgroup = models.ForeignKey(CTGroup)
     tags = TagField()
@@ -317,9 +320,9 @@ class ClinTemplate(models.Model):
         
     def save(self, *args, **kwargs):
         self._xmlroot = self._metadata = self._inf_model = self._documentation = None
-        self._template_id = slugify(self.get_metadata_text('template_id', None) or self.label)
+        self._template_id = make_template_id(self)
         if self.id and settings.CT_VERSION_SAVES:
-            fn = '%s%05d_%s.xml' % (settings.CT_VERSIONS, self.id, self._template_id)
+            fn = '%s%05d_%s.xml' % (settings.CT_VERSION_PATH, self.id, self._template_id)
             save_version(fn, self.xmlmodel)
         super(ClinTemplate, self).save()
 
