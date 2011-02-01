@@ -321,10 +321,22 @@ class ClinTemplate(models.Model):
     def save(self, *args, **kwargs):
         self._xmlroot = self._metadata = self._inf_model = self._documentation = None
         self._template_id = make_template_id(self)
-        if self.id and settings.CT_VERSION_SAVES:
-            fn = '%s%05d_%s.xml' % (settings.CT_VERSION_PATH, self.id, self._template_id)
-            save_version(fn, self.xmlmodel)
         super(ClinTemplate, self).save()
+
+
+from django.db.models.signals import post_delete, post_save
+
+def version_delete(sender, **kwargs):
+    pass
+
+def version_save(sender, **kwargs):
+    instance = kwargs['instance']
+    fn = '%s%05d_%s.xml' % (settings.CT_VERSION_PATH, instance.id, instance._template_id)
+    save_version(fn, instance.xmlmodel)
+    
+if settings.CT_VERSION_SAVES:
+    # post_delete.connect(version_delete, dispatch_uid="ct_version")
+    post_save.connect(version_save, sender=ClinTemplate, dispatch_uid="ct_version")
 
 class ClinTemplateReview(models.Model):
     reviewer = models.ForeignKey(User)
