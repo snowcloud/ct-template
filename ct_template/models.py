@@ -69,6 +69,9 @@ class ClinTemplate(models.Model):
 
     class Admin:
         pass
+    
+    class Meta:
+        ordering = ['_template_id']
 
     def __repr__(self):
         return '%s' % self.label
