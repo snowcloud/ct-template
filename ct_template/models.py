@@ -316,6 +316,14 @@ class ClinTemplate(models.Model):
 
         item = self.get_item(item_id)
 
+    def reload(self, xmlmodel):
+        self._xmlroot = None
+        self._metadata = _metadata_dict = None
+        self._inf_model = None
+        self._documentation = None
+        self._complexity_score = 0
+        self.xmlmodel = xmlmodel
+        
     def save_model(self):
         if self.get_metadata_text('error') is None:
             self.xmlmodel = ET.tostring(self.xmlroot).replace('ns0:', '')
