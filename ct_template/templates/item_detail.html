@@ -24,7 +24,7 @@
 	               {% endif %}
 				</div>
            {% endif %}
-            {% if tView > "1" and template.group|resource_can_edit:user %}
+            {% if tView > "1" and template.enable_editing and template.group|resource_can_edit:user %}
                 <div class="edit_link"><a href="{% url template-item-edit template.id tView elem|elattrib:"id" %}">{% trans "Edit" %}</a></div>
             {% endif %}
 		</div>

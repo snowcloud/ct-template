@@ -4,6 +4,7 @@
 import datetime
 
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
@@ -89,12 +90,11 @@ def delete(request, object_id):
             })
         )
     
-    
-    
-    
 @login_required
 def edititem(request, object_id, view_id, item_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
+    if not object.enable_editing:
+        raise PermissionDenied()
     check_permission(request.user, object.workgroup, 'resource', 'w')
     item = object.get_item(item_id)
     if item is None:
