@@ -1,0 +1,165 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-27 13:04+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: forms.py:7 forms.py:17
+msgid "Title"
+msgstr ""
+
+#: forms.py:8 forms.py:18
+msgid "Text"
+msgstr ""
+
+#: forms.py:13
+msgid "A resource with this name already exists."
+msgstr ""
+
+#: views.py:48 views.py:75 views.py:105 views.py:144 views.py:181
+#: templates/clintemplates_add_comment.html:22
+#: templates/clintemplates_new.html:32 templates/item_edit_text.html:29
+msgid "Cancel"
+msgstr ""
+
+#: views.py:88
+#, python-format
+msgid "Delete this %s?"
+msgstr ""
+
+#: views.py:88
+msgid "Clinical Template"
+msgstr ""
+
+#: templates/clintemplates_add_comment.html:11 templates/item_detail.html:18
+#: templates/item_detail.html.py:50
+msgid "Add comment"
+msgstr ""
+
+#: templates/clintemplates_add_comment.html:21
+#: templates/clintemplates_new.html:31 templates/item_edit_text.html:28
+msgid "Submit"
+msgstr ""
+
+#: templates/clintemplates_detail.html:10
+#: templates/clintemplates_detail_base.html:63
+#: templates/clintemplates_detail_base.html:65
+msgid "Show all text"
+msgstr ""
+
+#: templates/clintemplates_detail.html:12
+#: templates/clintemplates_detail_base.html:48
+#: templates/clintemplates_detail_base.html:50
+#: templates/clintemplates_detail_base.html:224
+msgid "Show all comments"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:21
+#: templates/clintemplates_detail_base.html:54
+msgid "Hide comments"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:23
+#: templates/clintemplates_detail_base.html:57 templates/item_detail.html:11
+msgid "Show comments"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:49
+msgid "Hide all comments"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:64
+msgid "Hide all text"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:85
+msgid "Home"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:86
+msgid "Groups"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:93
+msgid "in"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:104
+msgid "Topics"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:205
+msgid ""
+"You can see any comments by clicking on the '<strong>show comments</strong>' "
+"beside each item, or click '<strong>add comment</strong>' to have your say."
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:207
+msgid ""
+"This template does not accept comments, but you can <a href=\"/templates/"
+"{{ clin_template.id }}/addreview/\">add a review.</a>."
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:212
+msgid "View as form"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:213
+msgid "View as data"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:215
+#: templates/clintemplates_detail_base.html:228
+msgid "Documentation"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:217
+#: templates/clintemplates_detail_base.html:229
+msgid "Metadata"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:226
+msgid "See template form"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:227
+msgid "See template data"
+msgstr ""
+
+#: templates/clintemplates_detail_base.html:237
+msgid "Delete"
+msgstr ""
+
+#: templates/clintemplates_new.html:4
+msgid "New"
+msgstr ""
+
+#: templates/clintemplates_new.html:22
+msgid "Your details"
+msgstr ""
+
+#: templates/item_detail.html:21
+msgid "Log in to add comment"
+msgstr ""
+
+#: templates/item_detail.html:28 templates/item_edit_text.html:4
+#: templates/item_edit_text.html.py:19
+msgid "Edit"
+msgstr ""
+
+#: templates/item_detail_dataset.html:3
+msgid "cardinality"
+msgstr ""
