@@ -203,7 +203,7 @@ $(document).ready(function() {
 {% if clin_template.accept_comments %}
 	<p>{% trans "You can see any comments by clicking on the '<strong>show comments</strong>' beside each item, or click '<strong>add comment</strong>' to have your say." %}</p>
 {% else %}
-	<p>{% trans 'This template does not accept comments, but you can <a href="/templates/{{ clin_template.id }}/addreview/">add a review.</a>.' %}</p>
+	<p>{% trans 'This template does not accept comments.' %}</p>
 {% endif %}
 
 <div id="ct-tabs">

@@ -113,11 +113,9 @@ msgstr ""
 
 #: templates/clintemplates_detail_base.html:206
 msgid ""
-"This template does not accept comments, but you can <a href=\"/templates/"
-"{{ clin_template.id }}/addreview/\">add a review.</a>."
+"This template does not accept comments."
 msgstr ""
-"Deze DCM accepteert geen commentaren, maar u kunt <a href=\"/templates/"
-"{{ clin_template.id }}/addreview/\">een review toevoegen.</a>."
+"Deze DCM accepteert geen commentaren."
 
 #: templates/clintemplates_detail_base.html:211
 msgid "View as form"
