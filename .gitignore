@@ -1,2 +1,6 @@
 /ct_template.egg-info
 *.pyc
+/ct_template/cen.import/
+/ct_template/dcm.import/
+/ct_template/openehr_test/
+.DS_Store
