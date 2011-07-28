@@ -331,7 +331,9 @@ class ClinTemplate(models.Model):
         
     def save(self, *args, **kwargs):
         self._xmlroot = self._metadata = self._inf_model = self._documentation = None
-        self._template_id = make_template_id(self)
+        template_id = kwargs.pop('template_id', None)
+        self._template_id = template_id or make_template_id(self)
+        # print self._template_id
         super(ClinTemplate, self).save()
 
 
