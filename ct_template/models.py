@@ -1,6 +1,7 @@
 """ ct_tools/ct_template/models.py
 
 """
+from django.conf import settings
 from django.db import models
 from ct_groups.models import CTGroup, email_notify, add_notify_event
 from ct_template.version import save_version
@@ -46,7 +47,11 @@ def format_comment_url(object_id, template_id, tView, comment_id):
     return '%stemplates/%s/%s/?tView=%s#%s' % (settings.APP_BASE, template_id, abs_comment_id, tView, abs_comment_id)
 
 def make_template_id(obj):
-    return  slugify(obj.get_metadata_text('template_id', None) or obj.label)
+    if getattr(settings, 'INCLUDE_VERSION_IN_TEMPLATE_ID', False):
+        v = '_%s' % obj.version
+    else:
+        v = ''
+    return  slugify(obj.get_metadata_text('template_id', None) or '%s%s' % (obj.label, v))
     
 class ClinTemplate(models.Model):
     #name = models.CharField(max_length=64, core=True)
@@ -152,6 +157,10 @@ class ClinTemplate(models.Model):
     def _label(self):
         return self.get_metadata_text('label', None) or self.get_metadata_text('Name', 'no label set')
     label = property(_label)
+
+    def _version(self):
+        return self.get_metadata_text('Version', '')
+    version = property(_version)
 
     def _get_metadata(self):
         """ self.metadata is a collection of elements"""
@@ -323,7 +332,7 @@ class ClinTemplate(models.Model):
         self._documentation = None
         self._complexity_score = 0
         self.xmlmodel = xmlmodel
-        
+    
     def save_model(self):
         if self.get_metadata_text('error') is None:
             self.xmlmodel = ET.tostring(self.xmlroot).replace('ns0:', '')
@@ -333,7 +342,6 @@ class ClinTemplate(models.Model):
         self._xmlroot = self._metadata = self._inf_model = self._documentation = None
         template_id = kwargs.pop('template_id', None)
         self._template_id = template_id or make_template_id(self)
-        # print self._template_id
         super(ClinTemplate, self).save()
 
 
