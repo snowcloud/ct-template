@@ -2,83 +2,9 @@
 {% load i18n markup tagging_tags ct_tags ct_groups_tags eltree sitevars utils %}
 
 {% block title %}{{ clin_template.name }}{% endblock %}
-{% block head_extra %}
+
+{% block stylesheet_extra %}
 <link rel="stylesheet" href="/static/css/ct_template.css" type="text/css" media="screen, projection">
-{# <script type='text/javascript' src='/media/js/jquery-1.4.2.min.js'></script> #}
-<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-<script src="/static/js/ct_collapsible.js"></script>
-
-<script type="text/javascript">
-
-function togglecomments(el) {
-	// var divname = 'h_' + el;
-	//alert(el)
-	var div = $("#h_" + el)
-	var a = $("#l_" + el)
-	if (div.css('display')=='none') {
-		a.text('{% trans 'Hide comments' %}')
-	} else {
-		a.text('{% trans 'Show comments' %}')
-	}
-	div.slideToggle(300);
-}
-
-$(document).ready(function() {
-    $("head").append("<link>");
-    css = $("head").children(":last");
-    css.attr({
-      rel:  "stylesheet",
-      type: "text/css",
-      href: "/static/css/ct_template_enhanced.css"
-    });
-    
-    $("#ct-tabs").show();
-	$("#ct-tabs").tabs({
-		cache: true,
-        {% if not clin_template.inf_model %}disabled: [0, 1],{% endif %}
-        {% if tView %}selected: {{ tView }},{% endif %}
-		load: function(event, ui) {
-			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}
-			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
-			var view = '#ct_view' + $("#ct-tabs").tabs('option', 'selected');
-            if (view=="#ct_view2") { $('#ct_view2 h3').collapsible(); };
-			$(view + ' .toggleallcomments').click(function(event){
-				var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1;
-				if (show) { $(this).text("{% trans 'Hide all comments' %}"); }
-				else { $(this).text("{% trans 'Show all comments' %}"); }
-				{# alert(view + " " + show); #}
-				if (show) {
-					$(view + " .ct_comments_hide_show").show(300);
-					t = '{% trans 'Hide comments' %}'	;
-				} else {
-					$(view + " .ct_comments_hide_show").hide(300);
-					t = '{% trans 'Show comments' %}';
-				}
-				$(view + " .toggle_comment").text(t);
-				return false;
-		   });
-		   $(view + ' .togglealldocs').click(function(event){
-				var show = $(this).text().indexOf("{% trans "Show all text" %}") > -1;
-				if (show) { $(this).text("{% trans 'Hide all text' %}"); }
-				else { $(this).text("{% trans 'Show all text' %}"); }
-                if (show) {
-                    $(view + " .collapsible-content").removeClass("collapsible-content-collapsed");
-                    $(view + " .collapsible-heading").removeClass("collapsible-heading-collapsed");
-                } else {
-                    $(view + " .collapsible-content").addClass("collapsible-content-collapsed");
-                    $(view + " .collapsible-heading").addClass("collapsible-heading-collapsed");
-                }
-				return false;
-		   });
-		
-		} 
-	});
-	$("#ct-tabs-alt").hide();
-});
-
-</script>
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -237,3 +163,78 @@ $(document).ready(function() {
 {% endif %}
 
 {% endblock %}
+
+{% block js-extra %}
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+<script src="/static/js/ct_collapsible.js"></script>
+<script type="text/javascript">
+
+function togglecomments(el) {
+	// var divname = 'h_' + el;
+	//alert(el)
+	var div = $("#h_" + el)
+	var a = $("#l_" + el)
+	if (div.css('display')=='none') {
+		a.text('{% trans 'Hide comments' %}')
+	} else {
+		a.text('{% trans 'Show comments' %}')
+	}
+	div.slideToggle(300);
+}
+</script>
+{% endblock %}
+
+{% block js-document-ready %}
+    $("head").append("<link>");
+    css = $("head").children(":last");
+    css.attr({
+      rel:  "stylesheet",
+      type: "text/css",
+      href: "/static/css/ct_template_enhanced.css"
+    });
+    
+    $("#ct-tabs").show();
+	$("#ct-tabs").tabs({
+		cache: true,
+        {% if tView %}selected: {{ tView }},{% endif %}
+		load: function(event, ui) {
+			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}
+			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
+			var view = '#ct_view' + $("#ct-tabs").tabs('option', 'selected');
+            if (view=="#ct_view2") { $('#ct_view2 h3').collapsible(); };
+			$(view + ' .toggleallcomments').click(function(event){
+				var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1;
+				if (show) { $(this).text("{% trans 'Hide all comments' %}"); }
+				else { $(this).text("{% trans 'Show all comments' %}"); }
+				{# alert(view + " " + show); #}
+				if (show) {
+					$(view + " .ct_comments_hide_show").show(300);
+					t = '{% trans 'Hide comments' %}'	;
+				} else {
+					$(view + " .ct_comments_hide_show").hide(300);
+					t = '{% trans 'Show comments' %}';
+				}
+				$(view + " .toggle_comment").text(t);
+				return false;
+		   });
+		   $(view + ' .togglealldocs').click(function(event){
+				var show = $(this).text().indexOf("{% trans "Show all text" %}") > -1;
+				if (show) { $(this).text("{% trans 'Hide all text' %}"); }
+				else { $(this).text("{% trans 'Show all text' %}"); }
+                if (show) {
+                    $(view + " .collapsible-content").removeClass("collapsible-content-collapsed");
+                    $(view + " .collapsible-heading").removeClass("collapsible-heading-collapsed");
+                } else {
+                    $(view + " .collapsible-content").addClass("collapsible-content-collapsed");
+                    $(view + " .collapsible-heading").addClass("collapsible-heading-collapsed");
+                }
+				return false;
+		   });
+		
+		} 
+	});
+	$("#ct-tabs-alt").hide();
+{% endblock %}
+
+
