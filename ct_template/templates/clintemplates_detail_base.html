@@ -15,10 +15,6 @@
 
 {% block content %}
 
-{% if clin_template.workgroup %}
-<p>{% trans 'in' %} <a href="{% url group clin_template.workgroup.slug %}">{{ clin_template.workgroup.name }}</a></p>
-{% endif %}
-
 
 <h1>{{ clin_template.name }}</h1>
 
