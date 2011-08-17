@@ -222,6 +222,10 @@ class DCM(object):
         """docstring for name"""
         return self.metadata.get('Name', 'error-no-name-set')
                 
+    def version(self):
+        """docstring for version"""
+        return self.metadata.get('Version', 'error-no-version-set')
+
     def _get_docs(self):
         """docstring for _get_docs"""
         docs = {}

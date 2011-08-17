@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext
+from django.template import RequestContext, Context, Template
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
@@ -54,8 +54,14 @@ def new_template(request, group_slug):
                 label = form.cleaned_data['title']
                 template_id = slugify(label)
                 note = form.cleaned_data['text']
-                rendered = render_to_string('clintemplates_new.xml', 
-                    { 'label': label, 'template_id': template_id, 'note': note })
+
+                defaults = { 'label': label, 'template_id': template_id, 'note': note }
+                if object.template:
+                    t = Template(object.template)
+                    c = Context(defaults)
+                    rendered = t.render(c)
+                else:
+                    rendered = render_to_string('clintemplates_new.xml', defaults )
                 # print rendered
                 ct = ClinTemplate(xmlmodel=rendered, workgroup=object, accept_reviews=False, enable_editing=True)                                
                 ct.save()
