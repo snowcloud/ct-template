@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n markup tagging_tags ct_tags ct_groups_tags eltree sitevars utils %}
+{% load i18n markup tagging_tags ct_tags ct_groups_tags eltree sitevars utils forms %}
 
 {% block title %}{{ clin_template.name }}{% endblock %}
 
@@ -19,59 +19,22 @@
 <h1>{{ clin_template.name }}</h1>
 
   {{ clin_template.note|default_if_none:""|textile }}
-  {% tags_for_object clin_template as tag_list %}
 
+	<div class="entry-descr">
+	    {% tags_for_object clin_template as tag_list %}                          
+	    <ul>
+	        {% if tag_list %}
+	            <li class="entry-tags">
+	            <ul class="tags">
+	                {% for tag in tag_list %}
+	                    <li><a href="{% url tag tag.name %}">{{ tag.name }}</a></li>
+	                {% endfor %}
+	            </ul>
+	            </li>
+	        {% endif %}
+	    </ul>
+	</div>
 
-  {% if tag_list %}
-	  <p>{% trans 'Topics' %}:
-		  {% for tag in tag_list %}
-			  <a href="{% url tag tag.name %}">{% trans tag.name %}</a>{% if not forloop.last %},{% endif %}
-		  {% endfor %}</p>
-  {% endif %}
-
-
-{% comment %}
-{% if user.is_staff %}
-  <p><a href="{% site_base %}admin/ct_template/clintemplate/{{ clin_template.id }}/">edit</a></p>
-{% endif %}
-{% endcomment %}  
-
-{# <div id="ct_metadata"> #}
-{#	   <table width="90%"> #}
-{#		   {% for item in clin_template.metadata.items %} #}
-{#			   <tr><th width="20%">{% trans item.0 %}:</th><td width="60%">{{ item.1|default_if_none:""|textile }}</td></tr> #}
-{#		   {% endfor %} #}
-{#		   {% if clin_template.included_templates.all %} #}
-{#			   <tr><th width="20%">{% trans 'Includes' %}:</th> #}
-{#				   <td width="60%"> #}
-{#				   {% for t in clin_template.included_templates.all %} #}
-{#					   <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %} #}
-{#				   {% endfor %} #}
-{#			   </td></tr> #}
-{#		   {% endif %} #}
-{#		   {% if clin_template.in_templates.all %} #}
-{#			   <tr><th width="20%">{% trans 'Used in' %}:</th> #}
-{#				   <td width="60%"> #}
-{#				   {% for t in clin_template.in_templates.all %} #}
-{#					   <a href="{% site_base %}templates/{{ t.id }}/">{{ t.name }}</a>{% if not forloop.last %},{% endif %} #}
-{#				   {% endfor %} #}
-{#			   </td></tr> #}
-{#		   {% endif %} #}
-{#		   {% tags_for_object clin_template as tag_list %} #}
-{#		   {% if tag_list %} #}
-{#			   <tr><th width="20%">{% trans 'Topics' %}:</th> #}
-{#				   <td width="60%"> #}
-{#				   {% for tag in tag_list %} #}
-{#					   <a href="{% url tag tag.name %}">{% trans tag.name %}</a>{% if not forloop.last %},{% endif %} #}
-{#				   {% endfor %} #}
-{#			   </td></tr> #}
-{#		   {% endif %} #}
-{#	#}
-{#	#}
-{#	   </table> #}
-{# </div> #}
-
-<br/>
 
 {% if clin_template.accept_reviews %}
 	
@@ -119,12 +82,13 @@
 		<a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">log in</a> to add a review.
 	{% endif %}
 	</p>
-	<hr>
 {% endif %}
 
+<br>
+
 {% if clin_template.accept_comments %}
-	<p>{% trans "You can see any comments by clicking on the '<strong>show comments</strong>' beside each item, or click '<strong>add comment</strong>' to have your say." %}</p>
-{% else %}
+<!-- 	<p>{% trans "You can see any comments by clicking on the '<strong>show comments</strong>' beside each item, or click '<strong>add comment</strong>' to have your say." %}</p>
+ -->{% else %}
 	<p>{% trans 'This template does not accept comments.' %}</p>
 {% endif %}
 
@@ -136,7 +100,34 @@
 			<li><a href="{% url template-detail clin_template.id %}?tView=2"><span>{% trans 'Documentation' %}</span></a></li>
 		{% endif %}
 		<li><a href="{% url template-detail clin_template.id %}?tView=3"><span>{% trans "Metadata"%}</span></a></li>
+
+		{% if clin_template.workgroup|group_edit:user %}
+			<li><a href="#settings">{% trans "Settings"%}</a></li>
+		{% endif %}
+
 	</ul>
+	{% if clin_template.workgroup|group_edit:user %}
+	    <div id="settings">
+
+	    	<form action="{% url template-settings clin_template.id %}" method="post" class="wider">{% csrf_token %}
+            <fieldset>
+                <legend><span>{% trans 'Settings' %}:</span></legend>
+                <ol>
+                     {% show_errors settingsform.non_field_errors %}
+                     {% for field in settingsform %}
+                          {% show_field field "li" %}
+                     {% endfor %}
+                </ol>
+            </fieldset>
+
+            <fieldset class="submit">
+                <input type="submit" name="result" value="{% trans 'Save changes' %}">&nbsp;&nbsp;
+            </fieldset>
+
+        </form>
+
+	    </div>
+	{% endif %}
 </div>
 
 <div id="ct-tabs-alt">
@@ -148,6 +139,7 @@
 	<li><a href="/templates/{{ clin_template.id }}/?tView=1">{% trans "See template data"%}</a></li>
 	<li><a href="/templates/{{ clin_template.id }}/?tView=2">{% trans "Documentation"%}</a></li>
 	<li><a href="/templates/{{ clin_template.id }}/?tView=3">{% trans "Metadata"%}</a></li>
+
   </ul>
 
 {% block template_detail %}{% endblock template_detail %}
@@ -193,6 +185,7 @@ function togglecomments(el) {
     $("#ct-tabs").show();
 	$("#ct-tabs").tabs({
 		cache: true,
+        {% if not clin_template.inf_model %}disabled: [0, 1],{% endif %}
         {% if tView %}selected: {{ tView }},{% endif %}
 		load: function(event, ui) {
 			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}

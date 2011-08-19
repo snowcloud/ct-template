@@ -379,8 +379,3 @@ class ClinTemplateReview(models.Model):
 
     def __unicode__(self):
         return '%s - %s' % (self.template, self.reviewer)
-
-    def save(self):
-        if self.reviewer_id is None:
-            self.reviewer_id = get_current_user().id
-        super(ClinTemplateReview, self).save()

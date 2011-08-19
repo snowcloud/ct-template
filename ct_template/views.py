@@ -3,6 +3,7 @@
 """
 import datetime
 
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render_to_response
@@ -21,7 +22,8 @@ from ct_framework.forms import ConfirmForm
 from ct_groups.models import CTGroup
 from ct_groups.decorators import check_permission
 from ct_template.models import ClinTemplate, ClinTemplateReview, format_comment_url
-from ct_template.forms import *
+from ct_template.forms import CTNewForm, ItemForm, ReviewForm, TemplateSettingsForm
+
 
 def index(request):
     obj_list = ClinTemplate.objects.order_by('_template_id')
@@ -32,13 +34,34 @@ def detail(request, object_id):
     check_permission(request.user, object.workgroup, 'resource', 'r')
     tView = request.GET.get('tView', '0' if object.inf_model else '2')
     
+    settingsform = TemplateSettingsForm(instance=object)
     if request.is_ajax():
         base_t = "clintemplates_detail_base_blank.html"
     else:
         base_t = "clintemplates_detail_base.html"
     t = 'clintemplates_detail.html'
     
-    return render_to_response(t, RequestContext( request, {'base_template': base_t, 'clin_template': object, 'tView': tView, }))
+    return render_to_response(t, RequestContext( request,
+        {'base_template': base_t, 'clin_template': object, 'tView': tView, 'settingsform': settingsform }))
+
+@login_required
+def settings_edit(request, object_id):
+    """docstring for group_note"""
+    object = get_object_or_404(ClinTemplate, pk=object_id)
+    if not check_permission(request.user, object.workgroup, 'group', 'w'):
+        raise PermissionDenied()
+
+    if request.method == 'POST':
+        result = request.POST.get('result')
+        if result == 'cancel':
+            return HttpResponseRedirect(reverse('template-detail',kwargs={'object_id':object.id}))
+        settingsform = TemplateSettingsForm(request.POST, instance=object)
+        if settingsform.is_valid():
+            settingsform.save()
+            messages.success(request, _('Your changes were saved.'))
+            return HttpResponseRedirect('%s?tView=4' % reverse('template-detail',kwargs={'object_id':object.id}))
+    
+    return HttpResponseRedirect('%s?tView=4' % reverse('template-detail',kwargs={'object_id':object.id}))
 
 def new_template(request, group_slug):
     """docstring for new_template"""
@@ -192,6 +215,7 @@ def addreview(request, object_id):
                 r = ClinTemplateReview()
                 r.rating = str(form.clean()['rating'])
                 r.review = str(form.clean()['review'])
+                r.reviewer = request.user
                 r.review_date = datetime.datetime.now()
                 r.template = object
                 r.is_public = True

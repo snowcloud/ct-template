@@ -43,6 +43,8 @@ def elattrib(value, arg):
 
 @register.filter
 def items_for_view(t, view):
+    if int(view) > 3:
+        return None
     return getattr(t, CT_VIEWS[int(view)])
 
 @register.filter
