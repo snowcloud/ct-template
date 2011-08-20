@@ -14,13 +14,13 @@
 	
 	{% if tView < 4 %} {# 4+ don't show template data #}	{% endif %}
 
-		{% if tView == '1' %}<form action="">{% endif %}
+		{% if tView == '0' %}<form action="">{% endif %}
 
 		{% for elem in clin_template|items_for_view:tView|items:clin_template.xmlns %}
 		    {% item_display elem clin_template.id clin_template 0 tView user %}
 		{% endfor%}
 
-		{% if tView == '1' %}</form>{% endif %}
+		{% if tView == '0' %}</form>{% endif %}
 
 </div>
 

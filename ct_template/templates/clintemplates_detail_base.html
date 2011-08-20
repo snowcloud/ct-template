@@ -15,6 +15,7 @@
 
 {% block content %}
 
+<!-- ################################ TEMPLATE INFO ################################ -->
 
 <h1>{{ clin_template.name }}</h1>
 
@@ -37,6 +38,8 @@
 
 
 {% if clin_template.accept_reviews %}
+
+<!-- ################################ REVIEWS ################################  -->
 	
 	<h2>Reviews</h2>
 
@@ -86,6 +89,8 @@
 
 <br>
 
+<!-- ################################ TEMPLATE TABS ################################  -->
+
 {% if clin_template.accept_comments %}
 <!-- 	<p>{% trans "You can see any comments by clicking on the '<strong>show comments</strong>' beside each item, or click '<strong>add comment</strong>' to have your say." %}</p>
  -->{% else %}
@@ -130,6 +135,8 @@
 	{% endif %}
 </div>
 
+<!-- ################################ ALT IF NO JS- MENU ################################  -->
+
 <div id="ct-tabs-alt">
   <ul class="subnav">
 	{% if clin_template.accept_comments %}
@@ -142,15 +149,21 @@
 
   </ul>
 
+<!-- ################################ ALT IF NO JS- CONTENT ################################  -->
+
 {% block template_detail %}{% endblock template_detail %}
 
 </div>
+
+<!-- ################################ OTHER ACTIONS ################################  -->
 
 {% if clin_template.workgroup|resource_delete:user %}
     <p><a href="{% url template-delete clin_template.id %}">{% trans 'Delete' %}</a></p>
 {% endif %}
 
 {% endblock %}
+
+<!-- ################################ JS ################################  -->
 
 {% block js-extra %}
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -185,7 +198,7 @@ function togglecomments(el) {
     $("#ct-tabs").show();
 	$("#ct-tabs").tabs({
 		cache: true,
-        {% if not clin_template.inf_model %}disabled: [0, 1],{% endif %}
+		disabled: [{% if not clin_template.inf_model %}0, 1,{% endif %}null],
         {% if tView %}selected: {{ tView }},{% endif %}
 		load: function(event, ui) {
 			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}
