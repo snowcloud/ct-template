@@ -32,14 +32,15 @@ def index(request):
 def detail(request, object_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
     check_permission(request.user, object.workgroup, 'resource', 'r')
-    tView = request.GET.get('tView', '0' if object.inf_model else '2')
+    tView = request.GET.get('tView', 'form' if object.inf_model else 'docs')
     
     settingsform = TemplateSettingsForm(instance=object)
     if request.is_ajax():
         base_t = "clintemplates_detail_base_blank.html"
     else:
         base_t = "clintemplates_detail_base.html"
-    t = 'clintemplates_detail.html'
+
+    t = 'clintemplates_detail_dataset.html' if tView == 'data' else 'clintemplates_detail.html'
     
     return render_to_response(t, RequestContext( request,
         {'base_template': base_t, 'clin_template': object, 'tView': tView, 'settingsform': settingsform }))
@@ -59,9 +60,9 @@ def settings_edit(request, object_id):
         if settingsform.is_valid():
             settingsform.save()
             messages.success(request, _('Your changes were saved.'))
-            return HttpResponseRedirect('%s?tView=4' % reverse('template-detail',kwargs={'object_id':object.id}))
+            return HttpResponseRedirect('%s?tView=settings' % reverse('template-detail',kwargs={'object_id':object.id}))
     
-    return HttpResponseRedirect('%s?tView=4' % reverse('template-detail',kwargs={'object_id':object.id}))
+    return HttpResponseRedirect('%s?tView=settings' % reverse('template-detail',kwargs={'object_id':object.id}))
 
 def new_template(request, group_slug):
     """docstring for new_template"""

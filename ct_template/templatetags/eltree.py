@@ -12,7 +12,7 @@ from django.http import Http404
 register = template.Library()
 from django.template import Context, loader, TemplateDoesNotExist
 
-CT_VIEWS = ('inf_model', 'dataset', 'documentation', 'metadata')
+CT_VIEWS = {'form': 'inf_model', 'data': 'dataset', 'docs': 'documentation', 'metadata': 'metadata'}
 
 # TODO can this go in settings?
 #      should be dynamic, read from xml
@@ -43,9 +43,9 @@ def elattrib(value, arg):
 
 @register.filter
 def items_for_view(t, view):
-    if int(view) > 3:
+    if view not in CT_VIEWS:
         return None
-    return getattr(t, CT_VIEWS[int(view)])
+    return getattr(t, CT_VIEWS[view])
 
 @register.filter
 def items(value, nsp):
@@ -56,7 +56,7 @@ def items(value, nsp):
 
 @register.simple_tag
 def elem_body(elem, view, template):
-    v = CT_VIEWS[int(view)]
+    v = CT_VIEWS[view]
     func = globals()['%s_body' % v]
     return func(elem, template)
 

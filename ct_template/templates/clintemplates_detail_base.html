@@ -99,12 +99,12 @@
 
 <div id="ct-tabs">
 	<ul>
-		<li><a href="{% url template-detail clin_template.id %}?tView=0"><span>{% trans "View as form"%}</span></a></li>
-		<li><a href="{% url template-detail clin_template.id %}?tView=1"><span>{% trans "View as data"%}</span></a></li>
+		<li><a href="{% url template-detail clin_template.id %}?tView=form"><span>{% trans "View as form"%}</span></a></li>
+		<li><a href="{% url template-detail clin_template.id %}?tView=data"><span>{% trans "View as data"%}</span></a></li>
 		{% if clin_template.documentation %}
-			<li><a href="{% url template-detail clin_template.id %}?tView=2"><span>{% trans 'Documentation' %}</span></a></li>
+			<li><a href="{% url template-detail clin_template.id %}?tView=docs"><span>{% trans 'Documentation' %}</span></a></li>
 		{% endif %}
-		<li><a href="{% url template-detail clin_template.id %}?tView=3"><span>{% trans "Metadata"%}</span></a></li>
+		<li><a href="{% url template-detail clin_template.id %}?tView=metadata"><span>{% trans "Metadata"%}</span></a></li>
 
 		{% if clin_template.workgroup|group_edit:user %}
 			<li><a href="#settings">{% trans "Settings"%}</a></li>
@@ -142,10 +142,10 @@
 	{% if clin_template.accept_comments %}
 	<li><a href="" class="toggleallcomments">{% trans "Show all comments"%}</a></li>
 	{% endif %}
-	<li><a href="/templates/{{ clin_template.id }}/?tView=0">{% trans "See template form"%}</a></li>
-	<li><a href="/templates/{{ clin_template.id }}/?tView=1">{% trans "See template data"%}</a></li>
-	<li><a href="/templates/{{ clin_template.id }}/?tView=2">{% trans "Documentation"%}</a></li>
-	<li><a href="/templates/{{ clin_template.id }}/?tView=3">{% trans "Metadata"%}</a></li>
+	<li><a href="/templates/{{ clin_template.id }}/?tView=form">{% trans "See template form"%}</a></li>
+	<li><a href="/templates/{{ clin_template.id }}/?tView=dataset">{% trans "See template data"%}</a></li>
+	<li><a href="/templates/{{ clin_template.id }}/?tView=docs">{% trans "Documentation"%}</a></li>
+	<li><a href="/templates/{{ clin_template.id }}/?tView=metadata">{% trans "Metadata"%}</a></li>
 
   </ul>
 
@@ -194,17 +194,17 @@ function togglecomments(el) {
       type: "text/css",
       href: "/static/css/ct_template_enhanced.css"
     });
-    
+    var arr = [ 'form', 'data', 'docs', 'metadata', 'settings' ];
     $("#ct-tabs").show();
 	$("#ct-tabs").tabs({
 		cache: true,
 		disabled: [{% if not clin_template.inf_model %}0, 1,{% endif %}null],
-        {% if tView %}selected: {{ tView }},{% endif %}
+        {% if tView %}selected: jQuery.inArray('{{tView}}', arr),{% endif %}
 		load: function(event, ui) {
 			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}
 			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
-			var view = '#ct_view' + $("#ct-tabs").tabs('option', 'selected');
-            if (view=="#ct_view2") { $('#ct_view2 h3').collapsible(); };
+			var view = '#ct_view_' + arr[$("#ct-tabs").tabs('option', 'selected')];
+            if (view=="#ct_view_docs") { $('#ct_view_docs h3').collapsible(); };
 			$(view + ' .toggleallcomments').click(function(event){
 				var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1;
 				if (show) { $(this).text("{% trans 'Hide all comments' %}"); }

@@ -3,24 +3,21 @@
 {% load i18n sitevars utils markup eltree ct_groups_tags %}
 
 {% block template_detail %}
-
-<div id="ct_view{{tView}}">
+<div id="ct_view_{{tView}}">
 	<div class="group">
-	{% if tView = '2' %}
+	{% if tView = 'docs' %}
     	<div><a href="" class="togglealldocs">{% trans "Show all text"%}</a></div>
 	{% endif %}
 	<div class="all_comments_link"><a href="" class="toggleallcomments">{% trans "Show all comments"%}</a></div>
 	</div>
 	
-	{% if tView < 4 %} {# 4+ don't show template data #}	{% endif %}
-
-		{% if tView == '0' %}<form action="">{% endif %}
+		{# % if tView == 'form' %}<form action="">{% endif % #}
 
 		{% for elem in clin_template|items_for_view:tView|items:clin_template.xmlns %}
 		    {% item_display elem clin_template.id clin_template 0 tView user %}
 		{% endfor%}
 
-		{% if tView == '0' %}</form>{% endif %}
+		{# % if tView == 'form' %}</form>{% endif % #}
 
 </div>
 

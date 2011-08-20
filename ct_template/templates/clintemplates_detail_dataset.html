@@ -1,0 +1,26 @@
+{% extends base_template %}
+
+{% load i18n sitevars utils markup eltree ct_groups_tags %}
+
+{% block template_detail %}
+<div id="ct_view_{{tView}}" class="clearfix">
+
+<div id="model_tree" class="six columns">
+	{% for elem in clin_template|items_for_view:tView|items:clin_template.xmlns %}
+	    <p>{{ elem|elattrib:"label"|capfirst }}</p>
+	    {# % item_display elem clin_template.id clin_template 0 tView user % #}
+	{% endfor%}
+
+</div>
+
+<div id="model_edit" class="ten columns">
+	<p>-</p>
+</div>
+
+</div>
+
+{% endblock template_detail %}
+
+{% block js-document-ready %}
+{{ block.super }}
+{% endblock  %}

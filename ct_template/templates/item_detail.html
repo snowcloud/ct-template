@@ -24,21 +24,13 @@
 	               {% endif %}
 				</div>
            {% endif %}
-            {% if tView > "1" and template.enable_editing and template.group|resource_can_edit:user %}
+            {% if tView in "docs,metadata" and template.enable_editing and template.group|resource_can_edit:user %}
                 <div class="edit_link"><a class='edit' href="{% url template-item-edit template.id tView elem|elattrib:"id" %}">{% trans "Edit" %}</a></div>
             {% endif %}
 		</div>
 		<div class="ct_node_body">
 			{% elem_body elem tView template %}
 		</div>
-		{#  put comments above body if form view #}
-		{# <div class="ct_node_comments"> #}
-		{# 	<h4>Comments</h4> #}
-		{# 	<ol> #}
-		{# 		<li>xxx xxxxxx xxx xxxxx xx</li> #}
-		{# 		<li>xxx xxxxxx xxx xxxxx xx</li> #}
-		{# 	</ol> #}
-		{# </div> #}
 		<div class="ct_comments_hide_show" id="h_{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}" style="display: none;">
             {% for v in elem|review_comments:template %}
                 <div class="ct_comment_info">
