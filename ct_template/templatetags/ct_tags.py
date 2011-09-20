@@ -11,10 +11,10 @@ from ct_template.templatetags.eltree import get_template
 def rating_display(value):
     return 'rating- %d' % value
 
-@register.filter
-def site_resource_name(value):
-    v = getattr(settings, 'SYNONYMS', {})
-    return _(v.get(value, value))
+# @register.filter
+# def synonym(value):
+#     v = getattr(settings, 'SYNONYMS', {})
+#     return _(v.get(value, value))
 
 @register.inclusion_tag('tree_node_detail.html')
 def add_node_to_tree(item, top_template_id, template):

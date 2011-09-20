@@ -111,11 +111,11 @@ def delete(request, object_id):
                 return HttpResponseRedirect(reverse('group',kwargs={'group_slug': object.workgroup.slug}))
     else:
         form = ConfirmForm(initial={ 'resource_name': object.name })
-        
+    print settings.SYNONYMS
     return render_to_response('ct_framework/confirm.html', 
         RequestContext( request, 
             {   'form': form,
-                'title': _('Delete this %s?') % _(getattr(settings, 'RESOURCE_NAME', _('Clinical Template')))
+                'title': _('Delete this %s?') % _(settings.SYNONYMS.get('Clinical template', 'Clinical template'))
             })
         )
     
