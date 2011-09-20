@@ -1,0 +1,27 @@
+{% load i18n sitevars utils markup eltree  %}
+
+<table>
+<tr>
+	<th>Label</th>
+	<td>{{ elem|elattrib:"label"|capfirst }}</td>
+</tr>
+<tr>
+	<th>Datatype</th>
+	<td>{{ elem|elattrib:"valueType" }}</td>
+</tr>
+<tr>
+	<th>Cardinality</th>
+	<td>{{ elem|elattrib:"cardinality"|default:"-" }}</td>
+</tr>
+<tr>
+	<th>Values</th>
+	<td>
+		{% for v in elem|values:template %}
+		    {{ v.text }}
+		        {% if v|elattrib:"score" %}<span class="small">[score= {{ v|elattrib:"score" }}]</span>{% endif %}<br>
+		{% endfor %}
+	</td>
+</tr>
+
+
+</table>

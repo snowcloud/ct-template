@@ -6,6 +6,7 @@ from ct_template.models import *
 class ClinTemplateReviewInline(admin.TabularInline):
     model = ClinTemplateReview
     extra = 1
+    raw_id_fields = ('reviewer',)
 
 
 class ClinTemplateAdminForm(ModelForm):
@@ -22,7 +23,7 @@ class ClinTemplateAdmin(admin.ModelAdmin):
     form = ClinTemplateAdminForm
     ordering = ['_template_id']
     save_on_top = True
-    # inlines = [ClinTemplateReviewInline]
+    inlines = [ClinTemplateReviewInline]
 
 admin.site.register(ClinTemplate, ClinTemplateAdmin)
 admin.site.register(ClinTemplateReview)

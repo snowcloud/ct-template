@@ -18,6 +18,7 @@ urlpatterns = patterns('ct_template.views',
     url(r'^(?P<object_id>\d+)/(?P<comment_id>\w+)/$', 'showcomment'),
     url(r'^(?P<object_id>\d+)/(?P<comment_id>\w+)/comment/$', 'addcomment'),
     url(r'^(?P<object_id>\d+)/(?P<view_id>\w+)/(?P<item_id>\w+)/edit/$', 'edititem', name="template-item-edit"),
+    url(r'^(?P<object_id>\d+)/metadata/(?P<node_id>\w+)/$', 'get_node_metadata', name="node-metadata"),
     url(r'^(?P<group_slug>[^/]+)/new-ct/', resource_write(new_template), name='new-ct'),
 
 )

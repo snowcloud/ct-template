@@ -1,0 +1,24 @@
+{% load i18n eltree ct_tags %}
+
+<li id="{{elem|elattrib:"id"}}">{{ elem|elattrib:"label"|capfirst }}
+
+{% if elem|includes_template %}
+	<ul>
+		{% for node in elem|included_template_items:template.xmlnss %}
+			{% add_node_to_tree node top_template_id elem %}
+		{% endfor%}
+
+	</ul>
+{% endif %}
+
+{% with elems=elem|items:template.xmlns %}
+    {% if elems %}
+    	<ul>
+    		{% for node in elems %}
+				{% add_node_to_tree node top_template_id template %}
+			{% endfor%}
+
+    	</ul>
+    {% endif %}
+{% endwith %}
+</li>

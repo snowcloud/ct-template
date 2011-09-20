@@ -33,7 +33,6 @@ def detail(request, object_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
     check_permission(request.user, object.workgroup, 'resource', 'r')
     tView = request.GET.get('tView', 'form' if object.inf_model else 'docs')
-    
     settingsform = TemplateSettingsForm(instance=object)
     if request.is_ajax():
         base_t = "clintemplates_detail_base_blank.html"
@@ -154,7 +153,9 @@ def showcomment(request, object_id, comment_id):
     # fix for mangled URL in email, eg tView=3D3
     if tView.startswith('3D'):
         tView = tView[2:]
-    return render_to_response('clintemplates_detail.html', RequestContext( request, {'base_template': "clintemplates_detail_base.html", 'clin_template': object, 'comment_id': comment_id, 'tView': tView}))
+    return render_to_response('clintemplates_detail.html', RequestContext( request, 
+        {   'base_template': "clintemplates_detail_base.html", 'clin_template': object, 
+            'comment_id': comment_id, 'tView': tView, 'settingsform': TemplateSettingsForm(instance=object)}))
 
 @login_required
 def addcomment(request, object_id, comment_id):
@@ -231,3 +232,12 @@ def addreview(request, object_id):
     response = render_to_response('clintemplates_add_review.html',  
         RequestContext( request, { 'form': form, 'clin_template': object, 'tView': tView }) )
     return response
+
+def get_node_metadata(request, object_id, node_id):
+    object = get_object_or_404(ClinTemplate, pk=object_id)
+    check_permission(request.user, object.workgroup, 'resource', 'r')
+
+    # if request.is_ajax():
+    node = object.get_item(node_id)
+    return render_to_response('node_metadata.html', RequestContext( request,
+        { 'elem': node, 'template': object }))

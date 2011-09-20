@@ -100,7 +100,7 @@
 <div id="ct-tabs">
 	<ul>
 		<li><a href="{% url template-detail clin_template.id %}?tView=form"><span>{% trans "View as form"%}</span></a></li>
-		<li><a href="{% url template-detail clin_template.id %}?tView=data"><span>{% trans "View as data"%}</span></a></li>
+		<li><a href="{% url template-detail clin_template.id %}?tView=data"><span>{% trans "View as data"%}</span></a></li>		
 		{% if clin_template.documentation %}
 			<li><a href="{% url template-detail clin_template.id %}?tView=docs"><span>{% trans 'Documentation' %}</span></a></li>
 		{% endif %}
@@ -115,21 +115,21 @@
 	    <div id="settings">
 
 	    	<form action="{% url template-settings clin_template.id %}" method="post" class="wider">{% csrf_token %}
-            <fieldset>
-                <legend><span>{% trans 'Settings' %}:</span></legend>
-                <ol>
-                     {% show_errors settingsform.non_field_errors %}
-                     {% for field in settingsform %}
-                          {% show_field field "li" %}
-                     {% endfor %}
-                </ol>
-            </fieldset>
+	            <fieldset>
+	                <legend><span>{% trans 'Settings' %}:</span></legend>
+	                <ol>
+	                     {% show_errors settingsform.non_field_errors %}
+	                     {% for field in settingsform %}
+	                          {% show_field field "li" %}
+	                     {% endfor %}
+	                </ol>
+	            </fieldset>
 
-            <fieldset class="submit">
-                <input type="submit" name="result" value="{% trans 'Save changes' %}">&nbsp;&nbsp;
-            </fieldset>
+	            <fieldset class="submit">
+	                <input type="submit" name="result" value="{% trans 'Save changes' %}">&nbsp;&nbsp;
+	            </fieldset>
 
-        </form>
+	        </form>
 
 	    </div>
 	{% endif %}
@@ -168,6 +168,13 @@
 {% block js-extra %}
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+
+<script type="text/javascript" src="/static/js/jstree/vakata.js"></script>
+<script type="text/javascript" src="/static/js/jstree/jstree.core.js"></script>
+<script type="text/javascript" src="/static/js/jstree/jstree.themes.js"></script>
+<script type="text/javascript" src="/static/js/jstree/jstree.ui.js"></script>
+<script type="text/javascript" src="/static/js/jstree/jstree.dnd.js"></script>
+
 <script src="/static/js/ct_collapsible.js"></script>
 <script type="text/javascript">
 
@@ -183,7 +190,17 @@ function togglecomments(el) {
 	}
 	div.slideToggle(300);
 }
+function load_node_metadata(node_id) {
+	$.ajax({
+		  url: "/templates/{{clin_template.id}}/metadata/"+node_id+"/",
+		  context: document.body,
+		  success: function(data){
+		    $('#result').html(data);
+		  }
+	});
+}
 </script>
+
 {% endblock %}
 
 {% block js-document-ready %}
@@ -194,17 +211,67 @@ function togglecomments(el) {
       type: "text/css",
       href: "/static/css/ct_template_enhanced.css"
     });
+
+	$.jstree.THEMES_DIR = "/static/js/jstree/themes/";
     var arr = [ 'form', 'data', 'docs', 'metadata', 'settings' ];
     $("#ct-tabs").show();
+    	console.log('{{tView}}');
+
 	$("#ct-tabs").tabs({
 		cache: true,
-		disabled: [{% if not clin_template.inf_model %}0, 1,{% endif %}null],
+		{% if not clin_template.inf_model %}disabled: [0, 1],{% endif %}
         {% if tView %}selected: jQuery.inArray('{{tView}}', arr),{% endif %}
 		load: function(event, ui) {
 			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}
 			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
 			var view = '#ct_view_' + arr[$("#ct-tabs").tabs('option', 'selected')];
-            if (view=="#ct_view_docs") { $('#ct_view_docs h3').collapsible(); };
+			console.log(view);
+           if (view=="#ct_view_docs") { $('#ct_view_docs h3').collapsible(); };
+			if (view=="#ct_view_data") { 
+				$("#modelTree")
+					.bind("__loaded.jstree", function (event, data) {
+						$("#modelTree").jstree('open_all');
+						})
+					.jstree({
+						"themes" : {
+							"theme" : "ct",
+							// "dots" : true,
+							// "icons" : true
+						},
+						//"plugins" : [ "themes", "dnd", "ui" ],
+						"plugins" : [ "themes", "ui" ],
+
+					})
+					.bind("select_node.jstree", function (event, data) {
+				        // `data.rslt.obj` is the jquery extended node that was clicked
+				        load_node_metadata(data.rslt.obj.attr("id"));})
+				    .bind("move_node.jstree", function (e, data) {
+				    	var moved = data.rslt.obj.attr("id");
+				    	var from = data.rslt.old_parent == -1 ? 'top level' : data.rslt.old_parent.attr("id");
+				    	var to = data.rslt.parent == -1 ? 'top level' : data.rslt.parent.attr("id");
+				    	var pos = data.rslt.position;
+				    	$('#result').text('moved '+moved+' from '+from+' to '+to+':'+pos);
+				    	console.log(data.rslt);
+				    	// console.log('to '+data.rslt.parent);
+				    })
+				    ;
+			    // .delegate("a", "click", function (event, data) { event.preventDefault(); });
+				// var tree = $("#modelTree").jstree;
+				$('.jstree_toggleopen').click(function() {
+					if ($(this).text()=='{% trans 'Close all' %}') {
+						$("#modelTree").jstree('close_all');
+						$(this).text('{% trans 'Open all' %}');
+					} else {
+						$("#modelTree").jstree('open_all');
+						$(this).text('{% trans 'Close all' %}');
+					}
+				});
+				//$('.jstree_closeall').click(function() {$("#modelTree").jstree('close_all');});
+
+				//$('#result').text('glah');
+			 };
+	
+            {% block tab-load %}{% endblock %}
 			$(view + ' .toggleallcomments').click(function(event){
 				var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1;
 				if (show) { $(this).text("{% trans 'Hide all comments' %}"); }
@@ -236,6 +303,7 @@ function togglecomments(el) {
 		
 		} 
 	});
+	console.log('blahxy');
 	$("#ct-tabs-alt").hide();
 {% endblock %}
 
