@@ -24,6 +24,14 @@ from ct_groups.decorators import check_permission
 from ct_template.models import ClinTemplate, ClinTemplateReview, format_comment_url
 from ct_template.forms import CTNewForm, ItemForm, ReviewForm, TemplateSettingsForm
 
+TVIEWS = ['form', 'data', 'docs', 'metadata', 'settings']
+
+def _get_tView(req, object):
+    result = req.get('tView', 'form' if object.inf_model else 'docs')
+    # fix for mangled URL in email, eg tView=3D3
+    if result.startswith('3D'):
+        result = result[2:]
+    return result if result in TVIEWS else 'form'
 
 def index(request):
     obj_list = ClinTemplate.objects.order_by('_template_id')
@@ -32,7 +40,7 @@ def index(request):
 def detail(request, object_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
     check_permission(request.user, object.workgroup, 'resource', 'r')
-    tView = request.GET.get('tView', 'form' if object.inf_model else 'docs')
+    tView = _get_tView(request.GET, object)
     settingsform = TemplateSettingsForm(instance=object)
     if request.is_ajax():
         base_t = "clintemplates_detail_base_blank.html"
@@ -149,10 +157,7 @@ def showcomment(request, object_id, comment_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
     check_permission(request.user, object.workgroup, 'resource', 'r')
     check_permission(request.user, object.workgroup, 'comment', 'r')
-    tView = request.GET.get('tView', '0')
-    # fix for mangled URL in email, eg tView=3D3
-    if tView.startswith('3D'):
-        tView = tView[2:]
+    tView = _get_tView(request.GET, object)
     return render_to_response('clintemplates_detail.html', RequestContext( request, 
         {   'base_template': "clintemplates_detail_base.html", 'clin_template': object, 
             'comment_id': comment_id, 'tView': tView, 'settingsform': TemplateSettingsForm(instance=object)}))
@@ -163,7 +168,7 @@ def addcomment(request, object_id, comment_id):
     check_permission(request.user, object.workgroup, 'comment', 'w')
     
     if request.POST:
-        tView = request.POST.get('tView', '0')
+        tView = _get_tView(request.POST, object)
         top_template_id = request.POST.get('top', '')
         if top_template_id == '':
             template_id = object_id
@@ -186,7 +191,7 @@ def addcomment(request, object_id, comment_id):
     else:
         comment_text = ''
         error_message = ''
-        tView = request.GET.get('tView', '0')
+        tView = _get_tView(request.GET, object)
         top_template_id = request.GET.get('top', '')
     
     return render_to_response(
@@ -207,7 +212,7 @@ def addreview(request, object_id):
     check_permission(request.user, object.workgroup, 'comment', 'w')
 
     if request.method == 'POST':
-        tView = request.POST.get('tView', '0')
+        tView = _get_tView(request.POST, object)
         redirect_str = '%stemplates/%s/?tView=%s' % (settings.APP_BASE, object.id, tView)
         if request.POST['result'] == _('Cancel'):
             return HttpResponseRedirect(redirect_str)
@@ -227,7 +232,7 @@ def addreview(request, object_id):
         form = ReviewForm()
         form.ignore_errors = True
         #form.errors().clear()
-        tView = request.GET.get('tView', '0')
+        tView = _get_tView(request.GET, object)
 
     response = render_to_response('clintemplates_add_review.html',  
         RequestContext( request, { 'form': form, 'clin_template': object, 'tView': tView }) )
