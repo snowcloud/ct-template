@@ -38,53 +38,7 @@
 
 
 {% if clin_template.accept_reviews %}
-
-<!-- ################################ REVIEWS ################################  -->
-	
-	<h2>Reviews</h2>
-
-	<p>You can use a review to give an overall view of a template, rather than contribute comments intended to help develop a it.</p> 
-
-	<p>Comments are not available on templates based on standardised tools, so leave a review if you want to recommend a template, or advise others on weaknesses in the evidence or problems in using it.</p>
-
-	{% if clin_template.clintemplatereview_set.all %}
-	<p class="small">ratings: 1 = serious concern, 2 = some concern, 3 = acceptable for use, 4 = useful, 5 = recommended</p>
-
-	<div class="siteresources">
-		<table width="100%">
-			{% for review in clin_template.clintemplatereview_set.all %}
-				<tr><th width="20%">{{ review.reviewer.get_full_name }}:<br/>
-				<span class="small">{{ review.review_date|date:"j F Y, H:i" }}</span><br/>
-				<span class="small">{{ review.rating|rating_display }}</span>
-				</th>
-				<td width="60%">{{ review.review|linebreaksbr }}</td></tr>
-			{% endfor %}
-		</table>
-	</div>
-	{% endif %}
-
-	{% comment %}
-		if not authorised
-			log in to add a review
-		else
-			check perm can comment
-		
-			if user.is_authenticated %}
-				{% if clin_template.workgroup|can_comment:user
-				
-	{% endcomment %}
-
-	<p>
-	{% if user.is_authenticated %}
-		{% if clin_template.workgroup|can_comment:user %}
-		   <a href="/templates/{{ clin_template.id }}/addreview/">Add a review of this template.</a>
-		{% else %}
-			Sorry, you don't have access to add a review.
-		{% endif %}
-	{% else %}
-		<a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">log in</a> to add a review.
-	{% endif %}
-	</p>
+        {% include "clintemplates_reviews.html" %}
 {% endif %}
 
 <br>

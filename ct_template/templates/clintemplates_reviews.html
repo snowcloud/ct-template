@@ -1,0 +1,52 @@
+{% load i18n ct_tags ct_groups_tags sitevars utils markup %}
+<!-- ################################ REVIEWS ################################  -->
+<div id="reviews">
+
+	<h2>{% trans "Reviews" %}</h2>
+
+	<p>{% trans "You can use a review to give an overall view, rather than contribute comments intended to help develop it." %}</p> 
+
+	{% if clin_template.clintemplatereview_set.all %}
+		<p class="small">{% trans "Ratings: 1 = serious concern, 2 = some concern, 3 = acceptable for use, 4 = good, 5 = recommended" %}</p>
+
+		{% for review in clin_template.clintemplatereview_set.all %}
+			<div class="entry">
+				<div class="entry-descr">
+					<ul>
+						<li class="entry-rating stars{{ review.rating }}"></li>
+						<li class="entry-author">{{ review.reviewer.get_full_name }}</li>
+						<li class="entry-date">{{ review.review_date|date:"j F Y, H:i" }}</li>
+					</ul>
+				</div>
+
+				{{ review.review|textile }}   
+	                   
+
+			</div>
+		{% endfor %}
+
+	{% endif %}
+
+	{% comment %}
+		if not authorised
+			log in to add a review
+		else
+			check perm can comment
+		
+			if user.is_authenticated %}
+				{% if clin_template.workgroup|can_comment:user
+				
+	{% endcomment %}
+
+	<p>
+	{% if user.is_authenticated %}
+		{% if clin_template.workgroup|can_comment:user %}
+		   <a href="/templates/{{ clin_template.id }}/addreview/">{% trans "Add a review." %}</a>
+		{% else %}
+			{% trans "Sorry, you don't have access to add a review." %}
+		{% endif %}
+	{% else %}
+		<a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">{% trans "Log in to add a review." %}</a>
+	{% endif %}
+	</p>
+</div>
