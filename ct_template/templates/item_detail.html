@@ -38,11 +38,22 @@
                 </div>
                 <div class="ct_comment">
                     {{ v.text|escape|textile }}
+                    {% comment %}
+                    	
                     {% if forloop.last and template.accept_comments %}
-                        <span class="right" style="background-color: #eeeeff;">&nbsp;&nbsp;<a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>&nbsp;<img src="{% site_base %}static/icons/comments.png"/>&nbsp;</span><br/>
+                    	<div class="comment_link"><a class="add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+
+                    	</div>
                     {% endif %}
+                    {% endcomment %}
                 </div>
+                    {% if forloop.last and template.accept_comments %}
+                    	<div class="ct_node_label group">
+                    	<div class="comment_link"><a class="add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+                    	</div></div>
+                    {% endif %}
             {% endfor %}
+
         </div>
         
         {% if elem|includes_template %}
