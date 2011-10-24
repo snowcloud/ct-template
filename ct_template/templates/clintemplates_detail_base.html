@@ -119,11 +119,15 @@
 
 <!-- ################################ JS ################################  -->
 
+
 {% block js-extra %}
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-
+	
 <script type="text/javascript" src="/static/js/jstree/vakata.js"></script>
+{% comment %}
+{% endcomment %}
+
 <script type="text/javascript" src="/static/js/jstree/jstree.core.js"></script>
 <script type="text/javascript" src="/static/js/jstree/jstree.themes.js"></script>
 <script type="text/javascript" src="/static/js/jstree/jstree.ui.js"></script>
@@ -157,6 +161,7 @@ function load_node_metadata(node_id) {
 
 {% endblock %}
 
+	
 {% block js-document-ready %}
     $("head").append("<link>");
     css = $("head").children(":last");
@@ -169,8 +174,6 @@ function load_node_metadata(node_id) {
 	$.jstree.THEMES_DIR = "/static/js/jstree/themes/";
     var arr = [ 'form', 'data', 'docs', 'metadata', 'settings' ];
     $("#ct-tabs").show();
-    	console.log('{{tView}}');
-
 	$("#ct-tabs").tabs({
 		cache: true,
 		{% if not clin_template.inf_model %}disabled: [0, 1],{% endif %}
@@ -179,8 +182,7 @@ function load_node_metadata(node_id) {
 			{# load is called on load of each tab- setup stuff just for that tab, or it's added multiple times #}
 			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
 			var view = '#ct_view_' + arr[$("#ct-tabs").tabs('option', 'selected')];
-			console.log(view);
-           if (view=="#ct_view_docs") { $('#ct_view_docs h3').collapsible(); };
+            if (view=="#ct_view_docs") { $('#ct_view_docs h3').collapsible(); };
 			if (view=="#ct_view_data") { 
 				$("#modelTree")
 					.bind("__loaded.jstree", function (event, data) {
@@ -188,12 +190,12 @@ function load_node_metadata(node_id) {
 						})
 					.jstree({
 						"themes" : {
-							"theme" : "ct",
+							"theme" : "ct"
 							// "dots" : true,
 							// "icons" : true
 						},
 						//"plugins" : [ "themes", "dnd", "ui" ],
-						"plugins" : [ "themes", "ui" ],
+						"plugins" : [ "themes", "ui" ]
 
 					})
 					.bind("select_node.jstree", function (event, data) {
@@ -257,8 +259,10 @@ function load_node_metadata(node_id) {
 		
 		} 
 	});
-	console.log('blahxy');
+{% comment %}
+	{% endcomment %}
 	$("#ct-tabs-alt").hide();
+
 {% endblock %}
 
 
