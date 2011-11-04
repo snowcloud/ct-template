@@ -3,7 +3,7 @@
 
 <ol class="ct_node_children ">
 	<li class="ct_level{{ this_level }} ct_node ">
-		<div class="ct_node_label group">
+		<div class="ct_node_label clearfix">
     		<h3 id="{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}">{{ elem|elattrib:"label"|capfirst }}</h3>
             {% if template.accept_comments %}
 				<div class="comment_link">
@@ -48,7 +48,7 @@
                     {% endcomment %}
                 </div>
                     {% if forloop.last and template.accept_comments %}
-                    	<div class="ct_node_label group">
+                    	<div class="ct_node_label clearfix">
                     	<div class="comment_link"><a class="add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
                     	</div></div>
                     {% endif %}

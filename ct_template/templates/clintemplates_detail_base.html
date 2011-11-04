@@ -8,9 +8,9 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-  <a href="{% site_base %}">{% trans 'Home' %}</a>	&gt;
+  <p><a href="{% site_base %}">{% trans 'Home' %}</a>	&gt;
   <a href="{% site_base %}groups">{% trans 'Groups' %}</a>	&gt;
-  <a href="{% url group clin_template.workgroup.slug %}">{{ clin_template.workgroup.name }}</a>
+  <a href="{% url group clin_template.workgroup.slug %}">{{ clin_template.workgroup.name }}</a></p>
 {% endblock %}
 
 {% block content %}
@@ -21,10 +21,10 @@
 
   {{ clin_template.note|default_if_none:""|textile }}
 
+{% tags_for_object clin_template as tag_list %}                          
+{% if tag_list %}
 	<div class="entry-descr">
-	    {% tags_for_object clin_template as tag_list %}                          
 	    <ul>
-	        {% if tag_list %}
 	            <li class="entry-tags">
 	            <ul class="tags">
 	                {% for tag in tag_list %}
@@ -32,10 +32,11 @@
 	                {% endfor %}
 	            </ul>
 	            </li>
-	        {% endif %}
 	    </ul>
 	</div>
+{% endif %}
 
+<!-- ################################ REVIEWS ################################  -->
 
 {% if clin_template.accept_reviews %}
         {% include "clintemplates_reviews.html" %}
