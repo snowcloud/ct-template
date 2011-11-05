@@ -1,18 +1,27 @@
+from django.conf import settings
 from django import template
 from django.utils.translation import ugettext as _
 
-
 register = template.Library()
 
-# try:
-from django.conf import settings
-
+from ct_template.models import ClinTemplate
+from ct_template.templatetags.eltree import get_template
 
 @register.filter
 def rating_display(value):
     return 'rating- %d' % value
 
-@register.filter
-def site_resource_name(value):
-    v = getattr(settings, 'SYNONYMS', {})
-    return _(v.get(value, value))
+# @register.filter
+# def synonym(value):
+#     v = getattr(settings, 'SYNONYMS', {})
+#     return _(v.get(value, value))
+
+@register.inclusion_tag('tree_node_detail.html')
+def add_node_to_tree(item, top_template_id, template):
+    if not isinstance (template, ClinTemplate):
+        template = get_template(elattrib(template, 'include'))
+    return {
+        'elem': item,
+        'top_template_id': top_template_id,
+        'template': template
+    }

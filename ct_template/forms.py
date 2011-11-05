@@ -1,11 +1,11 @@
-from django.forms import *
+from django import forms
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from ct_template.models import ClinTemplate
 
-class CTNewForm(Form):
-    title = CharField(label=_('Title'))
-    text = CharField(label=_('Text'), widget=Textarea(attrs={'class': 'item_big_text'}))
+class CTNewForm(forms.Form):
+    title = forms.CharField(label=_('Title'))
+    text = forms.CharField(label=_('Text'), widget=forms.Textarea(attrs={'class': 'item_big_text'}))
     
     def clean_title(self):
         t = slugify(self.cleaned_data['title'])
@@ -13,13 +13,13 @@ class CTNewForm(Form):
             raise ValidationError(_('A resource with this name already exists.'))
         return self.cleaned_data['title']
 
-class ItemForm(Form):
-    title = CharField(label=_('Title'), widget=HiddenInput())
-    text = CharField(label=_('Text'), widget=Textarea(attrs={'class': 'item_big_text'}))
+class ItemForm(forms.Form):
+    title = forms.CharField(label=_('Title'), widget=forms.HiddenInput())
+    text = forms.CharField(label=_('Text'), widget=forms.Textarea(attrs={'class': 'item_big_text'}))
 
-class ReviewForm(Form):
-    rating = IntegerField()
-    review = CharField(widget=Textarea(attrs={'rows': 20, 'cols': 50, 'class': 't_area'}))
+class ReviewForm(forms.Form):
+    rating = forms.IntegerField()
+    review = forms.CharField(widget=forms.Textarea(attrs={'rows': 20, 'cols': 50, 'class': 't_area'}))
 
     def clean_rating(self):
         try:
@@ -29,3 +29,11 @@ class ReviewForm(Form):
         except AttributeError:
             return None
 
+class TemplateSettingsForm(forms.ModelForm):
+    """docstring for TemplateSettingsForm"""
+    class Meta:
+        model = ClinTemplate
+        fields = ('tags', 'is_public', 'accept_comments', 'accept_reviews', 'enable_editing')
+
+        # fields = ('name', 'note', 'tags', 'is_public', 'moderate_membership', 'moderated_message',
+        #     'language', 'show_discussion', 'resource_comment_order', 'template', 'logo')

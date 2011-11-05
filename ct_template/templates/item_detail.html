@@ -3,7 +3,7 @@
 
 <ol class="ct_node_children ">
 	<li class="ct_level{{ this_level }} ct_node ">
-		<div class="ct_node_label group">
+		<div class="ct_node_label clearfix">
     		<h3 id="{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}">{{ elem|elattrib:"label"|capfirst }}</h3>
             {% if template.accept_comments %}
 				<div class="comment_link">
@@ -15,7 +15,7 @@
 	               {% else %}
 	                   {% if user.is_authenticated %}
 	                       {% if template.workgroup|can_comment:user %}
-	                           <a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+	                           <a class='add' href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
 	                       {% endif %}
 	                   {% else %}
 	                       <a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">{% trans "Log in to add comment" %}</a>
@@ -24,21 +24,13 @@
 	               {% endif %}
 				</div>
            {% endif %}
-            {% if tView > "1" and template.enable_editing and template.group|resource_can_edit:user %}
-                <div class="edit_link"><a href="{% url template-item-edit template.id tView elem|elattrib:"id" %}">{% trans "Edit" %}</a></div>
+            {% if tView in "docs,metadata" and template.enable_editing and template.group|resource_can_edit:user %}
+                <div class="edit_link"><a class='edit' href="{% url template-item-edit template.id tView elem|elattrib:"id" %}">{% trans "Edit" %}</a></div>
             {% endif %}
 		</div>
 		<div class="ct_node_body">
 			{% elem_body elem tView template %}
 		</div>
-		{#  put comments above body if form view #}
-		{# <div class="ct_node_comments"> #}
-		{# 	<h4>Comments</h4> #}
-		{# 	<ol> #}
-		{# 		<li>xxx xxxxxx xxx xxxxx xx</li> #}
-		{# 		<li>xxx xxxxxx xxx xxxxx xx</li> #}
-		{# 	</ol> #}
-		{# </div> #}
 		<div class="ct_comments_hide_show" id="h_{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}" style="display: none;">
             {% for v in elem|review_comments:template %}
                 <div class="ct_comment_info">
@@ -46,11 +38,22 @@
                 </div>
                 <div class="ct_comment">
                     {{ v.text|escape|textile }}
+                    {% comment %}
+                    	
                     {% if forloop.last and template.accept_comments %}
-                        <span class="right" style="background-color: #eeeeff;">&nbsp;&nbsp;<a href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>&nbsp;<img src="{% site_base %}static/icons/comments.png"/>&nbsp;</span><br/>
+                    	<div class="comment_link"><a class="add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+
+                    	</div>
                     {% endif %}
+                    {% endcomment %}
                 </div>
+                    {% if forloop.last and template.accept_comments %}
+                    	<div class="ct_node_label clearfix">
+                    	<div class="comment_link"><a class="add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+                    	</div></div>
+                    {% endif %}
             {% endfor %}
+
         </div>
         
         {% if elem|includes_template %}

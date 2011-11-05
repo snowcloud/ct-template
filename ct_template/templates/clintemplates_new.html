@@ -1,17 +1,14 @@
 {% extends "base.html" %}
-{% load sitevars i18n eltree forms ct_tags %}
+{% load sitevars i18n eltree forms ct_framework_tags %}
 
 {% block title %}{% trans "New" %}{% endblock %}
 
-{% block head_extra %}
-<link rel="stylesheet" href="/media/css/ct_template.css" type="text/css" media="screen, projection">
-{% endblock %}
 
-{% block breadcrumbs %}asasdfasd asda{% endblock %}
+{% block breadcrumbs %}{% endblock %}
 
 {% block content %}
 
-<h2>{{ "New template"|site_resource_name }}</h2>
+<h2>{{ "New template"|synonym }}</h2>
 
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}

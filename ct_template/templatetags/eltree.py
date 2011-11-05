@@ -12,7 +12,7 @@ from django.http import Http404
 register = template.Library()
 from django.template import Context, loader, TemplateDoesNotExist
 
-CT_VIEWS = ('inf_model', 'dataset', 'documentation', 'metadata')
+CT_VIEWS = {'form': 'inf_model', 'data': 'dataset', 'docs': 'documentation', 'metadata': 'metadata'}
 
 # TODO can this go in settings?
 #      should be dynamic, read from xml
@@ -43,7 +43,9 @@ def elattrib(value, arg):
 
 @register.filter
 def items_for_view(t, view):
-    return getattr(t, CT_VIEWS[int(view)])
+    if view not in CT_VIEWS:
+        return None
+    return getattr(t, CT_VIEWS[view])
 
 @register.filter
 def items(value, nsp):
@@ -54,7 +56,7 @@ def items(value, nsp):
 
 @register.simple_tag
 def elem_body(elem, view, template):
-    v = CT_VIEWS[int(view)]
+    v = CT_VIEWS[view]
     func = globals()['%s_body' % v]
     return func(elem, template)
 
@@ -85,7 +87,7 @@ def doc_content(value):
 def fixedtext(value):
     return elattrib(value, 'valueType') == 'fixedtext'
 
-def _get_template(id):
+def get_template(id):
     try:
         return  get_object_or_404(ClinTemplate, _template_id__exact=id)
     except Http404:
@@ -111,7 +113,7 @@ def included_template_name(value):
 def included_template(value):
     if not includes_template(value):
         return None
-    return _get_template(elattrib(value, 'include'))
+    return get_template(elattrib(value, 'include'))
 
 @register.filter
 def included_template_items(value, nsp):
@@ -164,7 +166,7 @@ def item_editor(item):
 @register.inclusion_tag('item_detail.html')
 def item_display(item, top_template_id, template, level=0, tView=None, user=None):
     if not isinstance (template, ClinTemplate):
-        template = _get_template(elattrib(template, 'include'))
+        template = get_template(elattrib(template, 'include'))
     return {
         'elem': item,
         'top_template_id': top_template_id,
@@ -252,7 +254,7 @@ def item_display_widget(item, template):
     c = Context({ 'elem': item, 'suffix': suffix, 'template': template })
     
     try:
-        t_loaded = loader.get_template('item_widget_%s.html' % widget)  
+        t_loaded = loader.get_template('widgets/item_widget_%s.html' % widget)  
         return t_loaded.render(c)
     except TemplateDoesNotExist:
         return '<div class="ct_widget">[ERROR: TEMPLATE NOT FOUND]</div>'

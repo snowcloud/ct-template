@@ -11,6 +11,13 @@ VALUETYPES = {
     'container': 'group',
     }
 
+DATATYPES = {
+    'CD': None,
+    'BL': None,
+    'ST': None,
+    'PQ': None,
+}
+
 """
 XMI.content
     UML:Model
@@ -178,6 +185,8 @@ class ModelNode(object):
             self.stereotype = 'unknown'
         self.metadata = get_metadata(node.find(ns("ModelElement.taggedValue")))
         self.id = self.metadata['ea_localid']
+        self.description = self.metadata['documentation']
+        self.datatype = None
         self.valueset = list(node.findall(ns("Classifier.feature/Attribute")))
         self.parent = None
         self.children = []
@@ -189,7 +198,11 @@ class ModelNode(object):
         # </valueset>
         vs = ET.Element("valueset")
         for value in self.valueset:
-            v = ET.Element("value")
+            metadata = get_metadata(value.find(ns("ModelElement.taggedValue")))
+            # print metadata
+            # print
+            attrs = {'description': metadata['description'], 'defcode': metadata.get('DefinitionCode', '')}
+            v = ET.Element("value", attrs)
             v.text = value.attrib['name']
             score = value.find(ns('Attribute.initialValue/Expression[@body]'))
             if not score is None:
@@ -247,7 +260,18 @@ class DCM(object):
         infomodel = self.content.get('Information Model', None) or self.content['Information model']
         self.associations = [Association(n)
             for n in infomodel.findall(ns('Namespace.ownedElement/Association'))]
-        
+
+    def _get_datatypes(self):
+        infomodel = self.content.get('Information Model', None) or self.content['Information model']
+        for gen in infomodel.findall(ns('Namespace.ownedElement/Generalization')):
+            metadata = get_metadata(gen.find(ns("ModelElement.taggedValue")))
+            dt = metadata.get('ea_targetName', '-')
+            if dt in DATATYPES:
+                node = self.model_dict[metadata.get('ea_sourceID', '-')]
+                # print node.name
+                node.datatype = dt
+                # print metadata.get('ea_sourceName', '-'), metadata.get('ea_sourceID', '-'), dt
+
     def _get_concepts(self):
         """docstring for _link_assocs"""
         infomodel = self.content.get('Information Model', None) or self.content['Information model']
@@ -301,7 +325,6 @@ class DCM(object):
             self.item_id += 10
             root.append(n)
             
-        
     def _write_infomodel_to_output(self, node, concept=None):
         """docstring for _write_to_output"""
         def _write_info(self, node, concept=None):
@@ -312,7 +335,9 @@ class DCM(object):
             else:
                 # id="i001" label="Total Glasgow Coma Scale Score" valueType="integer"
                 attrs = { 'id': 'i%04d' % self.item_id, 'label': concept.name,
+                    'description': concept.description,
                     'cardinality': concept.cardinality,
+                    'datatype': concept.datatype or '',
                     'valueType': self._valuetype_for_concept(concept) }
                 n = ET.Element("item", attrs)
                 self.item_id += 10
@@ -335,6 +360,7 @@ class DCM(object):
         self._find_rootconcept()
         self._get_assocs()
         self._make_links()
+        self._get_datatypes()
         n = ET.Element("model")
         self.root.append(n)
         if metadata:
