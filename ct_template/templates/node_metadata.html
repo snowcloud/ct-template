@@ -2,26 +2,49 @@
 
 <table>
 <tr>
-	<th>Label</th>
+	<th>{% trans "Label" %}</th>
 	<td>{{ elem|elattrib:"label"|capfirst }}</td>
 </tr>
 <tr>
-	<th>Datatype</th>
+	<th>{% trans "Description" %}</th>
+	<td>{{ elem|elattrib:"description"|default:"-" }}</td>
+</tr>
+<tr>
+	<th>{% trans "Datatype" %}</th>
 	<td>{{ elem|elattrib:"valueType" }}</td>
 </tr>
 <tr>
-	<th>Cardinality</th>
+	<th>{% trans "Cardinality" %}</th>
 	<td>{{ elem|elattrib:"cardinality"|default:"-" }}</td>
 </tr>
+{% with values=elem|values:template %}
+{% if values %}  	
 <tr>
-	<th>Values</th>
+	<th>{% trans "Values" %}</th>
 	<td>
+	{% comment %}
+		
 		{% for v in elem|values:template %}
-		    {{ v.text }}
-		        {% if v|elattrib:"score" %}<span class="small">[score= {{ v|elattrib:"score" }}]</span>{% endif %}<br>
+		    <p>{{ v.text }}</p>
+		        {% if v|elattrib:"score" %}<p class="score">[{% trans "score" %}= {{ v|elattrib:"score" }}]</p>{% endif %}
+		        {% if v|elattrib:"description" %}<p class="description">{{ v|elattrib:"description" }}</p>{% endif %}
+		        {% if v|elattrib:"defcode" %}<p class="defcode">{{ v|elattrib:"defcode" }}</p>{% endif %}
 		{% endfor %}
+	{% endcomment %}
+
+		<dl>
+			{% for v in values %}
+				<dt>{{ v.text }}</dt>
+		        {% if v|elattrib:"score" %}<dd class="score">[{% trans "score" %}= {{ v|elattrib:"score" }}]</dd>{% endif %}
+		        {% if v|elattrib:"description" %}<dd class="description">{{ v|elattrib:"description"|safe }}</dd>{% endif %}
+		        {% if v|elattrib:"defcode" %}<dd class="defcode">{{ v|elattrib:"defcode" }}</dd>{% endif %}
+			{% endfor %}
+		</dl>
 	</td>
 </tr>
+{% endif %}   
+
+{% endwith %}
 
 
 </table>

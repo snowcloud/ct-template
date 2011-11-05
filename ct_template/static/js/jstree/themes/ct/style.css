@@ -18,8 +18,8 @@
 .jstree-ct .jstree-leaf > .jstree-ocl { background-position:-36px 0; }
 .jstree-ct .jstree-loading > .jstree-ocl { background:url("throbber.gif") center center no-repeat !important; }
 
-.jstree-ct .jstree-hovered { background:#e7f4f9;  }
-.jstree-ct .jstree-clicked { background:#beebff;  }
+.jstree-ct .jstree-hovered { background: #d7e3e8;  }
+.jstree-ct .jstree-clicked { background: #bdcdda;  }
 .jstree-ct a .jstree-themeicon { background-position:-56px -19px; }
 
 /*.jstree-ct.jstree-focused { background:#eee; }*/

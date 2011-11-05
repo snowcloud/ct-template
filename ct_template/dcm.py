@@ -178,6 +178,7 @@ class ModelNode(object):
             self.stereotype = 'unknown'
         self.metadata = get_metadata(node.find(ns("ModelElement.taggedValue")))
         self.id = self.metadata['ea_localid']
+        self.description = self.metadata['documentation']
         self.valueset = list(node.findall(ns("Classifier.feature/Attribute")))
         self.parent = None
         self.children = []
@@ -189,7 +190,11 @@ class ModelNode(object):
         # </valueset>
         vs = ET.Element("valueset")
         for value in self.valueset:
-            v = ET.Element("value")
+            metadata = get_metadata(value.find(ns("ModelElement.taggedValue")))
+            # print metadata
+            # print
+            attrs = {'description': metadata['description'], 'defcode': metadata.get('DefinitionCode', '')}
+            v = ET.Element("value", attrs)
             v.text = value.attrib['name']
             score = value.find(ns('Attribute.initialValue/Expression[@body]'))
             if not score is None:
@@ -312,6 +317,7 @@ class DCM(object):
             else:
                 # id="i001" label="Total Glasgow Coma Scale Score" valueType="integer"
                 attrs = { 'id': 'i%04d' % self.item_id, 'label': concept.name,
+                    'description': concept.description,
                     'cardinality': concept.cardinality,
                     'valueType': self._valuetype_for_concept(concept) }
                 n = ET.Element("item", attrs)
