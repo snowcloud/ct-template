@@ -184,10 +184,15 @@ function load_node_metadata(node_id) {
 			{% if comment_id  %}togglecomments('{{comment_id}}');location.href='#{{comment_id}}';{% endif %}
 			var view = '#ct_view_' + arr[$("#ct-tabs").tabs('option', 'selected')];
             if (view=="#ct_view_docs") { $('#ct_view_docs h3').collapsible(); };
-			if (view=="#ct_view_data") { 
+			if (view=="#ct_view_data") {
+				var tNode =  '{{tNode}}';
+				if (tNode == '') { 
+					tNode = '#' + $('#modelTree ul li').attr('id');
+				};
 				$("#modelTree")
 					.bind("__loaded.jstree", function (event, data) {
 						$("#modelTree").jstree('open_all');
+						$("#modelTree").jstree('select_node', tNode);
 						})
 					.jstree({
 						"themes" : {
@@ -223,11 +228,10 @@ function load_node_metadata(node_id) {
 						$(this).text('{% trans 'Close all' %}');
 					}
 				});
-				//$('.jstree_closeall').click(function() {$("#modelTree").jstree('close_all');});
 
 				//$('#result').text('glah');
 			 };
-	
+			$("#modelTree").jstree('close_all');
             {% block tab-load %}{% endblock %}
 			$(view + ' .toggleallcomments').click(function(event){
 				var show = $(this).text().indexOf("{% trans "Show all comments" %}") > -1;
@@ -260,10 +264,7 @@ function load_node_metadata(node_id) {
 		
 		} 
 	});
-{% comment %}
-	{% endcomment %}
 	$("#ct-tabs-alt").hide();
-
 {% endblock %}
 
 

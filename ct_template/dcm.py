@@ -221,7 +221,7 @@ class DCM(object):
         self.root = ET.Element("clinicaltemplate")
         self.output = ET.ElementTree(self.root)
         self.item_id = 10
-        self.model_dict = self.associations = self.assoc_dict = self.rootconcept = None
+        self.infomodel = self.model_dict = self.associations = self.assoc_dict = self.rootconcept = None
         
     def _find_rootconcept(self):
         """docstring for _find_rootconcept"""
@@ -257,13 +257,11 @@ class DCM(object):
         
     def _get_assocs(self):
         """docstring for _link_assocs"""
-        infomodel = self.content.get('Information Model', None) or self.content['Information model']
         self.associations = [Association(n)
-            for n in infomodel.findall(ns('Namespace.ownedElement/Association'))]
+            for n in self.infomodel.findall(ns('Namespace.ownedElement/Association'))]
 
     def _get_datatypes(self):
-        infomodel = self.content.get('Information Model', None) or self.content['Information model']
-        for gen in infomodel.findall(ns('Namespace.ownedElement/Generalization')):
+        for gen in self.infomodel.findall(ns('Namespace.ownedElement/Generalization')):
             metadata = get_metadata(gen.find(ns("ModelElement.taggedValue")))
             dt = metadata.get('ea_targetName', '-')
             if dt in DATATYPES:
@@ -274,9 +272,8 @@ class DCM(object):
 
     def _get_concepts(self):
         """docstring for _link_assocs"""
-        infomodel = self.content.get('Information Model', None) or self.content['Information model']
         nodes = [ModelNode(n)
-            for n in infomodel.findall(ns('Namespace.ownedElement/Class'))]
+            for n in self.infomodel.findall(ns('Namespace.ownedElement/Class'))]
         self.model_dict = dict([(n.id, n) for n in nodes])
         
     def _valuetype_for_concept(self, concept):
@@ -325,9 +322,9 @@ class DCM(object):
             self.item_id += 10
             root.append(n)
             
-    def _write_infomodel_to_output(self, node, concept=None):
+    def _write_infomodel_to_output(self, node, concept=None, test=False):
         """docstring for _write_to_output"""
-        def _write_info(self, node, concept=None):
+        def _write_info(self, node, concept=None, test=test, level=0):
             """docstring for _write_info"""
             if concept is None:
                 concept = self.rootconcept
@@ -344,16 +341,25 @@ class DCM(object):
                 if concept.valueset:
                     concept.write_valueset(n)
                 node.append(n)
+                if test:
+                    print '-'*level, concept.name
             for i, c in enumerate(concept.children):
-                _write_info(self, n, c)
+                _write_info(self, n, c, test, level+1)
+        if test:
+            for c in self.model_dict.values():
+                print c.id, c.name, c.parent.name if c.parent else '---'
+
         self.item_id = 10
         _write_info(self, node)
         
-    def process(self, tree, infomodel=True, docs=True, metadata=True, topdown=True):
+    def process(self, tree, infomodel=True, docs=True, metadata=True, topdown=True, test=False):
         self.topdown = topdown
         xmi = tree.find('XMI.content')
         self.content = dict([(c.attrib['name'], c)
             for c in  xmi.findall(ns("Model/Namespace.ownedElement/Package/Namespace.ownedElement/Package"))])
+        self.infomodel = self.content.get('Information Model', None)
+        if self.infomodel is None:
+            self.infomodel = self.content['Information model']
         self.metadata = get_metadata(xmi)
         self.documentation = self._get_docs()
         self._get_concepts()
@@ -368,7 +374,7 @@ class DCM(object):
         if docs:
             self._write_docs_to_output()
         if infomodel:
-            self._write_infomodel_to_output(n)
+            self._write_infomodel_to_output(n, test=test)
 
     def get_output(self):
         """docstring for dump_output"""
