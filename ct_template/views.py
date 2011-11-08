@@ -41,6 +41,8 @@ def detail(request, object_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
     check_permission(request.user, object.workgroup, 'resource', 'r')
     tView = _get_tView(request.GET, object)
+    tNode = request.GET.get('tNode', None)
+    tNode = '#%s' % tNode if tNode else ''
     settingsform = TemplateSettingsForm(instance=object)
     if request.is_ajax():
         base_t = "clintemplates_detail_base_blank.html"
@@ -50,7 +52,7 @@ def detail(request, object_id):
     t = 'clintemplates_detail_dataset.html' if tView == 'data' else 'clintemplates_detail.html'
     
     return render_to_response(t, RequestContext( request,
-        {'base_template': base_t, 'clin_template': object, 'tView': tView, 'settingsform': settingsform }))
+        {'base_template': base_t, 'clin_template': object, 'tView': tView, 'tNode': tNode, 'settingsform': settingsform }))
 
 @login_required
 def settings_edit(request, object_id):
@@ -126,7 +128,7 @@ def delete(request, object_id):
                 'title': _('Delete this %s?') % _(settings.SYNONYMS.get('Clinical template', 'Clinical template'))
             })
         )
-    
+
 @login_required
 def edititem(request, object_id, view_id, item_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
@@ -246,3 +248,18 @@ def get_node_metadata(request, object_id, node_id):
     node = object.get_item(node_id)
     return render_to_response('node_metadata.html', RequestContext( request,
         { 'elem': node, 'template': object }))
+
+@login_required
+def edit_node_metadata(request, object_id, node_id):
+    object = get_object_or_404(ClinTemplate, pk=object_id)
+    if not object.enable_editing:
+        raise PermissionDenied()
+    check_permission(request.user, object.workgroup, 'resource', 'w')
+    node = object.get_item(node_id)
+    if node is None:
+        raise Http404
+
+    # print node_id
+
+    return HttpResponseRedirect('%s?tView=data&tNode=%s' % (object.get_absolute_url(), node_id))
+    
