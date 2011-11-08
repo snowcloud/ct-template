@@ -17,6 +17,10 @@
 	<th>{% trans "Cardinality" %}</th>
 	<td>{{ elem|elattrib:"cardinality"|default:"-" }}</td>
 </tr>
+<tr>
+	<th>{% trans "Coding" %}</th>
+	<td>{{ elem|elattrib:"defcode"|default:"-" }}</td>
+</tr>
 {% with values=elem|values:template %}
 {% if values %}  	
 <tr>
@@ -48,3 +52,5 @@
 
 
 </table>
+
+<!-- <p><a href="{% url edit-node-metadata template.id elem|elattrib:"id" %}">edit</a></p> -->
