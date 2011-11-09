@@ -185,12 +185,22 @@ class ModelNode(object):
             self.stereotype = 'unknown'
         self.metadata = get_metadata(node.find(ns("ModelElement.taggedValue")))
         self.id = self.metadata['ea_localid']
+        self.xmi_id = node.attrib.get('xmi.id', '')
         self.description = self.metadata.get('documentation', '')
         self.datatype = None
         self.valueset = list(node.findall(ns("Classifier.feature/Attribute")))
         self.parent = None
         self.children = []
-                
+        self.definition_codes = []
+
+    def write_definition_codes(self, node):
+        tbs = ET.Element("termbindings")
+        for dc in self.definition_codes:
+            tb = ET.Element("termbinding", {})
+            tb.text = dc
+            tbs.append(tb)
+        node.append(tbs)
+    
     def write_valueset(self, node):
         """docstring for _add_valueset"""
         # <valueset>
@@ -221,7 +231,7 @@ class DCM(object):
         self.root = ET.Element("clinicaltemplate")
         self.output = ET.ElementTree(self.root)
         self.item_id = 10
-        self.infomodel = self.model_dict = self.associations = self.assoc_dict = self.rootconcept = None
+        self.infomodel = self.model_dict = self.xmi_id_dict = self.associations = self.assoc_dict = self.rootconcept = None
         
     def _find_rootconcept(self):
         """docstring for _find_rootconcept"""
@@ -270,11 +280,24 @@ class DCM(object):
                 node.datatype = dt
                 # print metadata.get('ea_sourceName', '-'), metadata.get('ea_sourceID', '-'), dt
 
+    def _get_definitioncodes(self, xmi):
+        print 'def codes:'
+        ind = [''] + ['%s' % d for d in range(1,10)]
+        for i in ind:
+            for c in xmi.findall(ns("TaggedValue[@tag='DCM::DefinitionCode%s']"%i)):
+                value = c.attrib.get('value', None)
+                node_id = c.attrib.get('modelElement', None)
+                if value and node_id:
+                    node = self.xmi_id_dict[node_id]
+                    node.definition_codes.append(value)
+                    print 'code: ', value, '->', node.name
+
     def _get_concepts(self):
         """docstring for _link_assocs"""
         nodes = [ModelNode(n)
             for n in self.infomodel.findall(ns('Namespace.ownedElement/Class'))]
         self.model_dict = dict([(n.id, n) for n in nodes])
+        self.xmi_id_dict = dict([(n.xmi_id, n) for n in nodes if n.xmi_id])
         
     def _valuetype_for_concept(self, concept):
         """docstring for fname"""
@@ -303,6 +326,23 @@ class DCM(object):
         root = ET.Element("metadata")
         self.root.append(root)
         self.item_id = 10
+
+        attrs = { 'id': 'm%04d' % self.item_id, 'label': 'Name' }
+        n = ET.Element("item", attrs)
+        n.text = self.rootconcept.name
+        self.item_id += 10
+        root.append(n)
+        attrs = { 'id': 'm%04d' % self.item_id, 'label': 'Description' }
+        n = ET.Element("item", attrs)
+        n.text = self.rootconcept.description
+        self.item_id += 10
+        root.append(n)
+        attrs = { 'id': 'm%04d' % self.item_id, 'label': 'Coding' }
+        n = ET.Element("item", attrs)
+        n.text = ', '.join(self.rootconcept.definition_codes)
+        self.item_id += 10
+        root.append(n)
+
         for k, v in self.metadata.items():
             # <item id="m010" label="label">My second DCM</item>
             attrs = { 'id': 'm%04d' % self.item_id, 'label': k }
@@ -340,14 +380,17 @@ class DCM(object):
                 self.item_id += 10
                 if concept.valueset:
                     concept.write_valueset(n)
+                if concept.definition_codes:
+                    concept.write_definition_codes(n)
                 node.append(n)
                 if test:
                     print '-'*level, concept.name
             for i, c in enumerate(concept.children):
                 _write_info(self, n, c, test, level+1)
         if test:
+            print 'root', self.rootconcept.id, self.rootconcept.name, self.rootconcept.definition_codes
             for c in self.model_dict.values():
-                print c.id, c.name, c.parent.name if c.parent else '---'
+                print c.id, c.xmi_id, c.name, c.parent.name if c.parent else '---'
 
         self.item_id = 10
         _write_info(self, node)
@@ -367,6 +410,7 @@ class DCM(object):
         self._get_assocs()
         self._make_links()
         self._get_datatypes()
+        self._get_definitioncodes(xmi)
         n = ET.Element("model")
         self.root.append(n)
         if metadata:

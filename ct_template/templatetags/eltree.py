@@ -143,6 +143,11 @@ def values(value, template):
         return _get_shared_values(share_id, template)
 
 @register.filter
+def termbindings(value, template):
+    v = value.find(ns("termbindings", template.xmlns))
+    return v
+
+@register.filter
 def review_comments(value, template):
     nsp = template.xmlns
     c = value.find(ns("review_comments", nsp))
