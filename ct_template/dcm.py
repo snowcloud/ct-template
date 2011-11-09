@@ -185,7 +185,7 @@ class ModelNode(object):
             self.stereotype = 'unknown'
         self.metadata = get_metadata(node.find(ns("ModelElement.taggedValue")))
         self.id = self.metadata['ea_localid']
-        self.description = self.metadata['documentation']
+        self.description = self.metadata.get('documentation', '')
         self.datatype = None
         self.valueset = list(node.findall(ns("Classifier.feature/Attribute")))
         self.parent = None
@@ -201,12 +201,12 @@ class ModelNode(object):
             metadata = get_metadata(value.find(ns("ModelElement.taggedValue")))
             # print metadata
             # print
-            attrs = {'description': metadata['description'], 'defcode': metadata.get('DefinitionCode', '')}
+            attrs = {'description': metadata.get('description', ''), 'defcode': metadata.get('DefinitionCode', '')}
             v = ET.Element("value", attrs)
             v.text = value.attrib['name']
             score = value.find(ns('Attribute.initialValue/Expression[@body]'))
             if not score is None:
-                v.attrib['score'] = score.attrib.get('body', '-')
+                v.attrib['score'] = score.attrib.get('body', '')
             vs.append(v)
         node.append(vs)
     
