@@ -326,6 +326,23 @@ class DCM(object):
         root = ET.Element("metadata")
         self.root.append(root)
         self.item_id = 10
+
+        attrs = { 'id': 'm%04d' % self.item_id, 'label': 'Name' }
+        n = ET.Element("item", attrs)
+        n.text = self.rootconcept.name
+        self.item_id += 10
+        root.append(n)
+        attrs = { 'id': 'm%04d' % self.item_id, 'label': 'Description' }
+        n = ET.Element("item", attrs)
+        n.text = self.rootconcept.description
+        self.item_id += 10
+        root.append(n)
+        attrs = { 'id': 'm%04d' % self.item_id, 'label': 'Coding' }
+        n = ET.Element("item", attrs)
+        n.text = ', '.join(self.rootconcept.definition_codes)
+        self.item_id += 10
+        root.append(n)
+
         for k, v in self.metadata.items():
             # <item id="m010" label="label">My second DCM</item>
             attrs = { 'id': 'm%04d' % self.item_id, 'label': k }
@@ -371,6 +388,7 @@ class DCM(object):
             for i, c in enumerate(concept.children):
                 _write_info(self, n, c, test, level+1)
         if test:
+            print 'root', self.rootconcept.id, self.rootconcept.name, self.rootconcept.definition_codes
             for c in self.model_dict.values():
                 print c.id, c.xmi_id, c.name, c.parent.name if c.parent else '---'
 
