@@ -19,7 +19,17 @@
 </tr>
 <tr>
 	<th>{% trans "Coding" %}</th>
-	<td>{{ elem|elattrib:"defcode"|default:"-" }}</td>
+	<td>
+	{% with codes=elem|termbindings:template %}
+		{% if codes %}
+			{% for code in codes %}
+				{{ code.text }}<br>
+			{% endfor %}
+		{% else %} 
+			-
+		{% endif %}
+	{% endwith %}
+	</td>
 </tr>
 {% with values=elem|values:template %}
 {% if values %}  	
