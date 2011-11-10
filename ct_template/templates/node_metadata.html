@@ -7,7 +7,7 @@
 </tr>
  --><tr>
 	<th>{% trans "Description" %}</th>
-	<td>{{ elem|elattrib:"description"|default:"-" }}</td>
+	<td>{{ elem|elattrib:"description"|default:"-"|textile }}</td>
 </tr>
 <tr>
 	<th>{% trans "Datatype" %}</th>

@@ -246,6 +246,7 @@ def get_node_metadata(request, object_id, node_id):
 
     # if request.is_ajax():
     node = object.get_item(node_id)
+    # print node.attrib['description']
     return render_to_response('node_metadata.html', RequestContext( request,
         { 'elem': node, 'template': object }))
 
@@ -266,7 +267,7 @@ def edit_node_metadata(request, object_id, node_id):
             form = NodeMetadataForm(request.POST)
             if form.is_valid():
                 node.attrib['label'] = form.cleaned_data['name']
-                node.attrib['description'] = form.cleaned_data['description']
+                node.attrib['description'] = form.cleaned_data['description'].replace('\r\n', '||')
                 node.attrib['datatype'] = form.cleaned_data['datatype']
                 node.attrib['cardinality'] = form.cleaned_data['cardinality']
                 object.save_model()
@@ -274,11 +275,12 @@ def edit_node_metadata(request, object_id, node_id):
     else:
         form = NodeMetadataForm(initial={
             'name': node.attrib['label'],
-            'description': node.attrib['description'],
+            'description': node.attrib['description'].replace('||', '\n'),
             'datatype': node.attrib['datatype'],
             'cardinality': node.attrib['cardinality'],
             # 'coding': node.attrib['coding'],
-            })       
+            })
+    # print node.attrib['description']
 
     return render_to_response('node_metadata_edit.html', 
         RequestContext( request, {'template': object, 'form': form }))

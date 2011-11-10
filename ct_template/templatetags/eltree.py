@@ -39,7 +39,7 @@ def elattrib(value, arg):
         d = datetime.datetime.fromtimestamp(EpochSeconds)   
         return d
     else:
-        return value.get(arg, "")
+        return value.get(arg, "").replace('||', '\n')
 
 @register.filter
 def items_for_view(t, view):
