@@ -22,7 +22,7 @@ from ct_framework.forms import ConfirmForm
 from ct_groups.models import CTGroup
 from ct_groups.decorators import check_permission
 from ct_template.models import ClinTemplate, ClinTemplateReview, format_comment_url
-from ct_template.forms import CTNewForm, ItemForm, ReviewForm, TemplateSettingsForm
+from ct_template.forms import CTNewForm, ItemForm, ReviewForm, TemplateSettingsForm, NodeMetadataForm
 
 TVIEWS = ['form', 'data', 'docs', 'metadata', 'settings']
 
@@ -259,7 +259,27 @@ def edit_node_metadata(request, object_id, node_id):
     if node is None:
         raise Http404
 
-    # print node_id
+    if request.POST:
+        if request.POST['result'] == _('Cancel'):
+            return HttpResponseRedirect('%s?tView=data&tNode=%s' % (object.get_absolute_url(), node_id))
+        else:
+            form = NodeMetadataForm(request.POST)
+            if form.is_valid():
+                node.attrib['label'] = form.cleaned_data['name']
+                node.attrib['description'] = form.cleaned_data['description']
+                node.attrib['datatype'] = form.cleaned_data['datatype']
+                node.attrib['cardinality'] = form.cleaned_data['cardinality']
+                object.save_model()
+                return HttpResponseRedirect('%s?tView=data&tNode=%s' % (object.get_absolute_url(), node_id))
+    else:
+        form = NodeMetadataForm(initial={
+            'name': node.attrib['label'],
+            'description': node.attrib['description'],
+            'datatype': node.attrib['datatype'],
+            'cardinality': node.attrib['cardinality'],
+            # 'coding': node.attrib['coding'],
+            })       
 
-    return HttpResponseRedirect('%s?tView=data&tNode=%s' % (object.get_absolute_url(), node_id))
-    
+    return render_to_response('node_metadata_edit.html', 
+        RequestContext( request, {'template': object, 'form': form }))
+

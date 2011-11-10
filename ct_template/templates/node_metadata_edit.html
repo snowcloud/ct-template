@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{%load forms i18n  %}
+{% block title %}{% trans 'Edit model' %}{% endblock %}
+
+
+{% block content %}
+
+
+{% if form.errors %}
+<p class="error">{% trans 'Please correct the errors below' %}:</p>
+{% endif %}
+
+<form name="checkprofile" action="" method="post">{% csrf_token %}
+    
+    <fieldset>
+        <legend><span>{% trans 'Edit model' %}</span></legend>
+        <ol>{% show_form form "li" %}</ol>
+    </fieldset>
+
+    <fieldset class="submit">
+        <input type="submit" name="result" value="{% trans 'Save' %}">
+        <input type="submit" name="result" value="{% trans 'Cancel' %}">
+    </fieldset>
+    
+</form>
+
+{% endblock %}
+

@@ -37,3 +37,10 @@ class TemplateSettingsForm(forms.ModelForm):
 
         # fields = ('name', 'note', 'tags', 'is_public', 'moderate_membership', 'moderated_message',
         #     'language', 'show_discussion', 'resource_comment_order', 'template', 'logo')
+
+class NodeMetadataForm(forms.Form):
+    name = forms.CharField(label=_('Name'))
+    description = forms.CharField(label=_('Description'), widget=forms.Textarea(attrs={'class': 'item_big_text'}), required=False)
+    datatype = forms.CharField(label=_('Datatype'), required=False)
+    cardinality = forms.CharField(label=_('Cardinality'), required=False)
+    coding = forms.CharField(label=_('Coding'), widget=forms.Textarea(attrs={'class': 'item_big_text'}), required=False)
