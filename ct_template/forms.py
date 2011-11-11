@@ -2,6 +2,7 @@ from django import forms
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from ct_template.models import ClinTemplate
+from ct_template.templatetags.eltree import termbindings
 
 class CTNewForm(forms.Form):
     title = forms.CharField(label=_('Title'))
@@ -44,3 +45,31 @@ class NodeMetadataForm(forms.Form):
     datatype = forms.CharField(label=_('Datatype'), required=False)
     cardinality = forms.CharField(label=_('Cardinality'), required=False)
     coding = forms.CharField(label=_('Coding'), widget=forms.Textarea(attrs={'class': 'item_big_text'}), required=False)
+
+    instance = None
+
+    def __init__(self, *args, **kwargs):
+        self.instance = kwargs.pop('instance', None) # element
+        self.model = kwargs.pop('model', None) # ClinTemplate
+        if self.instance:
+            initial = {
+                'name': self.instance.attrib['label'],
+                'description': self.instance.attrib['description'].replace('||', '\n'),
+                'datatype': self.instance.attrib['datatype'],
+                'cardinality': self.instance.attrib['cardinality'],
+                'coding': '\n'.join([t.text for t in termbindings(self.instance, self.model) if t.text])
+                }
+            kwargs.setdefault('initial', initial)
+        super(NodeMetadataForm, self).__init__(*args, **kwargs)
+
+    def save(self, do_save=False):
+        # if self.instance is None:
+        #     raise FormHasNoInstanceException("Form cannot save- document instance is None.")
+        self.instance.attrib['label'] = self.cleaned_data['name']
+        self.instance.attrib['description'] = self.cleaned_data['description'].replace('\r\n', '||')
+        self.instance.attrib['datatype'] = self.cleaned_data['datatype']
+        self.instance.attrib['cardinality'] = self.cleaned_data['cardinality']
+        self.model.set_termbindings_from_txt(self.instance, self.cleaned_data['coding'])
+
+        self.model.save_model()
+        return self.instance
