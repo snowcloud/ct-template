@@ -337,14 +337,11 @@ class ClinTemplate(models.Model):
         super(ClinTemplate, self).save()
     
     def set_termbindings_from_txt(self, parent, txt):
-        print txt
         tbs = self.get_termbindings(parent, new=True)
-        print list(tbs)
         for dc in [t for t in txt.split('\r\n') if t]:
             tb = ET.Element("termbinding", {})
             tb.text = dc
             tbs.append(tb)
-        # node.append(tbs)
 
 
 from django.db.models.signals import post_delete, post_save
