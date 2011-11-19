@@ -149,7 +149,7 @@ def get_metadata(node):
     """docstring for self._get_metadata"""
     result = {}
     for m in node.findall(ns("TaggedValue")):
-        result.setdefault(strip_tag(m.attrib['tag']), []).append(m.attrib.get('value', '-'))
+        result.setdefault(strip_tag(m.attrib['tag']), []).append(m.attrib.get('value', '-').replace('\n', '||'))
     for k, v in result.items():
         result[k] = ' | '.join(v)
     name = result.get('Name', None)

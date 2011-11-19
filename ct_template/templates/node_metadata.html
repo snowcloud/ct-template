@@ -1,4 +1,4 @@
-{% load i18n sitevars utils markup eltree  %}
+{% load i18n sitevars utils markup eltree ct_groups_tags  %}
 <h2>{{ elem|elattrib:"label"|capfirst }}</h2>
 <table>
 <!-- <tr>
@@ -7,7 +7,7 @@
 </tr>
  --><tr>
 	<th>{% trans "Description" %}</th>
-	<td>{{ elem|elattrib:"description"|default:"-" }}</td>
+	<td>{{ elem|elattrib:"description"|default:"-"|textile }}</td>
 </tr>
 <tr>
 	<th>{% trans "Datatype" %}</th>
@@ -63,4 +63,8 @@
 
 </table>
 
-<!-- <p><a href="{% url edit-node-metadata template.id elem|elattrib:"id" %}">edit</a></p> -->
+{% if template.workgroup|resource_can_edit:user and template.enable_editing %}
+	<p><a class="edit" href="{% url edit-node-metadata template.id elem|elattrib:"id" %}">edit</a></p>
+{% endif %}
+
+

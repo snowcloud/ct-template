@@ -249,6 +249,16 @@ class ClinTemplate(models.Model):
         })    
         return (True, content)
 
+    def get_termbindings(self, item, new=False):
+        node = item.find("%stermbindings" % self.xmlns)
+        if new:
+            item.remove(node)
+            node = None
+        if node is None:
+            node = ET.Element("termbindings")
+            item.append(node)
+        return node
+
     def get_comments(self, item):
         comments = item.find("%sreview_comments" % self.xmlns)
         if comments is None:
@@ -325,6 +335,13 @@ class ClinTemplate(models.Model):
         template_id = kwargs.pop('template_id', None)
         self._template_id = template_id or make_template_id(self)
         super(ClinTemplate, self).save()
+    
+    def set_termbindings_from_txt(self, parent, txt):
+        tbs = self.get_termbindings(parent, new=True)
+        for dc in [t for t in txt.split('\r\n') if t]:
+            tb = ET.Element("termbinding", {})
+            tb.text = dc
+            tbs.append(tb)
 
 
 from django.db.models.signals import post_delete, post_save
