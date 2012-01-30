@@ -4,3 +4,4 @@
 /ct_template/dcm.import/
 /ct_template/openehr_test/
 .DS_Store
+/ct_template/compass/.sass-cache/

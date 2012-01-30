@@ -11,6 +11,13 @@ VALUETYPES = {
     'container': 'group',
     }
 
+DATATYPES = {
+    'CD': None,
+    'BL': None,
+    'ST': None,
+    'PQ': None,
+}
+
 """
 XMI.content
     UML:Model
@@ -142,7 +149,7 @@ def get_metadata(node):
     """docstring for self._get_metadata"""
     result = {}
     for m in node.findall(ns("TaggedValue")):
-        result.setdefault(strip_tag(m.attrib['tag']), []).append(m.attrib.get('value', '-'))
+        result.setdefault(strip_tag(m.attrib['tag']), []).append(m.attrib.get('value', '-').replace('\n', '||'))
     for k, v in result.items():
         result[k] = ' | '.join(v)
     name = result.get('Name', None)
@@ -178,10 +185,22 @@ class ModelNode(object):
             self.stereotype = 'unknown'
         self.metadata = get_metadata(node.find(ns("ModelElement.taggedValue")))
         self.id = self.metadata['ea_localid']
+        self.xmi_id = node.attrib.get('xmi.id', '')
+        self.description = self.metadata.get('documentation', '')
+        self.datatype = None
         self.valueset = list(node.findall(ns("Classifier.feature/Attribute")))
         self.parent = None
         self.children = []
-                
+        self.definition_codes = []
+
+    def write_definition_codes(self, node):
+        tbs = ET.Element("termbindings")
+        for dc in self.definition_codes:
+            tb = ET.Element("termbinding", {})
+            tb.text = dc
+            tbs.append(tb)
+        node.append(tbs)
+    
     def write_valueset(self, node):
         """docstring for _add_valueset"""
         # <valueset>
@@ -189,11 +208,15 @@ class ModelNode(object):
         # </valueset>
         vs = ET.Element("valueset")
         for value in self.valueset:
-            v = ET.Element("value")
+            metadata = get_metadata(value.find(ns("ModelElement.taggedValue")))
+            # print metadata
+            # print
+            attrs = {'description': metadata.get('description', ''), 'defcode': metadata.get('DefinitionCode', '')}
+            v = ET.Element("value", attrs)
             v.text = value.attrib['name']
             score = value.find(ns('Attribute.initialValue/Expression[@body]'))
             if not score is None:
-                v.attrib['score'] = score.attrib.get('body', '-')
+                v.attrib['score'] = score.attrib.get('body', '')
             vs.append(v)
         node.append(vs)
     
@@ -208,7 +231,7 @@ class DCM(object):
         self.root = ET.Element("clinicaltemplate")
         self.output = ET.ElementTree(self.root)
         self.item_id = 10
-        self.model_dict = self.associations = self.assoc_dict = self.rootconcept = None
+        self.infomodel = self.model_dict = self.xmi_id_dict = self.associations = self.assoc_dict = self.rootconcept = None
         
     def _find_rootconcept(self):
         """docstring for _find_rootconcept"""
@@ -244,16 +267,37 @@ class DCM(object):
         
     def _get_assocs(self):
         """docstring for _link_assocs"""
-        infomodel = self.content.get('Information Model', None) or self.content['Information model']
         self.associations = [Association(n)
-            for n in infomodel.findall(ns('Namespace.ownedElement/Association'))]
-        
+            for n in self.infomodel.findall(ns('Namespace.ownedElement/Association'))]
+
+    def _get_datatypes(self):
+        for gen in self.infomodel.findall(ns('Namespace.ownedElement/Generalization')):
+            metadata = get_metadata(gen.find(ns("ModelElement.taggedValue")))
+            dt = metadata.get('ea_targetName', '-')
+            if dt in DATATYPES:
+                node = self.model_dict[metadata.get('ea_sourceID', '-')]
+                # print node.name
+                node.datatype = dt
+                # print metadata.get('ea_sourceName', '-'), metadata.get('ea_sourceID', '-'), dt
+
+    def _get_definitioncodes(self, xmi):
+        print 'def codes:'
+        ind = [''] + ['%s' % d for d in range(1,10)]
+        for i in ind:
+            for c in xmi.findall(ns("TaggedValue[@tag='DCM::DefinitionCode%s']"%i)):
+                value = c.attrib.get('value', None)
+                node_id = c.attrib.get('modelElement', None)
+                if value and node_id:
+                    node = self.xmi_id_dict[node_id]
+                    node.definition_codes.append(value)
+                    print 'code: ', value, '->', node.name
+
     def _get_concepts(self):
         """docstring for _link_assocs"""
-        infomodel = self.content.get('Information Model', None) or self.content['Information model']
         nodes = [ModelNode(n)
-            for n in infomodel.findall(ns('Namespace.ownedElement/Class'))]
+            for n in self.infomodel.findall(ns('Namespace.ownedElement/Class'))]
         self.model_dict = dict([(n.id, n) for n in nodes])
+        self.xmi_id_dict = dict([(n.xmi_id, n) for n in nodes if n.xmi_id])
         
     def _valuetype_for_concept(self, concept):
         """docstring for fname"""
@@ -282,6 +326,23 @@ class DCM(object):
         root = ET.Element("metadata")
         self.root.append(root)
         self.item_id = 10
+
+        attrs = { 'id': 'm%04d' % self.item_id, 'label': 'Name' }
+        n = ET.Element("item", attrs)
+        n.text = self.rootconcept.name
+        self.item_id += 10
+        root.append(n)
+        attrs = { 'id': 'm%04d' % self.item_id, 'label': 'Description' }
+        n = ET.Element("item", attrs)
+        n.text = self.rootconcept.description
+        self.item_id += 10
+        root.append(n)
+        attrs = { 'id': 'm%04d' % self.item_id, 'label': 'Coding' }
+        n = ET.Element("item", attrs)
+        n.text = ', '.join(self.rootconcept.definition_codes)
+        self.item_id += 10
+        root.append(n)
+
         for k, v in self.metadata.items():
             # <item id="m010" label="label">My second DCM</item>
             attrs = { 'id': 'm%04d' % self.item_id, 'label': k }
@@ -301,10 +362,9 @@ class DCM(object):
             self.item_id += 10
             root.append(n)
             
-        
-    def _write_infomodel_to_output(self, node, concept=None):
+    def _write_infomodel_to_output(self, node, concept=None, test=False):
         """docstring for _write_to_output"""
-        def _write_info(self, node, concept=None):
+        def _write_info(self, node, concept=None, test=test, level=0):
             """docstring for _write_info"""
             if concept is None:
                 concept = self.rootconcept
@@ -312,29 +372,45 @@ class DCM(object):
             else:
                 # id="i001" label="Total Glasgow Coma Scale Score" valueType="integer"
                 attrs = { 'id': 'i%04d' % self.item_id, 'label': concept.name,
+                    'description': concept.description,
                     'cardinality': concept.cardinality,
+                    'datatype': concept.datatype or '',
                     'valueType': self._valuetype_for_concept(concept) }
                 n = ET.Element("item", attrs)
                 self.item_id += 10
                 if concept.valueset:
                     concept.write_valueset(n)
+                if concept.definition_codes:
+                    concept.write_definition_codes(n)
                 node.append(n)
+                if test:
+                    print '-'*level, concept.name
             for i, c in enumerate(concept.children):
-                _write_info(self, n, c)
+                _write_info(self, n, c, test, level+1)
+        if test:
+            print 'root', self.rootconcept.id, self.rootconcept.name, self.rootconcept.definition_codes
+            for c in self.model_dict.values():
+                print c.id, c.xmi_id, c.name, c.parent.name if c.parent else '---'
+
         self.item_id = 10
         _write_info(self, node)
         
-    def process(self, tree, infomodel=True, docs=True, metadata=True, topdown=True):
+    def process(self, tree, infomodel=True, docs=True, metadata=True, topdown=True, test=False):
         self.topdown = topdown
         xmi = tree.find('XMI.content')
         self.content = dict([(c.attrib['name'], c)
             for c in  xmi.findall(ns("Model/Namespace.ownedElement/Package/Namespace.ownedElement/Package"))])
+        self.infomodel = self.content.get('Information Model', None)
+        if self.infomodel is None:
+            self.infomodel = self.content['Information model']
         self.metadata = get_metadata(xmi)
         self.documentation = self._get_docs()
         self._get_concepts()
         self._find_rootconcept()
         self._get_assocs()
         self._make_links()
+        self._get_datatypes()
+        self._get_definitioncodes(xmi)
         n = ET.Element("model")
         self.root.append(n)
         if metadata:
@@ -342,7 +418,7 @@ class DCM(object):
         if docs:
             self._write_docs_to_output()
         if infomodel:
-            self._write_infomodel_to_output(n)
+            self._write_infomodel_to_output(n, test=test)
 
     def get_output(self):
         """docstring for dump_output"""

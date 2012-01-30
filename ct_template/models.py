@@ -10,6 +10,8 @@ from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.utils.datastructures import SortedDict
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 from tagging.fields import TagField
 from xml.etree import ElementTree as ET
 import datetime
@@ -223,29 +225,9 @@ class ClinTemplate(models.Model):
         return result
     multi_groups = property(_all_groups)
     
-    # def _email_notify(self, content):
-    #     import string
-    #     from django.core.mail import EmailMessage
-    # 
-    #     t = string.Template(settings.EMAIL_REVIEW_BODY_TEMPLATE)
-    #     body = t.safe_substitute(content= content, dummy= datetime.datetime.now().strftime("%H:%M"))
-    #     all_memberships = []
-    #     for group in self._all_groups():
-    #         all_memberships.extend(group.groupmembership_set.all())
-    #     add_list = list(frozenset([member.user.email for member in all_memberships if member.notify_tool_updates]))
-    #     if len(add_list) > 0:
-    #         email = EmailMessage(
-    #             '[clintemplate] %s update' % self.workgroup.name, 
-    #             body, 
-    #             'do not reply <do_not_reply@clintemplate.org>',
-    #             ['do_not_reply@clintemplate.org'],
-    #             add_list
-    #         )
-    #         email.send()
-
     def get_notify_content(self, comment=None):
         """docstring for get_notify_content"""
-        id_prefix = {'i': 0, 'd': 2, 'm': 3}
+        id_prefix = {'i': 'form', 'd': 'docs', 'm': 'metadata'}
         if comment:
             comment = self.get_comment(comment)
             author= comment.get("author")
@@ -266,6 +248,16 @@ class ClinTemplate(models.Model):
             'url': url
         })    
         return (True, content)
+
+    def get_termbindings(self, item, new=False):
+        node = item.find("%stermbindings" % self.xmlns)
+        if new:
+            item.remove(node)
+            node = None
+        if node is None:
+            node = ET.Element("termbindings")
+            item.append(node)
+        return node
 
     def get_comments(self, item):
         comments = item.find("%sreview_comments" % self.xmlns)
@@ -343,6 +335,13 @@ class ClinTemplate(models.Model):
         template_id = kwargs.pop('template_id', None)
         self._template_id = template_id or make_template_id(self)
         super(ClinTemplate, self).save()
+    
+    def set_termbindings_from_txt(self, parent, txt):
+        tbs = self.get_termbindings(parent, new=True)
+        for dc in [t for t in txt.split('\r\n') if t]:
+            tb = ET.Element("termbinding", {})
+            tb.text = dc
+            tbs.append(tb)
 
 
 from django.db.models.signals import post_delete, post_save
@@ -380,7 +379,37 @@ class ClinTemplateReview(models.Model):
     def __unicode__(self):
         return '%s - %s' % (self.template, self.reviewer)
 
-    def save(self):
-        if self.reviewer_id is None:
-            self.reviewer_id = get_current_user().id
-        super(ClinTemplateReview, self).save()
+    def _group(self):
+        return self.template.workgroup
+    group = property(_group)
+
+    def get_notify_content(self, comment=None):
+        """docstring for get_notify_content"""
+    
+        line_1 = _('A review has been added to: %s.') % self.template.label
+        author= self.reviewer.get_full_name()
+        content = '%s: %s\n%s' % (ugettext('Rating'), self.rating, self.review)
+        url = '%s%s#reviews' % ( settings.APP_BASE[:-1], self.template.get_absolute_url())
+                
+        content = render_to_string('email_template_comment_content.txt', {
+            'line_1': line_1,
+            'line_2': '',
+            'author': author, 
+            'review_date': self.review_date.strftime("%d/%m/%Y, %H.%M"),
+            'content': content,
+            'url': url
+        })    
+        return (True, content)
+
+
+def notify_new_review(sender, instance, **kwargs):
+    if kwargs.get('created', False):
+        enabled, content = instance.get_notify_content()
+        email_notify([instance.template.workgroup], content, 'resource')
+        add_notify_event(instance, 'notify', 'resource')
+
+# if not settings.DEBUG:
+post_save.connect(notify_new_review, sender=ClinTemplateReview)
+
+
+

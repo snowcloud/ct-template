@@ -3,13 +3,9 @@
 
 {% block title %}{% trans "Edit" %}{% endblock %}
 
-{% block head_extra %}
-<link rel="stylesheet" href="/media/css/ct_template.css" type="text/css" media="screen, projection">
-{% endblock %}
-
 {% block content %}
 
-<h2>{{ clin_template.name }} template</h2>
+<h2>{{ clin_template.name }}</h2>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
@@ -32,4 +28,3 @@
 </form>
 
 {% endblock %}
- 

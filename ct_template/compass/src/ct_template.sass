@@ -1,10 +1,13 @@
+$commenthdr: #111144
+$commentbg: #e2ebed
+
 /* self-clear floats */
-.group:after
-    content: "."
-    display: block
-    height: 0
-    clear: both
-    visibility: hidden
+//.group:after
+//    content: "."
+//    display: block
+//    height: 0
+//    clear: both
+//    visibility: hidden
 
 /* @end */
 
@@ -29,11 +32,12 @@
     list-style-type: none
 
 // form view
-#ct_view0
+#ct_view_form
     .ct_level0
-        border-top: thin solid #b1bdb1
+        border-top: thin solid #cfddd0
         border-left: thin solid #b1bdb1
-        background-color: #e8eff8
+        background-color: #f8fafa
+        //background-color: #e8eff8
 
     .ct_level1
         border-top: thin solid #e5dfd2
@@ -49,7 +53,7 @@
         border-top: thin solid #e5dfd2
 
 // documentation view
-#ct_view2, #ct_view3
+#ct_view_docs, #ct_view_metadata
     .ct_level0
         border-top: thin solid #b1bdb1
 
@@ -58,6 +62,9 @@
         float: left
         width: 60%
         margin-bottom: 1em
+    padding-top: 0.8em
+    padding-right: 0.8em
+    font-size: 0.8em
 
 //#ct_view3 .ct_node_label
 //    h3
@@ -65,7 +72,7 @@
 //        width: 25%
 //        margin-bottom: 1em
 
-#ct_view3 .ct_node_body
+#ct_view_metadata .ct_node_body
     background-color: #EBF3EC
 //    float: left
 //    width: 25%
@@ -107,7 +114,6 @@
 
 .ct_comments, .ct_comments_hide_show
     font-size: 0.9em
-    background-color: #708090
     clear: both
     margin-bottom: 2px
 
@@ -122,10 +128,12 @@
 
 
 .ct_comment
-    color: White
+    //color: White
     padding-left: 8px
     position: relative
     padding-bottom: 8px
+    background-color: $commentbg
+    border: thin solid #bbb
 
 .ct_comment p
     line-height: 1.4em
@@ -135,7 +143,7 @@
     display: inline
 
 .ct_comment_info
-    background-color: #696969
+    background-color: $commenthdr
     color: White
     border-top: thin solid #708090
     padding-left: 8px
@@ -144,5 +152,41 @@ textarea.item_big_text
     width: 95%
     height: 25em
 
+#model_pane
+    background-color: #eee
+    border-bottom: thin solid #ccc
+    padding: 1em
+    overflow: hidden
+    
+#model_edit
+    //background-color: #cee
+    border: thin solid #ccc
+    font-size: 90%
+    //padding: 1em
+    h2
+        font-size: 150%
+    table
+        table-layout: fixed
+        overflow: hidden
+        //font-size: 0.8em
+        //th
+            //background-color: #eee
+        th, td
+            padding: 0.4em
+        th
+            width: 25%
+            font-weight: normal
+            color: #505a68
+        width: 99%
+        dt
+            background: url(../icons/more.gif) no-repeat left 0.5em
+            padding-left: 1em
+        dd
+            line-height: 1.4em
+            font-size: 80%
+            padding-left: 1.3em
+            padding-bottom: 0.3em
+        dd.defcode
+            color: #667d98
 
 /* @end */

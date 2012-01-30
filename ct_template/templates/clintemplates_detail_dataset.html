@@ -1,0 +1,43 @@
+{% extends base_template %}
+
+{% load i18n sitevars utils markup eltree ct_tags ct_groups_tags %}
+
+{% block stylesheet_extra %}
+{{ block.super }}
+<!-- <link rel="stylesheet" href="/static/css/jquery-simpleTreeMenu-1.1.0.css" /> -->
+
+{% endblock %}
+
+
+{% block template_detail %}
+<div id="ct_view_{{tView}}" class="clearfix">
+
+<div id="model_pane" class="six columns alpha">
+
+<p><a href="#" class="jstree_toggleopen">{% trans 'Close all' %}</a></p>
+
+
+
+<div id="modelTree">
+
+<ul class="" id="full list">
+
+	{% for elem in clin_template|items_for_view:tView|items:clin_template.xmlns %}
+		{% add_node_to_tree elem clin_template.id clin_template %}
+	{% endfor%}
+</ul>
+
+</div>
+
+</div>
+
+<div id="model_edit" class="nine columns omega">
+<!-- <p>Metadata</p> -->
+<p id="result"></p>
+</div>
+</div>
+
+{% endblock template_detail %}
+
+
+
