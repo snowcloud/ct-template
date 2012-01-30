@@ -270,7 +270,6 @@ def edit_node_metadata(request, object_id, node_id):
                 return HttpResponseRedirect('%s?tView=data&tNode=%s' % (object.get_absolute_url(), node_id))
     else:
         form = NodeMetadataForm(instance=node, model=object)
-    # print node.attrib['description']
 
     return render_to_response('node_metadata_edit.html', 
         RequestContext( request, {'template': object, 'form': form }))

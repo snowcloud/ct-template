@@ -51,7 +51,7 @@ class NodeMetadataForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.instance = kwargs.pop('instance', None) # element
         self.model = kwargs.pop('model', None) # ClinTemplate
-        if self.instance:
+        if self.instance is not None:
             initial = {
                 'name': self.instance.get('label', ''),
                 'description': self.instance.get('description', '').replace('||', '\n'),
