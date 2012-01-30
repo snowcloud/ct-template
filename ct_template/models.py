@@ -227,7 +227,7 @@ class ClinTemplate(models.Model):
     
     def get_notify_content(self, comment=None):
         """docstring for get_notify_content"""
-        id_prefix = {'i': 0, 'd': 2, 'm': 3}
+        id_prefix = {'i': 'form', 'd': 'docs', 'm': 'metadata'}
         if comment:
             comment = self.get_comment(comment)
             author= comment.get("author")
