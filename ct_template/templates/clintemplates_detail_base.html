@@ -151,7 +151,7 @@ function togglecomments(el) {
 }
 function load_node_metadata(node_id) {
 	$.ajax({
-		  url: "/templates/{{clin_template.id}}/metadata/"+node_id+"/",
+		  url: "/templates/{{clin_template.id}}/node-metadata/"+node_id+"/",
 		  context: document.body,
 		  success: function(data){
 		    $('#result').html(data);
