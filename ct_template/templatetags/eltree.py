@@ -145,7 +145,7 @@ def values(value, template):
 @register.filter
 def termbindings(value, template):
     v = value.find(ns("termbindings", template.xmlns))
-    return v
+    return v or []
 
 @register.filter
 def review_comments(value, template):
