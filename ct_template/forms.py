@@ -11,7 +11,7 @@ class CTNewForm(forms.Form):
     def clean_title(self):
         t = slugify(self.cleaned_data['title'])
         if ClinTemplate.objects.filter(_template_id=t).exists():
-            raise ValidationError(_('A resource with this name already exists.'))
+            raise forms.ValidationError(_('A resource with this name already exists.'))
         return self.cleaned_data['title']
 
 class ItemForm(forms.Form):
@@ -25,7 +25,7 @@ class ReviewForm(forms.Form):
     def clean_rating(self):
         try:
             if (self.cleaned_data.get('rating') < 1) or (self.cleaned_data.get('rating') > 5):
-                raise ValidationError(u'Rating must be from 1-5.')
+                raise forms.ValidationError(u'Rating must be from 1-5.')
             return self.cleaned_data['rating']
         except AttributeError:
             return None
