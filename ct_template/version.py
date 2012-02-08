@@ -35,7 +35,7 @@ def save_version(fn, txt, encoding='UTF-8'):
         outfile.close()
     
 def _git(params, repoDir):
-    cmd = 'git %s' + params
+    cmd = 'git %s' % params
     pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
     pipe.wait()
 
