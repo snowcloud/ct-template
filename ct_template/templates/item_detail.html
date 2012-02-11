@@ -15,7 +15,7 @@
 	               {% else %}
 	                   {% if user.is_authenticated %}
 	                       {% if template.workgroup|can_comment:user %}
-	                           <a class='add' href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+	                           <a class='action add' href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
 	                       {% endif %}
 	                   {% else %}
 	                       <a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">{% trans "Log in to add comment" %}</a>
@@ -25,7 +25,7 @@
 				</div>
            {% endif %}
             {% if tView in "docs,metadata" and template.enable_editing and template.group|resource_can_edit:user %}
-                <div class="edit_link"><a class='edit' href="{% url template-item-edit template.id tView elem|elattrib:"id" %}">{% trans "Edit" %}</a></div>
+                <div class="edit_link"><a class='action edit' href="{% url template-item-edit template.id tView elem|elattrib:"id" %}">{% trans "Edit" %}</a></div>
             {% endif %}
 		</div>
 		<div class="ct_node_body">
@@ -41,7 +41,7 @@
                     {% comment %}
                     	
                     {% if forloop.last and template.accept_comments %}
-                    	<div class="comment_link"><a class="add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+                    	<div class="comment_link"><a class="action add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
 
                     	</div>
                     {% endif %}
@@ -49,7 +49,7 @@
                 </div>
                     {% if forloop.last and template.accept_comments %}
                     	<div class="ct_node_label clearfix">
-                    	<div class="comment_link"><a class="add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+                    	<div class="comment_link"><a class="action add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
                     	</div></div>
                     {% endif %}
             {% endfor %}
