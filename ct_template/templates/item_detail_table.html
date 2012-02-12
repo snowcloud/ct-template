@@ -3,23 +3,25 @@
 {% if elem|elattrib:"valueType" == 'row' %}
 <div class="ct_node_label ct_row clearfix">
     <div id="{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}">
-        <!-- if no map-right -->
-        <div class="map">{{ elem|elattrib:"label"|capfirst }}
-        <span class="termcode">[{{ elem|elattrib:"termcode" }}]</span>
-        </div>
-        <!-- else use map-left, map-right -->
-<!--
-        <div class="map-left">{{ elem|elattrib:"label"|capfirst }}
-        <span class="termcode">[{{ elem|elattrib:"termcode" }}]</span>
-        </div>
-        <div class="map-right">
-            <p>{{ elem|elattrib:"label"|capfirst }} <span class="termcode">[{{ elem|elattrib:"termcode" }}]</span></p>
-             <p>{{ elem|elattrib:"label"|capfirst }}<span class="termcode">[{{ elem|elattrib:"termcode" }}]</span></p>
-            <p>{{ elem|elattrib:"label"|capfirst }}<span class="termcode">[{{ elem|elattrib:"termcode" }}]</span></p>
-        </div>
- -->
-    {% include "item_detail_comment_count.html" %}
+    {% with codes=elem|termbindings:template %}
+        {% if codes %}
+            <div class="map-left">{{ elem|elattrib:"label"|capfirst }}
+                <span class="termcode">[{{ elem|elattrib:"defcode" }}]</span>
+            </div>
+            <div class="map-right">
+                {% for code in codes %}
+                    <p>{{ code.text }}</p>
+                {% endfor %}
+            </div>
+        {% else %} 
+            <div class="map">{{ elem|elattrib:"label"|capfirst }}
+                <span class="termcode">[{{ elem|elattrib:"defcode" }}]</span>
+            </div>
+        {% endif %}
+
+        {% include "item_detail_comment_count.html" %}
     </div>
+    {% endwith %}
 </div>
 
     <!-- ###############################  COMMENT LIST  ################################ -->

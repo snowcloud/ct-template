@@ -255,7 +255,7 @@ class ClinTemplate(models.Model):
 
     def get_termbindings(self, item, new=False):
         node = item.find("%stermbindings" % self.xmlns)
-        if new:
+        if new and node:
             item.remove(node)
             node = None
         if node is None:
