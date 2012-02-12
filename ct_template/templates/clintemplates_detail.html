@@ -12,7 +12,11 @@
 	</div>
 	
 		{% for elem in clin_template|items_for_view:tView|items:clin_template.xmlns %}
-		    {% item_display elem clin_template.id clin_template 0 tView user %}
+			{% if clin_template.display == 'table' %} 
+			    {% item_display_table elem clin_template.id clin_template 0 tView user %}			
+			{% else %}
+			    {% item_display elem clin_template.id clin_template 0 tView user %}
+			{% endif %}
 		{% endfor%}
 
 </div>

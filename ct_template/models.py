@@ -151,6 +151,10 @@ class ClinTemplate(models.Model):
 
     def get_comment(self, item_id):
         return self.get_item(item_id, 'review_comment')
+    
+    def _display(self):
+        return self._inf_model.get('display')
+    display = property(_display)
 
     def _name(self):  # just convenience, cos templates etc use name not label
         return self.label

@@ -31,6 +31,27 @@ $commentbg: #e2ebed
     padding-bottom: 0.5em
     list-style-type: none
 
+    .map, .map-right, .map-left
+        float: left
+        padding: 0.2em
+
+    .map
+        width: 70%
+
+    .map-left
+        width: 35%
+
+    .map-right
+        margin-left: 3%
+        width: 35%
+        p
+            margin: 0
+            padding: 0.2em
+
+    .termcode
+        color: #777
+        font-size: 90%
+
 // form view
 #ct_view_form
     .ct_level0
@@ -40,17 +61,20 @@ $commentbg: #e2ebed
         //background-color: #e8eff8
 
     .ct_level1
-        border-top: thin solid #e5dfd2
+        border-top: 1px solid #e5dfd2
 
     .ct_level2
-        border-top: thin solid #e5dfd2
+        border-top: 1px solid #e5dfd2
         background-color: #f5f2f7
 
     .ct_level3
-        border-top: thin solid #e5dfd2
+        border-top: 1px solid #e5dfd2
 
     .ct_level4
-        border-top: thin solid #e5dfd2
+        border-top: 1px solid #e5dfd2
+
+    .ct_row
+        border-top: 1px solid #e5dfd2
 
 // documentation view
 #ct_view_docs, #ct_view_metadata
@@ -65,6 +89,9 @@ $commentbg: #e2ebed
     padding-top: 0.8em
     padding-right: 0.8em
     font-size: 0.8em
+
+.ct_node_label.ct_row
+    padding-top: 0
 
 //#ct_view3 .ct_node_label
 //    h3
@@ -93,7 +120,7 @@ $commentbg: #e2ebed
  
 .comment_link
     float: right
-    width: 25%
+    width: 20%
     //  background-color: #dde
     text-align: right
 

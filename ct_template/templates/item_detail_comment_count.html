@@ -1,0 +1,17 @@
+{% load i18n eltree sitevars utils ct_groups_tags %}
+{% if template.accept_comments %}
+	<div class="comment_link">
+       {% if elem|review_comments:template %}
+         <a href="javascript:togglecomments('{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}')" class="toggle_comment" id="l_{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}">{% trans 'Show comments' %}</a> <span class="ct_count_bubble">{{ elem|review_comments:template|length }}</span>
+       {% else %}
+           {% if user.is_authenticated %}
+               {% if template.workgroup|can_comment:user %}
+                   <a class='action add' href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
+               {% endif %}
+           {% else %}
+               <a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">{% trans "Log in to add comment" %}</a>
+           {% endif %}
+
+       {% endif %}
+	</div>
+{% endif %}

@@ -36,16 +36,6 @@
 <tr>
 	<th>{% trans "Values" %}</th>
 	<td>
-	{% comment %}
-		
-		{% for v in elem|values:template %}
-		    <p>{{ v.text }}</p>
-		        {% if v|elattrib:"score" %}<p class="score">[{% trans "score" %}= {{ v|elattrib:"score" }}]</p>{% endif %}
-		        {% if v|elattrib:"description" %}<p class="description">{{ v|elattrib:"description" }}</p>{% endif %}
-		        {% if v|elattrib:"defcode" %}<p class="defcode">{{ v|elattrib:"defcode" }}</p>{% endif %}
-		{% endfor %}
-	{% endcomment %}
-
 		<dl>
 			{% for v in values %}
 				<dt>{{ v.text }}</dt>
@@ -64,7 +54,7 @@
 </table>
 
 {% if template.workgroup|resource_can_edit:user and template.enable_editing %}
-	<p><a class="edit" href="{% url edit-node-metadata template.id elem|elattrib:"id" %}">edit</a></p>
+	<p class="edit_link"><a class="action edit" href="{% url edit-node-metadata template.id elem|elattrib:"id" %}">edit</a></p>
 {% endif %}
 
 

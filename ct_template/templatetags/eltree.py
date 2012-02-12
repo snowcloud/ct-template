@@ -182,6 +182,20 @@ def item_display(item, top_template_id, template, level=0, tView=None, user=None
         'user': user
     }
 
+@register.inclusion_tag('item_detail_table.html')
+def item_display_table(item, top_template_id, template, level=0, tView=None, user=None):
+    if not isinstance (template, ClinTemplate):
+        template = get_template(elattrib(template, 'include'))
+    return {
+        'elem': item,
+        'top_template_id': top_template_id,
+        'template': template,
+        'this_level': level,
+        'child_level': level + 1,
+        'tView': tView,
+        'user': user
+    }
+
 @register.simple_tag
 def item_display_widget(item, template):
     datatype = elattrib(item, "valueType")
@@ -204,6 +218,7 @@ def item_display_widget(item, template):
             'percent': 'integer', 
             'size_cm': 'integer', 
             'radioset': 'radioset',
+            'table': 'group',
             'text': 'textline',
             'yes_no': 'radioset_yn', 
             'yes_no_dk': 'radioset_yndk', 
