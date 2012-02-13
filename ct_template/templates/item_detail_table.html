@@ -26,39 +26,48 @@
 
     <!-- ###############################  COMMENT LIST  ################################ -->
     {% include "item_detail_comment_list.html" %}
-
 {% else %}
-    <ol class="ct_node_children ">
-        <li class="ct_level{{ this_level }} ct_node ">
-            
-            <!-- ###############################  LABEL  ################################ -->
-            <div class="ct_node_label clearfix">
-                <h3 id="{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}">{{ elem|elattrib:"label"|capfirst }}</h3>
 
-                <!-- ##############  COMMENT COUNT  ############## -->
-                {% include "item_detail_comment_count.html" %}
+    {% if elem|elattrib:"valueType" == 'rowheader' %}
+        <div class="ct_node_label ct_row clearfix">
+            {% with headers=elem|elattrib:"label"|split  %}
+                <div class="map-left header">{{ headers.0 }}</div>
+                <div class="map-right header">{{ headers.1 }}</div>                
+            {% endwith %}
+        </div>
+    {% else %}
+        <ol class="ct_node_children ">
+            <li class="ct_level{{ this_level }} ct_node ">
+                
+                <!-- ###############################  LABEL  ################################ -->
+                <div class="ct_node_label clearfix">
+                    <h3 id="{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}">{{ elem|elattrib:"label"|capfirst }}</h3>
 
-                <!-- ##############  EDIT LINK  ############## -->
-                {% if tView in "docs,metadata" and template.enable_editing and template.group|resource_can_edit:user %}
-                    <div class="edit_link"><a class='action edit' href="{% url template-item-edit template.id tView elem|elattrib:"id" %}">{% trans "Edit" %}</a></div>
-                {% endif %}
-            </div>
-            
-            <!-- ###############################  BODY  ################################ -->
-            <div class="ct_node_body">
-                {% elem_body elem tView template %}
-            </div>
+                    <!-- ##############  COMMENT COUNT  ############## -->
+                    {% include "item_detail_comment_count.html" %}
 
-            <!-- ###############################  COMMENT LIST  ################################ -->
-            {% include "item_detail_comment_list.html" %}
-            
-            <!-- ###############################  CHILD NODES  ################################ -->
-            {# % if elem|elattrib:"valueType" == 'table' %}<table>{% endif % #}
-            {% for child in elem|items:template.xmlns %}
-                {% item_display_table child top_template_id template child_level tView user %}
-            {% endfor%}
-            {#% if elem|elattrib:"valueType" == 'table' %}</table>{% endif %#}
-            
-        </li>
-    </ol>
+                    <!-- ##############  EDIT LINK  ############## -->
+                    {% if tView in "docs,metadata" and template.enable_editing and template.group|resource_can_edit:user %}
+                        <div class="edit_link"><a class='action edit' href="{% url template-item-edit template.id tView elem|elattrib:"id" %}">{% trans "Edit" %}</a></div>
+                    {% endif %}
+                </div>
+                
+                <!-- ###############################  BODY  ################################ -->
+                <div class="ct_node_body">
+                    {% elem_body elem tView template %}
+                </div>
+
+                <!-- ###############################  COMMENT LIST  ################################ -->
+                {% include "item_detail_comment_list.html" %}
+                
+                <!-- ###############################  CHILD NODES  ################################ -->
+                {# % if elem|elattrib:"valueType" == 'table' %}<table>{% endif % #}
+                {% for child in elem|items:template.xmlns %}
+                    {% item_display_table child top_template_id template child_level tView user %}
+                {% endfor%}
+                {#% if elem|elattrib:"valueType" == 'table' %}</table>{% endif %#}
+                
+            </li>
+        </ol>
+    {% endif %}
 {% endif %}
