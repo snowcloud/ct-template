@@ -19,6 +19,9 @@
         
         <!-- ###############################  BODY  ################################ -->
         <div class="ct_node_body">
+            {% with helptext=elem|elattrib:"helptext" %}
+                {% if helptext %}<p class="helptext">{{ helptext }}</p>{% endif %}
+            {% endwith %}
             {% elem_body elem tView template %}
         </div>
 
