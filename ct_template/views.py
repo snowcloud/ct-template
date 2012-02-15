@@ -95,7 +95,6 @@ def new_template(request, group_slug):
                     rendered = t.render(c)
                 else:
                     rendered = render_to_string('clintemplates_new.xml', defaults )
-                # print rendered
                 ct = ClinTemplate(xmlmodel=rendered, workgroup=object, accept_reviews=False, enable_editing=True)                                
                 ct.save()
                 return HttpResponseRedirect(reverse('template-detail',kwargs={'object_id':ct.id}))
