@@ -3,7 +3,10 @@
 """
 import datetime
 
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.flatpages.models import FlatPage
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render_to_response
@@ -13,8 +16,6 @@ from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect, HttpResponse
-from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.forms import *
 from django.http import Http404
 
@@ -25,6 +26,11 @@ from ct_template.models import ClinTemplate, ClinTemplateReview, format_comment_
 from ct_template.forms import CTNewForm, ItemForm, ReviewForm, TemplateSettingsForm, NodeMetadataForm
 
 TVIEWS = ['form', 'data', 'docs', 'metadata', 'settings']
+
+try:
+    from settings import DEFAULT_XML_MODEL
+except ImportError:
+    DEFAULT_XML_MODEL = '/new-template-default/'
 
 def _get_tView(req, object):
     result = req.get('tView', 'form' if object.inf_model else 'docs')
@@ -94,7 +100,13 @@ def new_template(request, group_slug):
                     c = Context(defaults)
                     rendered = t.render(c)
                 else:
-                    rendered = render_to_string('clintemplates_new.xml', defaults )
+                    try:
+                        fp = FlatPage.objects.get(url=DEFAULT_XML_MODEL)
+                        t = Template(fp.content)
+                        c = Context(defaults)
+                        rendered = t.render(c)
+                    except FlatPage.DoesNotExist:
+                        rendered = render_to_string('clintemplates_new.xml', defaults )
                 ct = ClinTemplate(xmlmodel=rendered, workgroup=object, accept_reviews=False, enable_editing=True)                                
                 ct.save()
                 return HttpResponseRedirect(reverse('template-detail',kwargs={'object_id':ct.id}))
