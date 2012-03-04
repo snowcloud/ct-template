@@ -34,41 +34,34 @@ def save_version(fn, txt, encoding='UTF-8'):
     finally:
         outfile.close()
     
+def _git(params, repoDir):
+    cmd = 'git %s' % params
+    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
+    pipe.wait()
 
 def gitAdd(fileName, repoDir):
-    cmd = 'git add ' + fileName
-    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
-    pipe.wait()
-    return
-
+    return _git('add %s' % fileName, repoDir)
+    
 def gitRm(fileName, repoDir):
-    cmd = 'git rm ' + fileName
-    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
-    pipe.wait()
-    return
+    return _git('rm %s' % fileName, repoDir)
 
 def gitMv(fileName, repoDir):
-    cmd = 'git mv ' + fileName
-    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
-    pipe.wait()
-    return
+    return _git('mv %s' % fileName, repoDir)
 
 def gitCommit(fileName, repoDir, m='auto commit'):
-    cmd = 'git commit -m "%s" %s' % (m, fileName)
-    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
-    pipe.wait()
-    return
+    return _git('commit -m "%s" %s' % (m, fileName), repoDir)
+
+def gitPull(repoDir):
+    return _git('pull', repoDir)
 
 def gitPush(repoDir):
-    cmd = 'git push'
-    pipe = subprocess.Popen(cmd, shell=True, cwd=repoDir)
-    pipe.wait()
-    return
+    return _git('push', repoDir)
 
 def commit_versions(version_path):
     """docstring for commit_versions"""
     
-    # version_path = '/Users/derek/dev_django/ct_repo/dcm/'    
+    # version_path = '/Users/derek/dev_django/ct_repo/dcm/' 
+    gitPull(version_path)   
     gitAdd('*.xml', version_path)
     gitCommit('', version_path)
     files = filter(os.path.isfile, glob.glob(version_path + "*.xml.???"))
