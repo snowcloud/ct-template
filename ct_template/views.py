@@ -121,7 +121,6 @@ def delete(request, object_id):
                 return HttpResponseRedirect(reverse('group',kwargs={'group_slug': object.workgroup.slug}))
     else:
         form = ConfirmForm(initial={ 'resource_name': object.name })
-    print settings.SYNONYMS
     return render_to_response('ct_framework/confirm.html', 
         RequestContext( request, 
             {   'form': form,
