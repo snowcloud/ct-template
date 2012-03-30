@@ -25,7 +25,7 @@ from ct_groups.decorators import check_permission
 from ct_template.models import ClinTemplate, ClinTemplateReview, format_comment_url
 from ct_template.forms import CTNewForm, ItemForm, ReviewForm, TemplateSettingsForm, NodeMetadataForm
 
-TVIEWS = ['form', 'data', 'docs', 'metadata', 'settings']
+TVIEWS = ['form', 'data', 'files', 'docs', 'metadata', 'settings']
 
 try:
     from settings import DEFAULT_XML_MODEL

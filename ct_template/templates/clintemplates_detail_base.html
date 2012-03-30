@@ -56,6 +56,9 @@
 	<ul>
 		<li><a href="{% url template-detail clin_template.id %}?tView=form"><span>{% trans "View as form"%}</span></a></li>
 		<li><a href="{% url template-detail clin_template.id %}?tView=data"><span>{% trans "View as data"%}</span></a></li>		
+		{% if clin_template.file_resources %}
+			<li><a href="#files"><span>{% trans 'Files' %}</span></a></li>
+		{% endif %}
 		{% if clin_template.documentation %}
 			<li><a href="{% url template-detail clin_template.id %}?tView=docs"><span>{% trans 'Documentation' %}</span></a></li>
 		{% endif %}
@@ -66,6 +69,11 @@
 		{% endif %}
 
 	</ul>
+
+	<div id="files">
+		{% include "file_resources.html" %}
+	</div>
+
 	{% if clin_template.workgroup|group_edit:user %}
 	    <div id="settings">
 

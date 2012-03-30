@@ -156,6 +156,10 @@ class ClinTemplate(models.Model):
         return self._inf_model.get('display')
     display = property(_display)
 
+    def _file_resources(self):
+        return ['blah', 'blaher', 'blahest']
+    file_resources = property(_file_resources)
+
     def _name(self):  # just convenience, cos templates etc use name not label
         return self.label
     name = property(_name)
