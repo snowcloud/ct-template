@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n markup %}
 {% load future %}
 {% with clin_template.file_resources as objects %}
 
@@ -9,16 +9,17 @@
 		</thead>
 			<tbody>
             {% for object in objects %}
-				<tr><td><a href="{{ object.resource.url }}">{{ object.name|slice:":50" }}</a></td><td>{{object.description}}</td></tr>
+				<tr><td><a href="{{ object.resource.url }}">{{ object.name|slice:":50" }}</a></td><td>{{object.description|textile}}
+					<p><a href="{% url 'template_fileresource_edit' object.id %}">edit</a> - 
+					<a href="{% url 'template_fileresource_delete' object.id %}">delete</a></p>
+				</td></tr>
             {% endfor %}
 		</tbody>
 		</table>
-{% else %}
-	<p>- {% trans 'None yet' %} -</p>
 {% endif %}
  
 {% endwith %}
 
 <hr>
 
-<p><a href="{% url 'template_fileresource_list_add' clin_template.id %}">add a file</a></p>
+<p><a href="{% url 'template_fileresource_add' clin_template.id %}">add a file</a></p>
