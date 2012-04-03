@@ -1,17 +1,23 @@
-{% load i18n markup %}
+{% load i18n markup ct_groups_tags %}
 {% load future %}
 {% with clin_template.file_resources as objects %}
 
 {% if objects %}
 	<table class="siteresources">
 		<thead>
-			<tr><th class="title">{% trans 'Title' %}</th><th>{% trans 'Description' %}</th></tr>
+			<tr><th>{% trans 'Title' %}</th><th>{% trans 'Description' %}</th></tr>
 		</thead>
 			<tbody>
             {% for object in objects %}
 				<tr><td><a href="{{ object.resource.url }}">{{ object.name|slice:":50" }}</a></td><td>{{object.description|textile}}
-					<p><a href="{% url 'template_fileresource_edit' object.id %}">edit</a> - 
-					<a href="{% url 'template_fileresource_delete' object.id %}">delete</a></p>
+					<p>
+					{% if clin_template.workgroup|resource_can_edit:user %}
+						<a class="action edit" href="{% url 'template_fileresource_edit' object.id %}">edit</a> &nbsp;&nbsp;&nbsp;
+					{% endif %}
+					{% if clin_template.workgroup|resource_delete:user %}
+						<a class="action delete" href="{% url 'template_fileresource_delete' object.id %}">delete</a>
+					{% endif %}
+					</p>
 				</td></tr>
             {% endfor %}
 		</tbody>
@@ -22,4 +28,6 @@
 
 <hr>
 
-<p><a href="{% url 'template_fileresource_add' clin_template.id %}">add a file</a></p>
+{% if clin_template.workgroup|resource_can_edit:user %}
+	<p><a class="action add" href="{% url 'template_fileresource_add' clin_template.id %}">add a file</a></p>
+{% endif %}
