@@ -1,1 +1,17 @@
-<p>{{ clin_template.file_resources }}</p>
+{% load future %}
+{% with clin_template.file_resources as objects %}
+
+<dl>
+	{% for object in objects %}
+		<dt><a href="{{ object.resource.url }}">{{object.name}}</a></dt>
+		<dd>{{object.description}}</dd>
+	{% empty %}
+
+{% endfor %}
+</dl>
+    
+{% endwith %}
+
+
+<p>upload form here...</p>
+

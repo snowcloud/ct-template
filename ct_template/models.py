@@ -1,10 +1,11 @@
 """ ct_tools/ct_template/models.py
 
 """
+import datetime
+from xml.etree import ElementTree as ET
+
 from django.conf import settings
 from django.db import models
-from ct_groups.models import CTGroup, email_notify, add_notify_event
-from ct_template.version import save_version
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
@@ -13,8 +14,10 @@ from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from tagging.fields import TagField
-from xml.etree import ElementTree as ET
-import datetime
+
+from ct_fileresource.models import FileResource
+from ct_groups.models import CTGroup, email_notify, add_notify_event
+from ct_template.version import save_version
 
 try:
     from scutils.middleware import get_current_user
@@ -157,7 +160,7 @@ class ClinTemplate(models.Model):
     display = property(_display)
 
     def _file_resources(self):
-        return ['blah', 'blaher', 'blahest']
+        return FileResource.template_resources.filter(object_id=self.id)
     file_resources = property(_file_resources)
 
     def _name(self):  # just convenience, cos templates etc use name not label
