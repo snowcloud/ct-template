@@ -56,13 +56,13 @@
 	<ul>
 		<li><a href="{% url template-detail clin_template.id %}?tView=form"><span>{% trans "View as form"%}</span></a></li>
 		<li><a href="{% url template-detail clin_template.id %}?tView=data"><span>{% trans "View as data"%}</span></a></li>		
-		{% if clin_template.file_resources %}
-			<li><a href="#files"><span>{% trans 'Files' %}</span></a></li>
-		{% endif %}
 		{% if clin_template.documentation %}
 			<li><a href="{% url template-detail clin_template.id %}?tView=docs"><span>{% trans 'Documentation' %}</span></a></li>
 		{% endif %}
 		<li><a href="{% url template-detail clin_template.id %}?tView=metadata"><span>{% trans "Metadata"%}</span></a></li>
+		{% if clin_template.file_resources %}
+			<li><a href="#files"><span>{% trans 'Files' %}</span></a></li>
+		{% endif %}
 
 		{% if clin_template.workgroup|group_edit:user %}
 			<li><a href="#settings">{% trans "Settings"%}</a></li>
@@ -93,6 +93,7 @@
 	            </fieldset>
 
 	        </form>
+			<p><a href="{% url 'template_fileresource_list_add' clin_template.id %}">add a file</a></p>
 
 	    </div>
 	{% endif %}
@@ -181,7 +182,7 @@ function load_node_metadata(node_id) {
     });
 
 	$.jstree.THEMES_DIR = "/static/js/jstree/themes/";
-    var arr = [ 'form', 'data', 'docs', 'metadata', 'settings' ];
+    var arr = [ 'form', 'data', 'docs', 'metadata', 'files', 'settings' ];
     $("#ct-tabs").show();
 	$("#ct-tabs").tabs({
 		cache: true,
