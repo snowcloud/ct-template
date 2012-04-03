@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n markup tagging_tags ct_tags ct_groups_tags eltree sitevars utils forms %}
+{% load future %}
 
 {% block title %}{{ clin_template.name }}{% endblock %}
 
@@ -10,7 +11,7 @@
 {% block breadcrumbs %}
   <p><a href="{% site_base %}">{% trans 'Home' %}</a>	&gt;
   <a href="{% site_base %}groups">{% trans 'Groups' %}</a>	&gt;
-  <a href="{% url group clin_template.workgroup.slug %}">{{ clin_template.workgroup.name }}</a></p>
+  <a href="{% url 'group' clin_template.workgroup.slug %}">{{ clin_template.workgroup.name }}</a></p>
 {% endblock %}
 
 {% block content %}
@@ -28,7 +29,7 @@
 	            <li class="entry-tags">
 	            <ul class="tags">
 	                {% for tag in tag_list %}
-	                    <li><a href="{% url tag tag.name %}">{{ tag.name }}</a></li>
+	                    <li><a href="{% url 'tag' tag.name %}">{{ tag.name }}</a></li>
 	                {% endfor %}
 	            </ul>
 	            </li>
@@ -57,7 +58,7 @@
 		<li><a href="{% url template-detail clin_template.id %}?tView=form"><span>{% trans "View as form"%}</span></a></li>
 		<li><a href="{% url template-detail clin_template.id %}?tView=data"><span>{% trans "View as data"%}</span></a></li>		
 		{% if clin_template.documentation %}
-			<li><a href="{% url template-detail clin_template.id %}?tView=docs"><span>{% trans 'Documentation' %}</span></a></li>
+			<li><a href="{% url 'template-detail' clin_template.id %}?tView=docs"><span>{% trans 'Documentation' %}</span></a></li>
 		{% endif %}
 		<li><a href="{% url template-detail clin_template.id %}?tView=metadata"><span>{% trans "Metadata"%}</span></a></li>
 		{% if clin_template.file_resources %}
@@ -77,7 +78,7 @@
 	{% if clin_template.workgroup|group_edit:user %}
 	    <div id="settings">
 
-	    	<form action="{% url template-settings clin_template.id %}" method="post" class="wider">{% csrf_token %}
+	    	<form action="{% url 'template-settings' clin_template.id %}" method="post" class="wider">{% csrf_token %}
 	            <fieldset>
 	                <legend><span>{% trans 'Settings' %}:</span></legend>
 	                <ol>
@@ -122,7 +123,7 @@
 <!-- ################################ OTHER ACTIONS ################################  -->
 
 {% if clin_template.workgroup|resource_delete:user %}
-    <p><a href="{% url template-delete clin_template.id %}">{% trans 'Delete' %}</a></p>
+    <p><a href="{% url 'template-delete' clin_template.id %}">{% trans 'Delete' %}</a></p>
 {% endif %}
 
 {% endblock %}
