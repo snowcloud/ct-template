@@ -1,4 +1,6 @@
 {% load i18n sitevars utils markup eltree ct_groups_tags  %}
+{% load future %}
+
 <h2>{{ elem|elattrib:"label"|capfirst }}</h2>
 <table>
 <!-- <tr>
@@ -54,7 +56,7 @@
 </table>
 
 {% if template.workgroup|resource_can_edit:user and template.enable_editing %}
-	<p class="edit_link"><a class="action edit" href="{% url edit-node-metadata template.id elem|elattrib:"id" %}">edit</a></p>
+	<p class="edit_link"><a class="action edit" href="{% url 'edit-node-metadata' template.id elem|elattrib:"id" %}">edit</a></p>
 {% endif %}
 
 
