@@ -6,6 +6,7 @@ import datetime
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.flatpages.models import FlatPage
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
@@ -45,7 +46,9 @@ def index(request):
 
 def detail(request, object_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
-    check_permission(request.user, object.workgroup, 'resource', 'r')
+    if not check_permission(request.user, object.workgroup, 'resource', 'r'):
+        return redirect_to_login(request.get_full_path())
+
     tView = _get_tView(request.GET, object)
     tNode = request.GET.get('tNode', None)
     tNode = '#%s' % tNode if tNode else ''
@@ -79,10 +82,12 @@ def settings_edit(request, object_id):
     
     return HttpResponseRedirect('%s?tView=settings' % reverse('template-detail',kwargs={'object_id':object.id}))
 
+@login_required
 def new_template(request, group_slug):
     """docstring for new_template"""
     object = get_object_or_404(CTGroup, slug=group_slug)
-    check_permission(request.user, object, 'resource', 'w')
+    if not check_permission(request.user, object, 'resource', 'w'):
+        raise PermissionDenied()
 
     if request.POST:
         if request.POST['result'] == _('Cancel'):
@@ -120,7 +125,8 @@ def new_template(request, group_slug):
 def delete(request, object_id):
     """docstring for delete"""
     object = get_object_or_404(ClinTemplate, pk=object_id)
-    check_permission(request.user, object.workgroup, 'resource', 'd')
+    if not check_permission(request.user, object.workgroup, 'resource', 'd'):
+        raise PermissionDenied()
 
     if request.POST:
         if request.POST['result'] == _('Cancel'):
@@ -144,7 +150,9 @@ def edititem(request, object_id, view_id, item_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
     if not object.enable_editing:
         raise PermissionDenied()
-    check_permission(request.user, object.workgroup, 'resource', 'w')
+    if not check_permission(request.user, object.workgroup, 'resource', 'w'):
+        raise PermissionDenied()
+
     item = object.get_item(item_id)
     if item is None:
         raise Http404
@@ -167,8 +175,12 @@ def edititem(request, object_id, view_id, item_id):
 
 def showcomment(request, object_id, comment_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
-    check_permission(request.user, object.workgroup, 'resource', 'r')
-    check_permission(request.user, object.workgroup, 'comment', 'r')
+    # TODO this does nothing if check fails
+    # check and redirect to login of unauth, else deny
+    if not check_permission(request.user, object.workgroup, 'resource', 'r') or \
+        not check_permission(request.user, object.workgroup, 'comment', 'r'):
+        return redirect_to_login(request.get_full_path())
+
     tView = _get_tView(request.GET, object)
     return render_to_response('clintemplates_detail.html', RequestContext( request, 
         {   'base_template': "clintemplates_detail_base.html", 'clin_template': object, 
@@ -177,7 +189,8 @@ def showcomment(request, object_id, comment_id):
 @login_required
 def addcomment(request, object_id, comment_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
-    check_permission(request.user, object.workgroup, 'comment', 'w')
+    if not check_permission(request.user, object.workgroup, 'comment', 'w'):
+        raise PermissionDenied()
     
     if request.POST:
         tView = _get_tView(request.POST, object)
@@ -221,7 +234,8 @@ def addcomment(request, object_id, comment_id):
 @login_required
 def addreview(request, object_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
-    check_permission(request.user, object.workgroup, 'comment', 'w')
+    if not check_permission(request.user, object.workgroup, 'comment', 'w'):
+        raise PermissionDenied()
 
     if request.method == 'POST':
         tView = _get_tView(request.POST, object)
@@ -252,8 +266,8 @@ def addreview(request, object_id):
 
 def get_node_metadata(request, object_id, node_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
-    check_permission(request.user, object.workgroup, 'resource', 'r')
-
+    if not check_permission(request.user, object.workgroup, 'resource', 'r'):
+        raise PermissionDenied()        
     # if request.is_ajax():
     node = object.get_item(node_id)
     # print node.attrib['description']
@@ -265,7 +279,8 @@ def edit_node_metadata(request, object_id, node_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
     if not object.enable_editing:
         raise PermissionDenied()
-    check_permission(request.user, object.workgroup, 'resource', 'w')
+    if not check_permission(request.user, object.workgroup, 'resource', 'w'):
+        raise PermissionDenied()
     node = object.get_item(node_id)
     if node is None:
         raise Http404
