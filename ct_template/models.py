@@ -58,6 +58,8 @@ def make_template_id(obj):
         v = ''
     return  slugify(obj.get_metadata_text('template_id', None) or '%s%s' % (obj.label, v))
     
+SHOW_DATA_VIEW_OPTIONS = (('hide', _('hide')), ('editors_only', _('editors only')), ('show', _('show')))
+
 class ClinTemplate(models.Model):
     #name = models.CharField(max_length=64, core=True)
     #note = models.TextField()
@@ -70,6 +72,7 @@ class ClinTemplate(models.Model):
     accept_reviews = models.BooleanField(blank=False, default=1)
     enable_editing = models.BooleanField(blank=False, default=0)
     enable_voting = models.BooleanField(blank=False, default=0)
+    show_data_view = models.CharField(max_length=12, choices=SHOW_DATA_VIEW_OPTIONS, default='show')
     included_templates = models.ManyToManyField('self', symmetrical=False, related_name='in_templates', blank=True, null=True)
     _xmlroot = None
     _metadata = _metadata_dict = None

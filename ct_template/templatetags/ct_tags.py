@@ -6,6 +6,7 @@ register = template.Library()
 
 from ct_template.models import ClinTemplate
 from ct_template.templatetags.eltree import get_template
+from ct_groups.templatetags.ct_groups_tags import group_edit
 
 @register.filter
 def rating_display(value):
@@ -25,3 +26,8 @@ def add_node_to_tree(item, top_template_id, template):
         'top_template_id': top_template_id,
         'template': template
     }
+
+@register.filter
+def show_data_view(template, user):
+    return template.show_data_view == 'show' or (template.show_data_view == 'editors_only' and group_edit(template.workgroup, user))
+    

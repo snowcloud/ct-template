@@ -34,7 +34,7 @@ class TemplateSettingsForm(forms.ModelForm):
     """docstring for TemplateSettingsForm"""
     class Meta:
         model = ClinTemplate
-        fields = ('tags', 'is_public', 'accept_comments', 'accept_reviews', 'enable_editing')
+        fields = ('tags', 'is_public', 'accept_comments', 'accept_reviews', 'enable_editing', 'show_data_view')
 
         # fields = ('name', 'note', 'tags', 'is_public', 'moderate_membership', 'moderated_message',
         #     'language', 'show_discussion', 'resource_comment_order', 'template', 'logo')

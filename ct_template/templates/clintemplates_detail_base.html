@@ -56,7 +56,9 @@
 <div id="ct-tabs">
 	<ul>
 		<li><a href="{% url 'template-detail' clin_template.id %}?tView=form"><span>{% trans "View as form"%}</span></a></li>
-		<li><a href="{% url 'template-detail' clin_template.id %}?tView=data"><span>{% trans "View as data"%}</span></a></li>		
+		{% if clin_template|show_data_view:user %}
+			<li><a href="{% url 'template-detail' clin_template.id %}?tView=data"><span>{% trans "View as data"%}</span></a></li>		
+		{% endif %}
 		{% if clin_template.documentation %}
 			<li><a href="{% url 'template-detail' clin_template.id %}?tView=docs"><span>{% trans 'Documentation' %}</span></a></li>
 		{% endif %}
