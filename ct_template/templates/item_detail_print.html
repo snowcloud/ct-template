@@ -1,0 +1,58 @@
+{% load i18n eltree sitevars utils markup ct_groups_tags %}
+{% load future %}
+
+{% if elem|elattrib:"valueType" == 'row' %}
+{% with codes=elem|termbindings:template %}
+<div class="ct_node_label {% if codes %}ct_row {% endif %}clearfix">
+    <div id="{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}">
+        {% if codes %}
+            <div class="map-left">{{ elem|elattrib:"label"|capfirst }}
+                <span class="termcode">[{{ elem|elattrib:"defcode" }}]</span>
+            </div>
+            <div class="map-right">
+                {% for code in codes %}
+                    <p>{{ code.text }}</p>
+                {% endfor %}
+            </div>
+        {% else %} 
+            <div class="map">{{ elem|elattrib:"label"|capfirst }}
+                <span class="termcode">[{{ elem|elattrib:"defcode" }}]</span>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endwith %}
+
+{% else %}
+
+    {% if elem|elattrib:"valueType" == 'rowheader' %}
+        <div class="ct_node_label ct_row clearfix">
+            {% with headers=elem|elattrib:"label"|split  %}
+                <div class="map-left header">{{ headers.0 }}</div>
+                <div class="map-right header">{{ headers.1 }}</div>                
+            {% endwith %}
+        </div>
+    {% else %}
+        <ol class="ct_node_children ">
+            <li class="ct_level{{ this_level }} ct_node">
+                
+                <!-- ###############################  LABEL  ################################ -->
+                <div class="ct_node_label clearfix">
+                    <h3 id="{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}">{{ elem|elattrib:"label"|capfirst }}</h3>
+
+
+                </div>
+                
+                
+                <!-- ###############################  CHILD NODES  ################################ -->
+                {# % if elem|elattrib:"valueType" == 'table' %}<table>{% endif % #}
+                {% for child in elem|items:template.xmlns %}
+                    {% item_display_print child top_template_id template child_level tView user %}
+                {% endfor%}
+                {#% if elem|elattrib:"valueType" == 'table' %}</table>{% endif %#}
+                
+            </li>
+        </ol>
+    {% endif %}
+{% endif %}

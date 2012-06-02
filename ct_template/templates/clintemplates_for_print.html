@@ -1,0 +1,28 @@
+{% extends "clintemplates_base_for_print.html" %}
+{% load i18n sitevars utils markup eltree ct_groups_tags %}
+
+{% block title %}{{ object.name }}{% endblock %}
+{%block page_title%}
+   <div class="metadata">
+        <h1>{{ object.name }}</h1>
+
+        <table>
+        	<tbody>
+        		{% for item, value in object.metadata_dict.items  %}        				
+        			{% if item not in 'Name template_id' %} 
+		        		<tr><th>{{ item }}</th><td>{{ value.text|textile }}</td></tr>        				
+        			{% endif %}
+        		{% endfor %}
+        	</tbody>
+        </table>
+   </div>
+{%endblock%}
+
+{% block content %}
+
+		{% for elem in object|items_for_view:'form'|items:object.xmlns %}
+		    {% item_display_print elem object.id object 0 'form' user %}			
+		{% endfor%}
+
+{%endblock%}
+

@@ -299,3 +299,10 @@ def edit_node_metadata(request, object_id, node_id):
     return render_to_response('node_metadata_edit.html', 
         RequestContext( request, {'template': object, 'form': form }))
 
+
+def detail_for_print(request, object_id, template_name='clintemplates_for_print.html'):
+    obj = get_object_or_404(ClinTemplate, pk=object_id)
+
+    template_context = {'object': obj}
+    return render_to_response(template_name, RequestContext(request, template_context))
+

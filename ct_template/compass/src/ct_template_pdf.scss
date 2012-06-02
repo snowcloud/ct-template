@@ -1,0 +1,120 @@
+/* ct_template_pdf.css */
+
+
+body {font-family: "Lucida Grande", Lucida, Verdana, sans-serif;font-size:8pt;padding: 1em;}
+p {
+	margin: 0;
+	padding: 0;
+}
+h1, h2, h3 {margin: 0;padding: 0;}
+h1 {
+	font-size: 220%;}
+
+.metadata {
+	font-size: 80%;
+	h1 {
+		padding-bottom: 1em;	
+	}
+	h2 {
+		font-size: 1.2em;
+		float: left;
+	}
+	p {
+		padding-bottom: 0.8em;
+		
+	}
+	th {
+		text-align: left;
+		padding-right: 2em;
+	vertical-align: top;
+}
+	table {
+		border-spacing: 0;
+	}
+}
+.ct_node_children {
+	list-style-type: none;
+	margin-left: 0;
+	padding: 0;
+}
+.ct_level0 {
+	//border-top: 3px solid #ccc;
+	padding-top: 0.5em;
+	font-size: 0.8em;
+	
+}
+.ct_level1 {
+	//border-top: 3px solid #eee;
+	padding-top: 1em;
+	font-size: 0.8em;
+}
+.ct_level1>.ct_node_label h3 {
+	padding: 0.2em 0;
+
+	//background-color: #eef;
+	//color: #fffeff;
+}
+.ct_level1 .ct_node_label {
+//	background-color: pink;
+//	color: #556;
+}
+.ct_row {
+	border-bottom: 1px solid #eaeaea;
+}
+.header {
+	padding: 1em 0 0.2em;
+	font-weight: bold;
+}
+.map-left {
+	float: left;
+	width: 40%;
+}
+.map-right {
+	margin-left: 50%;
+}
+
+.clearfix:before,
+.clearfix:after {
+  content: '\0020';
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0; }
+.clearfix:after {
+  clear: both; }
+.clearfix {
+  zoom: 1; }
+
+/*	
+table {border-collapse:collapse;}
+th { text-align: left;padding: 0.5em 0;font-weight: bold;font-size: 110%;}
+tr {padding-top: 2px;}
+td {padding-right:5px;vertical-align: top;}
+a {color:#335;}
+.r_0 {border-top: 3px solid #ccc;background-color:#eee}
+.r_1 {border-top: 1.5px dotted #ccc;}
+.r_2 {border-top: 1px dotted #ccc;}
+.r_3 {border-top: 1px dotted #ddd;}
+.r_4 {border-top: 0.5px dotted #ccc;}
+.r_5 {border-top: 0.5px dotted #eee;}
+.short {text-align: center;}
+.faint {color:#999;font-size:90%;}
+.syn {font-style:italic;}
+.descr {color:#446;}
+.untrans {color:#755;}
+.done {color:#446;font-style:italic;}
+.symbol {font-family: "Zapf Dingbats";}
+.i_0 {padding-left:0em}
+.i_1 {padding-left:2em}
+.i_2 {padding-left:4em}
+.i_3 {padding-left:6em}
+.i_4 {padding-left:8em}
+.i_5 {padding-left:10em}
+.i_6 {padding-left:12em}
+.i_7 {padding-left:13em}
+.i_8 {padding-left:14em}
+.i_9 {padding-left:15em}
+.i_10 {padding-left:16em}
+
+*/

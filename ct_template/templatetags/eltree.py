@@ -196,6 +196,20 @@ def item_display_table(item, top_template_id, template, level=0, tView=None, use
         'user': user
     }
 
+@register.inclusion_tag('item_detail_print.html')
+def item_display_print(item, top_template_id, template, level=0, tView=None, user=None):
+    if not isinstance (template, ClinTemplate):
+        template = get_template(elattrib(template, 'include'))
+    return {
+        'elem': item,
+        'top_template_id': top_template_id,
+        'template': template,
+        'this_level': level,
+        'child_level': level + 1,
+        'tView': tView,
+        'user': user
+    }
+
 @register.simple_tag
 def item_display_widget(item, template):
     datatype = elattrib(item, "valueType")
