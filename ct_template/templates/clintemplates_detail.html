@@ -1,5 +1,5 @@
 {% extends base_template %}
-
+{% load url from future %}
 {% load i18n sitevars utils markup eltree ct_groups_tags %}
 
 {% block template_detail %}
@@ -8,6 +8,7 @@
 		{% if tView = 'docs' %}
 	    	<div><a href="" class="togglealldocs">{% trans "Show all text"%}</a></div>
 		{% endif %}
+		<div class="print_template_link"><a class="action print" href="{% url "template-detail-for-print" clin_template.id %}">{% trans "Print" %}</a></div>
 		<div class="all_comments_link"><a href="" class="toggleallcomments">{% trans "Show all comments"%}</a></div>
 	</div>
 	
