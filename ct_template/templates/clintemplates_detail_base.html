@@ -127,6 +127,19 @@
     <p><a href="{% url 'template-delete' clin_template.id %}">{% trans 'Delete' %}</a></p>
 {% endif %}
 
+<div id="comment-form-holder">
+	<form id="comment-form" action="{% site_base %}templates/{{ clin_template.id }}/{{ comment_id }}/comment/" method="post">{% csrf_token %}
+		<legend>{% trans "Add comment" %}</legend>
+
+		<p><textarea name="comment_text" rows="8" cols="50">{{comment_text}}</textarea></p>
+
+		<input type="hidden" name="tView" value="{{ tView }}" />
+		<input type="hidden" name="top" value="{{ top_template_id }}" />
+		<input type="submit" name="result" value="{% trans 'Submit' %}">
+		<input type="submit" name="cancel" value="{% trans 'Cancel' %}" />
+	</form>
+</div>
+
 {% endblock %}
 
 <!-- ################################ JS ################################  -->
@@ -272,6 +285,51 @@ function load_node_metadata(node_id) {
                 }
 				return false;
 		   });
+		   $('.comment_link > .add').click(function(event){ 
+		   		var link = $(this) //
+		   		console.log($(this).attr('href').split('/'));
+
+		   		var url = $(this).attr('href').split('/');
+
+		   		var target = $('#h_'+url[2]+'_{{tView}}_'+url[3]);
+		   		// console.log(target);
+		   		// target.removeAttr('style');
+		   		$('#comment-form').parent().hide();
+		   		$('#comment-form').appendTo(target[0]);
+		   		target.slideDown(1000);
+
+		   		$('#comment-form').attr('action', $(this).attr('href'));
+
+
+		   		// console.log(node_id);
+		   		// var target = $()
+		   		// console.log(node_id);
+
+
+
+		   		// //console.log(link.closest('.ct_node')); <- THIS DOESN'T WORK ON ICNP TYPE TEMPLATES- ct_node_label?
+		   		// var target = link.closest('.ct_node').find('.ct_comments_hide_show');
+		   		// //var target = link.parent().parent().siblings('.ct_comments_hide_show');
+		   		// //console.log(link.parent().parent());
+		   		// //console.log(link.parent().parent().siblings());
+		   		// target.removeAttr('style');
+		   		// //console.log(target)
+		   		// $('#comment-form').appendTo(target[0]);
+		   		// // set action
+		   		$('#comment-form').attr('action', $(this)[0]['href']);
+
+		   		return false;
+		   	});
+		   //$('#comment-form [name="submit"]').click(function(event){ 
+		   //		$('#comment-form').appendTo('#comment-form-holder');
+			//    return false;
+			//});
+		   $('#comment-form [name="cancel"]').click(function(event){ 
+		   		$('#comment-form').appendTo('#comment-form-holder');
+		   		$('#comment-form [name="comment_text"]').val('');
+			    return false;
+			});
+
 		
 		} 
 	});
