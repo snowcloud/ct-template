@@ -173,7 +173,7 @@ def edititem(request, object_id, view_id, item_id):
     return render_to_response('item_edit_text.html', 
         RequestContext( request, {'clin_template': object, 'form': form, 'tView': view_id }))
 
-def showcomment(request, object_id, comment_id):
+def showcomment(request, object_id, elem_id):
     object = get_object_or_404(ClinTemplate, pk=object_id)
     # TODO this does nothing if check fails
     # check and redirect to login of unauth, else deny
@@ -184,13 +184,15 @@ def showcomment(request, object_id, comment_id):
     tView = _get_tView(request.GET, object)
     return render_to_response('clintemplates_detail.html', RequestContext( request, 
         {   'base_template': "clintemplates_detail_base.html", 'clin_template': object, 
-            'comment_id': comment_id, 'tView': tView, 'settingsform': TemplateSettingsForm(instance=object)}))
+            'comment_id': elem_id, 'tView': tView, 'settingsform': TemplateSettingsForm(instance=object)}))
 
 @login_required
-def addcomment(request, object_id, comment_id):
+def addcomment(request, object_id, elem_id):
+
     object = get_object_or_404(ClinTemplate, pk=object_id)
     if not check_permission(request.user, object.workgroup, 'comment', 'w'):
         raise PermissionDenied()
+
     
     if request.POST:
         tView = _get_tView(request.POST, object)
@@ -199,19 +201,30 @@ def addcomment(request, object_id, comment_id):
             template_id = object_id
         else:
             template_id = top_template_id
-        # abs_comment_id = '%s_%s_%s' % (object_id, tView, comment_id)
+        # abs_comment_id = '%s_%s_%s' % (object_id, tView, elem_id)
         # redirect_str = '%stemplates/%s/%s/?tView=%s#%s' % (settings.APP_BASE, template_id, abs_comment_id, tView, abs_comment_id)
-        redirect_str = format_comment_url(object_id, template_id, tView, comment_id)
-        if request.POST['result'] == _('Cancel'):
+        redirect_str = format_comment_url(object_id, template_id, tView, elem_id)
+
+        if request.POST.get('result') == _('Cancel'):
             return HttpResponseRedirect(redirect_str)
         else:
+            # return HttpResponse('<p>ok</p>')
             comment_text = request.POST['comment_text']
             if comment_text == '':
                 error_message = "Please type in your comment, or click 'Cancel'"
             elif not object.accept_comments:
                 error_message = "This template does not accept comments. Please click 'Cancel'"
             else:
-                object.add_comment(comment_id, comment_text, request.user)
+                c_id = object.add_comment(elem_id, comment_text, request.user)
+                if request.is_ajax():
+                    defaults = { 
+                        'template': object,
+                        'tView': tView,
+                        'elem': object.get_item(elem_id),
+                        'display': True
+                        }
+                    result = render_to_string('item_detail_comment_list.html', defaults )
+                    return HttpResponse(result)
                 return HttpResponseRedirect(redirect_str)
     else:
         comment_text = ''
@@ -219,11 +232,13 @@ def addcomment(request, object_id, comment_id):
         tView = _get_tView(request.GET, object)
         top_template_id = request.GET.get('top', '')
     
+    if request.is_ajax():
+         return HttpResponse('')
     return render_to_response(
         'clintemplates_add_comment.html', 
         RequestContext( request, {
             'clin_template': object,
-            'comment_id': comment_id,
+            'comment_id': elem_id,
             'error_message': error_message,
             'comment_text': comment_text,
             'tView': tView,

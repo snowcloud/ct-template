@@ -1,18 +1,20 @@
 {% load i18n eltree sitevars utils markup ct_groups_tags %}
 
-<div class="ct_comments_hide_show" id="h_{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}" style="display: none;">
-    {% for v in elem|review_comments:template %}
-        <div class="ct_comment_info">
-            {{ v|elattrib:"author" }} - {{ v|elattrib:"review_date"|date:"j F Y, H:i" }}
-        </div>
-        <div class="ct_comment">
-            {{ v.text|escape|textile }}
-        </div>
-            {% if forloop.last and template.accept_comments %}
-            	<div class="ct_node_label clearfix">
-            	<div class="comment_link"><a class="action add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a>
-            	</div></div>
-            {% endif %}
-    {% endfor %}
+<div class="ct_comments_hide_show" id="h_{{ template.id }}_{{ tView }}_{{ elem|elattrib:"id" }}" {% if not display %}style="display: none;"{% endif %}>
+  {% for v in elem|review_comments:template %}
+    <div class="ct_comment">
+      <div class="ct_comment_info">
+        {{ v|elattrib:"author" }} - {{ v|elattrib:"review_date"|date:"j F Y, H:i" }}
+      </div>
+      <div class="ct_comment_body">
+        {{ v.text|escape|textile }}
+      </div>
+    </div>
+    {% if forloop.last and template.accept_comments %}
+      <div class="ct_node_label clearfix">
+        <div class="comment_link"><a class="action add" href="{% site_base %}templates/{{ template.id }}/{{ elem|elattrib:"id" }}/comment/?tView={{ tView }}&amp;top={{ top_template_id }}">{% trans "Add comment" %}</a></div>
+      </div>
+    {% endif %}
+  {% endfor %}
 
 </div>
