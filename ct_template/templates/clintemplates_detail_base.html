@@ -263,10 +263,10 @@ function load_node_metadata(node_id) {
 				else { $(this).text("{% trans 'Show all comments' %}"); }
 				{# alert(view + " " + show); #}
 				if (show) {
-					$(view + " .ct_comments_hide_show").show(300);
+					$(view + " .ct_comments_hide_show").show();
 					t = '{% trans 'Hide comments' %}'	;
 				} else {
-					$(view + " .ct_comments_hide_show").hide(300);
+					$(view + " .ct_comments_hide_show").hide();
 					t = '{% trans 'Show comments' %}';
 				}
 				$(view + " .toggle_comment").text(t);
