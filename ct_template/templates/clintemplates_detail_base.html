@@ -131,7 +131,7 @@
 	<form id="comment-form" action="{% site_base %}templates/{{ clin_template.id }}/{{ comment_id }}/comment/" method="post">{% csrf_token %}
 		<legend>{% trans "Add comment" %}</legend>
 
-		<p><textarea name="comment_text" rows="8" cols="50">{{comment_text}}blarger</textarea></p>
+		<p><textarea name="comment_text" rows="8" cols="50">{{comment_text}}</textarea></p>
 
 		<input type="hidden" name="tView" value="{{ tView }}" />
 		<input type="hidden" name="top" value="{{ top_template_id }}" />
@@ -305,31 +305,16 @@ function load_node_metadata(node_id) {
 		   				if (response == '') { return }
 		   				parent = $('#comment-form').parent();
 		   				var node_id = parent.attr('id').slice(2);
-		   				// console.log(node_id);
 		   				$('#comment-form').appendTo('#comment-form-holder');
 		   				parent.replaceWith(response);
 		   				var node = $('#h_' + node_id);
-		   				// console.log(node);
-
-		   				// TODO prev doesn't work with forms- use a selector?
-		   				// console.log(node);
-		   				// console.log(node.prevAll('.ct_node_label').last());
-		   				// var count_link = node.prevAll('.ct_node_label').last().find('.comment_link');
 		   				var count_link = node.prev('.ct_node_label').find('.comment_link');
-		   				console.log(count_link);
-
 		   				if (count_link.length == 0) {
-		   					console.log('blah');
 		   					count_link = node.prevAll('.ct_node_label').last().find('.comment_link');
 		   				}
-
-		   				console.log(count_link);
-		   				node.find('.comment_link > .add').click(set_comment_link);
-
-		   				// count_link
 		   				var comment_count = node.find('.ct_comment').length;
 		   				count_link.replaceWith('<div class="comment_link"><a href="javascript:togglecomments(\''+node_id+'\')" class="toggle_comment" id="l_'+node_id+'">Hide comments</a> <span class="ct_count_bubble">'+comment_count+'</span></div>');
-
+		   				node.find('.comment_link > .add').click(set_comment_link);
 					}
 				}); 
 		   		$('#comment-form').slideUp(500);
