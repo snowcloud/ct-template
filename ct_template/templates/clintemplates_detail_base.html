@@ -310,8 +310,20 @@ function load_node_metadata(node_id) {
 		   				parent.replaceWith(response);
 		   				var node = $('#h_' + node_id);
 		   				// console.log(node);
-		   				var count_link = node.prev().find('.comment_link');
-		   				// console.log(count_link);
+
+		   				// TODO prev doesn't work with forms- use a selector?
+		   				// console.log(node);
+		   				// console.log(node.prevAll('.ct_node_label').last());
+		   				// var count_link = node.prevAll('.ct_node_label').last().find('.comment_link');
+		   				var count_link = node.prev('.ct_node_label').find('.comment_link');
+		   				console.log(count_link);
+
+		   				if (count_link.length == 0) {
+		   					console.log('blah');
+		   					count_link = node.prevAll('.ct_node_label').last().find('.comment_link');
+		   				}
+
+		   				console.log(count_link);
 		   				node.find('.comment_link > .add').click(set_comment_link);
 
 		   				// count_link
