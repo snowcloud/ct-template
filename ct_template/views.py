@@ -41,7 +41,11 @@ def _get_tView(req, object):
     return result if result in TVIEWS else 'form'
 
 def index(request):
-    obj_list = ClinTemplate.objects.order_by('_template_id')
+    obj_list = [o for o in ClinTemplate.objects.order_by('_template_id') 
+        if check_permission(request.user, o.workgroup, 'resource', 'r')]
+    status = request.GET.get('status')
+    if status:
+        obj_list = [o for o in obj_list if o.get_metadata_text('PublicationStatus') == status]
     return render_to_response('clintemplates_index.html', RequestContext( request, {'obj_list': obj_list, } ))
 
 def detail(request, object_id):

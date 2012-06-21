@@ -1,21 +1,31 @@
 {% extends "base.html" %}
-{% load markup sitevars %}
+{% load i18n markup sitevars utils ct_framework_tags %}
 
 {% block title %}Templates{% endblock %}
 {% block section %}templates{% endblock %}
 
 {% block content %}
 
-<h2>Templates</h2>
+<h2>{{ "Clinical templates"|synonym }}</h2>
+
+{{ '/templates/intro/'|flatpage|textile }}
 
 {% if obj_list %}
-  <ul>
-    {% for o in obj_list %}
-        <li><a href="{% site_base %}templates/{{ o.id }}/">{{ o.name }}</a></li>
-    {% endfor %}
-  </ul>
+	<table class="siteresources">
+		<thead>
+			<tr><th class="title">{% trans 'Title' %}</th><th class="version">{% trans 'Version' %}</th><th class="status">{% trans 'Status' %}</th></tr>
+		</thead>
+			<tbody>
+            {% for o in obj_list %}
+				<tr><td><a href="{{ o.get_absolute_url }}">{{ o.name|slice:":50" }}</a></td><td>{{o.version}}</td><td>{{ o.PublicationStatus }}</td></tr>
+            {% endfor %}
+		</tbody>
+		</table>
+
 {% else %}
-    <p>No templates found.</p>
+	<hr>
+    <p>{% trans  "No resources found" %}</p>
+    <p>{% if not user.is_authenticated %}<a href="{% site_base %}accounts/login/?next={{ REQ_FULL_PATH|nologout }}">{% trans  "Please log in" %}</a>{% endif %}</p>
 {% endif %}
 
 {% endblock %}
