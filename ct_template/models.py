@@ -132,7 +132,7 @@ class ClinTemplate(models.Model):
 
     def get_metadata_text(self, key, default=None):
         """docstring for get_metadata"""
-        e = self.metadata_dict.get(key, None)
+        e = self.metadata_dict.get(key, self.metadata_dict.get(key.capitalize()))
         if e is None:
             # print '*** ', key, e
             return default
